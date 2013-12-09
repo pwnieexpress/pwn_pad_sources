@@ -1,6 +1,16 @@
 #!/bin/bash
 #Script to turn Pwnie UI off/on (on by default)
 
+
+clear
+echo "This script will enable / disable Pwnie UI https://pwnpadsIPaddress:1443"
+echo 
+echo "This script will enable / disable SSH Server access on port 22"
+echo
+wait 3
+clear
+
+
 #check running processes to see if nginx is running, write to a file
 netstat -antup |grep nginx > pwnie_ui_tmp
 

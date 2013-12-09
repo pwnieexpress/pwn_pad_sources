@@ -44,7 +44,7 @@ f_interface(){
     echo
     echo "Select which interface you are using for Internet? (1-3):"
     echo
-    echo "1. [rmnet_usb0] (3G GSM connection)"
+    echo "1. [rmnet_usb0] (4G GSM connection)"
     echo "2. eth0  (USB ethernet adapter)"
     echo "3. wlan0  (Internal Nexus Wifi)"
     echo

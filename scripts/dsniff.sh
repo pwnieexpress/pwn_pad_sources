@@ -15,6 +15,7 @@ echo "2. wlan0  (Internal Nexus Wifi)"
 echo "3. wlan1  (USB TPlink Atheros)"
 echo "4. mon0  (monitor mode interface)"
 echo "5. at0  (Use with EvilAP)"
+echo "6. rmnet_usb0 (4G connection)"
 echo
 
         read -p "Choice: " interfacechoice
@@ -25,7 +26,7 @@ echo
         3) f_wlan1 ;;
         4) f_mon0 ;;
         5) f_at0 ;;
-	6) f_rmnet_usb0 ;;
+      	6) f_rmnet_usb0 ;;
         *) f_interface ;;
         esac
 }
@@ -85,7 +86,7 @@ read -p "Choice: " logchoice
 if [ $logchoice -eq 1 ] 
 then
 
-        filename=/opt/pwnix/captures/$(date +%F-%H%M).log
+        filename=/opt/pwnix/captures/passwords/$(date +%F-%H%M).log
 
         ettercap -i $interface -u -T -q | tee $filename
 

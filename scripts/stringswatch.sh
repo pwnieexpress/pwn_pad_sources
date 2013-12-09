@@ -19,7 +19,7 @@ echo "2. wlan0  (Internal Nexus Wifi)"
 echo "3. wlan1  (USB TPlink Atheros)"
 echo "4. mon0  (monitor mode interface)"
 echo "5. at0  (Use with EvilAP)"
-echo "6. rmnet_usb0 (Internal 3G GSM)"
+echo "6. rmnet_usb0 (Internal 4G GSM)"
 echo
 
         read -p "Choice: " interfacechoice
