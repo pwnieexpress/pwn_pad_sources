@@ -1,4 +1,5 @@
-
+#Location: /system/bin/
+#Chroot script to boot into Pwnie environment
 # Use the fourth loopback device to leave the first couple open
 export LOOP_BACK=/dev/block/loop4
 export SOURCE_IMG=/data/local/kali_img/kali.img
