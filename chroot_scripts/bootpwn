@@ -37,6 +37,7 @@ sysctl -w net.ipv4.ip_forward=1
 export HOME=/root
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
 export TERM=xterm-color
+export TZ=America/New_York
 
 echo "The Pwnie has landed. Get your game face on."
 
