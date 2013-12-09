@@ -6,6 +6,7 @@ cd /opt/pwnix/captures/wpa_handshakes/
 wifite
 
 if [ -d hs ]; then
-  mv hs handshakes
+  mv hs/* .
+  rm -r hs/
 fi
 
