@@ -1,0 +1,22 @@
+Airodump	su\rbootpwn\rcd /opt/pwnix/captures/wireless/\rclear\rsh /opt/pwnix/pwnpad-scripts/airodump.sh	/home/ethernin/android_dev/icons/airodump.png
+Bluelog	su\rbootpwn\rcd /opt/pwnix/captures/bluetooth/\rclear\rsh /opt/pwnix/pwnpad-scripts/bluelog.sh	/home/ethernin/android_dev/icons/bluelog1.png
+BluetoothScan	su\rbootpwn\rcd /opt/pwnix/captures/bluetooth/\rclear\rsh /opt/pwnix/pwnpad-scripts/btscan.sh	/home/ethernin/android_dev/icons/bluetooth.png
+DNSspoof	su\rbootpwn\rcd /opt/pwnix/captures/\rclear\rsh /opt/pwnix/pwnpad-scripts/dnsspoof.sh	/home/ethernin/android_dev/icons/dnsspoof.png
+Dsniff	su\rbootpwn\rcd /opt/pwnix/captures/passwords/\rclear\rsh /opt/pwnix/pwnpad-scripts/dsniff.sh	/home/ethernin/android_dev/icons/dsniff.png
+Ettercap	su\rbootpwn\rcd /opt/pwnix/captures/ettercap/\rclear\rsh /opt/pwnix/pwnpad-scripts/ettercap.sh	/home/ethernin/android_dev/icons/ettercap.png
+EvilAP	su\rbootpwn\rcd /opt/pwnix/captures/wireless/\rclear\rsh /opt/pwnix/pwnpad-scripts/evilap.sh	/home/ethernin/android_dev/icons/evil.png
+HostMACchanger	su\rbootpwn\rcd /opt/pwnix/captures/\rclear\rsh /opt/pwnix/pwnpad-scripts/hostmacchanger.sh	/home/ethernin/android_dev/icons/macchanger.png
+Kismet	su\rbootpwn\rcd /opt/pwnix/captures/wireless/\rclear\rsh /opt/pwnix/pwnpad-scripts/kismet.sh	/home/ethernin/android_dev/icons/kismet.png
+Logwiper	su\rbootpwn\rcd /opt/pwnix/captures/\rclear\rsh /opt/pwnix/pwnpad-scripts/logwiper.sh	/home/ethernin/android_dev/icons/logwiper.png
+Metasploit	su\rbootpwn\rcd /opt/pwnix/captures/\rclear\rsh /opt/pwnix/pwnpad-scripts/msf.sh	/home/ethernin/android_dev/icons/msf.png
+Nmap	su\rbootpwn\rcd /opt/pwnix/captures/nmap_scans/\rclear\rsh /opt/pwnix/pwnpad-scripts/nmap_scan.sh	/home/ethernin/android_dev/icons/zenmap.png
+PwnieUIonOff	su\rbootpwn\rcd /opt/pwnix/captures/\rclear\rsh /opt/pwnix/pwnpad-scripts/pwnieuionoff.sh	/home/ethernin/android_dev/icons/pwnieui.png
+RootShell	su\rbootpwn\rcd /opt/pwnix/captures/\rclear	/home/ethernin/android_dev/icons/rootshell.png
+SEtoolkit	su\rbootpwn\rcd /opt/pwnix/captures/\rclear\rsh /opt/pwnix/pwnpad-scripts/set.sh	/home/ethernin/android_dev/icons/set.png
+SSLstrip	su\rbootpwn\rcd /opt/pwnix/captures/passwords/\rclear\rsh /opt/pwnix/pwnpad-scripts/sslstrip.sh	/home/ethernin/android_dev/icons/sslstrip.png
+StringsWatch	su\rbootpwn\rcd /opt/pwnix/captures/stringswatch/\rclear\rsh /opt/pwnix/pwnpad-scripts/stringswatch.sh	/home/ethernin/android_dev/icons/sniff.png
+TCPdump	su\rbootpwn\rcd /opt/pwnix/captures/tcpdump/\rclear\rsh /opt/pwnix/pwnpad-scripts/tcpdump.sh	/home/ethernin/android_dev/icons/tcpdump.png
+Tshark	su\rbootpwn\rcd /opt/pwnix/captures/tshark/\rclear\rsh /opt/pwnix/pwnpad-scripts/tshark.sh	/home/ethernin/android_dev/icons/tshark.png
+Ubertooth	su\rbootpwn\rcd /opt/pwnix/captures/\rclear\rsh /opt/pwnix/pwnpad-scripts/ubertooth.sh	/home/ethernin/android_dev/icons/ubertooth.png
+UpdatePwnPad	su\rbootpwn\rcd /opt/pwnix/captures/\rclear\rsh /opt/pwnix/pwnpad-scripts/UpdatePwnPad.sh	/home/ethernin/android_dev/icons/update.png
+Wifite	su\rbootpwn\rcd /opt/pwnix/captures/wpa_handshakes/\rclear\rsh /opt/pwnix/pwnpad-scripts/wifite.sh	/home/ethernin/android_dev/icons/wifite.png
