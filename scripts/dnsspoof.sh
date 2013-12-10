@@ -5,6 +5,7 @@
 ##################################################
 
   clear
+  echo "    *CURRENTLY ONLY WORKS WHEN EVILAP IS RUNNING*"
   echo 
   echo "    EvilAP Ettercap-NG 0.8.0 DNS Spoofing script"
   echo
