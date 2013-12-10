@@ -2,58 +2,77 @@
 #Script to turn Pwnie UI off/on (on by default)
 
 
-clear
-echo "This script will enable / disable Pwnie UI https://pwnpadsIPaddress:1443"
-echo 
-echo "This script will enable / disable SSH Server access on port 22"
-echo
-wait 3
-clear
 
-
-#check running processes to see if nginx is running, write to a file
-netstat -antup |grep nginx > pwnie_ui_tmp
-
-f_stop_ui(){
-  echo
-  echo
-  echo "Stopping Pwnie User Interface...."
-  service nginx stop
-  echo "Done"
-  echo
-  echo "Stopping SSH Server..."
-  service ssh stop
-  echo "Done"
-  echo
-  echo
-}
-
-f_start_ui(){
+f_start_nginx(){
 
   echo
   echo
   echo "Starting Pwnie User Interface...."
   service nginx start
+  echo
   echo "Done"
+  echo
+
+}
+
+f_stop_nginx(){
+  echo
+  echo
+  echo "Stopping Pwnie User Interface...."
+  service nginx stop
+  echo
+  echo "Done"
+  echo 
+}
+
+f_start_ssh(){
+
   echo
   echo "Starting SSH Server..."
   service ssh start
+  echo
   echo "Done"
   echo
   echo
 }
 
-#if file has a size (process is running) stop services
-  if [ -s pwnie_ui_tmp ]
-  then
+f_stop_ssh(){
 
-  f_stop_ui
+  echo
+  echo "Stopping SSH Server..."
+  service ssh stop
+  echo
+  echo "Done"
+  echo
+  echo
+}
 
-  else
-  
-  f_start_ui
+clear
+echo "This script will enable / disable Pwnie UI https://pwnpadsIPaddress:1443"
+echo 
+echo "This script will enable / disable SSH Server access on port 22"
+echo
+sleep 1
 
-  fi
 
-#remove tmp file
-rm -r pwnie_ui_tmp
+#check running processes to see if nginx is running
+
+service nginx status &> /dev/null
+NGINX_STATUS=$?
+
+case "$NGINX_STATUS" in
+  0) f_stop_nginx ;;
+  *) f_start_nginx ;;
+esac
+
+
+#check running processes to see if ssh is running
+
+service ssh status &> /dev/null
+SSH_STATUS=$?
+
+case "$SSH_STATUS" in
+  0) f_stop_ssh ;;
+  *) f_start_ssh ;;
+esac
+
