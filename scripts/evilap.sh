@@ -33,6 +33,7 @@ f_clean_up(){
 f_endclean(){
   f_clean_up
   f_restore_ident
+  ifconfig wlan1 down
   exit
 }
 

@@ -7,6 +7,7 @@ trap f_endclean KILL
 
 f_endclean(){
   ifconfig wlan1mon down
+  ifconfig wlan1 down
 }
 
 ##################################################
