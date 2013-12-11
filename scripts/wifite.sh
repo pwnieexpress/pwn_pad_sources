@@ -10,3 +10,11 @@ if [ -d hs ]; then
   rm -r hs/
 fi
 
+if [ -f cracked.txt ]
+then
+  mv cracked.txt ../passwords/
+fi
+
+airmon-ng stop mon0
+ifconfig wlan1 down
+
