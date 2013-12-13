@@ -13,11 +13,8 @@
 ############################################################################
 
 [privs]
-#ec_uid = 65534                # nobody is the default
-#ec_gid = 65534                # nobody is the default
-
-ec_uid = 0		# nobody is the default
-ec_gid = 0                # nobody is the default
+ec_uid = 65534                # nobody is the default
+ec_gid = 65534                # nobody is the default
 
 [mitm]
 arp_storm_delay = 10          # seconds
@@ -30,6 +27,7 @@ arp_poison_equal_mac = 1      # boolean
 dhcp_lease_time = 1800        # seconds
 port_steal_delay = 10         # seconds
 port_steal_send_delay = 2000  # microseconds
+nadv_poison_send_delay = 1500 # microseconds
 
 [connections]
 connection_timeout = 300      # seconds
@@ -100,7 +98,6 @@ cvs = 2401                 # tcp    2401
 mysql = 3306               # tcp    3306
 icq = 5190                 # tcp    5190
 ymsg = 5050                # tcp    5050
-mdns = 5353                # udp    5353
 vnc = 5900,5901,5902,5903  # tcp    5900 5901 5902 5903
 x11 = 6000,6001,6002,6003  # tcp    6000 6001 6002 6003
 irc = 6666,6667,6668,6669  # tcp    6666 6667 6668 6669
@@ -108,7 +105,6 @@ gg = 8074	           # tcp    8074
 proxy = 8080               # tcp    8080
 rcon = 27015,27960         # udp    27015 27960
 ppp = 34827                # special case ;) this is the Net Layer code
-TN3270 = 23,992            # tcp    23 992
 
 # 
 # you can change the colors of the curses GUI.
@@ -171,8 +167,8 @@ remote_browser = "xdg-open http://%host%url"
    #redir_command_off = "ipchains -D input -i %iface -p tcp -s 0/0 -d 0/0 %port -j REDIRECT %rport"
 
 # if you use iptables:
-redir_command_on = "iptables -t nat -A PREROUTING -i %iface -p tcp --dport %port -j REDIRECT --to-port %rport"
-redir_command_off = "iptables -t nat -D PREROUTING -i %iface -p tcp --dport %port -j REDIRECT --to-port %rport"
+   #redir_command_on = "iptables -t nat -A PREROUTING -i %iface -p tcp --dport %port -j REDIRECT --to-port %rport"
+   #redir_command_off = "iptables -t nat -D PREROUTING -i %iface -p tcp --dport %port -j REDIRECT --to-port %rport"
 
 #---------------
 #    Mac Os X

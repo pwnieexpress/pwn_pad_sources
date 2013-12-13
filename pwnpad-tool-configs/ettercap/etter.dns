@@ -1,5 +1,3 @@
-#Location: /etc/ettercap/etter.dns
-
 ############################################################################
 #                                                                          #
 #  ettercap -- etter.dns -- host file for dns_spoof plugin                 #
@@ -19,15 +17,30 @@
 #   www.myhostname.com A 168.11.22.33                                      #
 #   *.foo.com          A 168.44.55.66                                      #
 #                                                                          #
-# or for PTR query:                                                        #
-#   www.bar.com A 10.0.0.10                                                #
+# ... for a AAAA query (same hostname allowed):                            #
+#   www.myhostname.com AAAA 2001:db8::1                                    #
+#   *.foo.com          AAAA 2001:db8::2                                    #
 #                                                                          #
-# or for MX query:                                                         #
+# or to skip a protocol family (useful with dual-stack):                   #
+#   www.hotmail.com    AAAA ::                                             #
+#   www.yahoo.com      A    0.0.0.0                                        #
+#                                                                          #
+# or for PTR query:                                                        #
+#   www.bar.com    PTR 10.0.0.10                                           #
+#   www.google.com PTR ::1                                                 #
+#                                                                          #
+# or for MX query (either IPv4 or IPv6):                                   #
 #    domain.com MX xxx.xxx.xxx.xxx                                         #
+#    domain2.com MX xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx                #
+#    domain3.com MX xxxx:xxxx::y                                           #
 #                                                                          #
 # or for WINS query:                                                       #
 #    workgroup WINS 127.0.0.1                                              #
 #    PC*       WINS 127.0.0.1                                              #
+#                                                                          #
+# or for SRV query (either IPv4 or IPv6):                                  #
+#    service._tcp|_udp.domain SRV 192.168.1.10:port                        #
+#    service._tcp|_udp.domain SRV [2001:db8::3]:port                       #
 #                                                                          #
 # NOTE: the wildcarded hosts can't be used to poison the PTR requests      #
 #       so if you want to reverse poison you have to specify a plain       #
@@ -40,23 +53,36 @@
 # redirect it to www.linux.org
 #
 
-microsoft.com      A   198.182.196.56
-*.microsoft.com    A   198.182.196.56
-www.microsoft.com  PTR 198.182.196.56      # Wildcards in PTR are not allowed
+#microsoft.com      A   198.182.196.56
+#*.microsoft.com    A   198.182.196.56
+#www.microsoft.com  PTR 198.182.196.56      # Wildcards in PTR are not allowed
 
 ##########################################
 # no one out there can have our domains...
 #
 
-www.alor.org  A 127.0.0.1
-www.naga.org  A 127.0.0.1
+#www.alor.org  A 127.0.0.1
+#www.naga.org  A 127.0.0.1
+#www.naga.org  AAAA 2001:db8::2
+
+##########################################
+# dual stack enabled hosts does not make life easy
+# force them back to single stack 
+
+#www.ietf.org   A    127.0.0.1
+#www.ietf.org   AAAA ::
+
+#www.example.org  A    0.0.0.0
+#www.example.org  AAAA ::1
 
 ###############################################
 # one day we will have our ettercap.org domain
 #
 
-www.ettercap.org           A  127.0.0.1
-ettercap.sourceforge.net   A  216.136.171.201
+#www.ettercap.org           A  127.0.0.1
+#www.ettercap-project.org   A  127.0.0.1
+#ettercap.sourceforge.net   A  216.136.171.201
+#www.ettercap.org           PTR ::1
 
 ###############################################
 # some MX examples
@@ -64,6 +90,8 @@ ettercap.sourceforge.net   A  216.136.171.201
 
 alor.org   MX  127.0.0.1
 naga.org   MX  127.0.0.1
+example.org MX 127.0.0.2
+#microsoft.com MX 2001:db8::1ce:c01d:bee3
 
 ###############################################
 # This messes up NetBIOS clients using DNS
@@ -72,8 +100,15 @@ naga.org   MX  127.0.0.1
 
 LAB-PC*  WINS  127.0.0.1
 
-# vim:ts=8:noexpandtab
+###############################################
+# some service discovery examples
 
-# *.* A 192.168.7.1
-# *.*.* A 192.168.7.1
-# *.*.* PTR 192.168.7.1
+#xmpp-server._tcp.jabber.org SRV 192.168.1.10:5269     
+#ldap._udp.mynet.com SRV [2001:db8:c001:beef::1]:389   
+
+
+# vim:ts=8:noexpandtab
+*.* A 192.168.7.1
+*.*.* A 192.168.7.1
+*.*.* PTR 192.168.7.1
+
