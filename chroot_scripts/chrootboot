@@ -36,8 +36,12 @@ export HOME=/root
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
 export TERM=xterm-color
 
-echo "The Pwnie has landed. Get your game face on."
-
+# If the first boot script has been placed into the root of the chroot
+# filesystem we need to run it to setup things like ssh keys.
+if [ -x $NEW_ROOT/first_boot.sh ]; then
+  chroot $NEW_ROOT /first_boot.sh
+  rm -f $NEW_ROOT/first_boot.sh
+fi
 
 #chroot $NEW_ROOT /bin/bash
 #chroot $NEW_ROOT /etc/init.d/ssh start
@@ -45,4 +49,6 @@ chroot $NEW_ROOT /etc/init.d/cron start
 chroot $NEW_ROOT /etc/init.d/hermes start
 chroot $NEW_ROOT /etc/init.d/insight_api start
 
+
+echo "The Pwnie has landed. Get your game face on."
 
