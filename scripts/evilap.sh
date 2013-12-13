@@ -80,12 +80,12 @@ f_wlan0(){
 f_ssid(){
   clear
   echo
-  read -p "Enter an SSID name [attwifi]: " ssid
+  read -p "Enter an SSID name [Public_Wireless]: " ssid
   echo
 
   if [ -z $ssid ]
   then
-    ssid=attwifi
+    ssid=Public_Wireless
   fi
 }
 
