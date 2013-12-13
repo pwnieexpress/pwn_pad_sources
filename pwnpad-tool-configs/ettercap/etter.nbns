@@ -1,3 +1,5 @@
+#Location: /etc/ettercap/etter.nbns
+
 ############################################################################
 #                                                                          #
 #  ettercap -- etter.nbns -- host file for nbns_spoof plugin               #

@@ -1,3 +1,5 @@
+#Location: /etc/ettercap/etter.mdns
+
 ############################################################################
 #                                                                          #
 #  ettercap -- etter.mdns -- host file for mdns_spoof plugin               #
