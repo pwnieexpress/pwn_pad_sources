@@ -45,6 +45,7 @@ fi
 
 #chroot $NEW_ROOT /bin/bash
 #chroot $NEW_ROOT /etc/init.d/ssh start
+. /system/bin/wlan_interface_assigner.sh
 chroot $NEW_ROOT /etc/init.d/cron start
 chroot $NEW_ROOT /etc/init.d/hermes start
 chroot $NEW_ROOT /etc/init.d/insight_api start
