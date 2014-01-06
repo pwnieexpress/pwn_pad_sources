@@ -2,7 +2,7 @@
 #Script to start Kismet wireless sniffer
 
 #Set term type to vt100 for now, only thing that displays curses properly atm
-export TERM=vt100
+#export TERM=vt100
 
 #Set ctrl c (break) to gracefully stop wlan1mon that kismet creates 
 trap f_endclean INT
