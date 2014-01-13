@@ -54,6 +54,7 @@ chroot $NEW_ROOT /bin/bash
 
 umount $NEW_ROOT/system
 umount $NEW_ROOT/sdcard
+umount $NEW_ROOT/UsbOtgDrives
 umount $NEW_ROOT/dev/pts # May not be needed 2x
 umount $NEW_ROOT/dev
 umount $NEW_ROOT/proc
