@@ -25,8 +25,12 @@ mount -o remount,rw -t yaffs /dev/block/mtdblock3 /system
 mount -o bind /system $NEW_ROOT/system
 mount -o bind /sdcard $NEW_ROOT/sdcard
 
-# Mount USB OTG drive for copying files to from chroot environment
-#mount -o bind /storage/UsbOtgDrives/ $NEW_ROOT/UsbOtgDrives/
+# Mount USB OTG drive for copying files to from chroot environment, this may be
+# more appropriate in chrootboot.
+if [ ! $(mount | grep UsbOtgDrives) ]; then
+  mkdir -p $NEW_ROOT/UsbOtgDrives
+  mount -o bind /storage/UsbOtgDrives $NEW_ROOT/UsbOtgDrives
+fi
 
 echo "Finished mounting filesystems."
 
@@ -51,6 +55,7 @@ chroot $NEW_ROOT cp /proc/mounts /etc/mtab
 
 umount $NEW_ROOT/system
 umount $NEW_ROOT/sdcard
+umount $NEW_ROOT/UsbOtgDrives
 umount $NEW_ROOT/dev/pts # May not be needed 2x
 umount $NEW_ROOT/dev
 umount $NEW_ROOT/proc
