@@ -48,7 +48,9 @@ fi
 . /system/bin/wlan_interface_assigner.sh
 
 chroot $NEW_ROOT /etc/init.d/cron start
+sleep 2
 chroot $NEW_ROOT /etc/init.d/hermes start
+sleep 2
 chroot $NEW_ROOT /etc/init.d/insight_api start
 
 echo "The Pwnie has landed. Get your game face on."
