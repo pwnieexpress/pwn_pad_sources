@@ -50,6 +50,8 @@ stty columns 85
 stty rows 46
 chroot $NEW_ROOT /bin/bash
 
+chroot $NEW_ROOT cp /proc/mounts /etc/mtab
+
 #echo "Cleaning up mounts."
 
 umount $NEW_ROOT/system

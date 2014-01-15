@@ -38,17 +38,21 @@ export TERM=xterm-color
 
 # If the first boot script has been placed into the root of the chroot
 # filesystem we need to run it to setup things like ssh keys.
-if [ -x $NEW_ROOT/first_boot.sh ]; then
-  chroot $NEW_ROOT /first_boot.sh
-  rm -f $NEW_ROOT/first_boot.sh
-fi
+#if [ -x $NEW_ROOT/first_boot.sh ]; then
+ # chroot $NEW_ROOT /first_boot.sh
+ # rm -f $NEW_ROOT/first_boot.sh
+#fi
 
 #chroot $NEW_ROOT /etc/init.d/ssh start
+
+chroot $NEW_ROOT cp /proc/mounts /etc/mtab
 
 . /system/bin/wlan_interface_assigner.sh
 
 chroot $NEW_ROOT /etc/init.d/cron start
+sleep 2
 chroot $NEW_ROOT /etc/init.d/hermes start
+sleep 2
 chroot $NEW_ROOT /etc/init.d/insight_api start
 
 echo "The Pwnie has landed. Get your game face on."
