@@ -3,7 +3,7 @@
 f_banner(){
   clear
   echo "Pwn Pad Update"
-  echo "Warning, this update will overwrite any modifed config files !"
+  echo "Warning, this update will overwrite any modified config files !"
   echo
   echo "Do you want to continue?"
   echo
@@ -24,6 +24,7 @@ f_one_or_two(){
 
 f_confirm_and_do_update(){
   if [ $(f_one_or_two) -eq 1 ]; then
+    echo "[+] Starting Update..."
     /opt/pwnix/chef/update.sh
     echo
     echo "[+] Congratulations your Pad has been updated!"

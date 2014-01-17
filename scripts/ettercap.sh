@@ -4,10 +4,11 @@
 f_banner(){
   clear
   echo
-  echo "		Ettercap-NG 0.8.0 ARP Cache Poison Script"
+  echo "Ettercap-NG 0.8.0 ARP Cache Poison Script"
   echo
-  echo "    NOTE: This only works on networks you are connected to"
-  echo "          DO NOT USE WITH EVILAP - IT WON'T WORK"
+  echo "NOTE: This only works on networks you are connected to"
+  echo
+  echo "DO NOT USE WITH EVILAP - IT WON'T WORK"
   echo
 }
 
@@ -42,11 +43,11 @@ f_one_or_two(){
 f_sslfake(){
   clear
   echo
-  echo "        Would you like to use the Invalid SSL Cert Option?"
+  echo "Would you like to use the Invalid SSL Cert Option?"
   echo
   echo "Good for testing user policy to make sure users aren't accpeting bad certs!"
   echo
-  echo "      NOTE: if using SSLstrip with ettercap this is not needed"
+  echo "NOTE: if using SSLstrip with ettercap this is not needed"
   echo
   echo "1. Yes"
   echo "2. No "
@@ -73,7 +74,6 @@ f_generate_filename(){
 }
 
 f_run(){
-
   echo 1 > /proc/sys/net/ipv4/ip_forward
 
   filename=$(f_generate_filename)
