@@ -41,7 +41,7 @@ f_endclean(){
 f_interface(){
   clear
 
-    echo "		Welcome to the EvilAP" 
+    echo "		Welcome to the EvilAP"
     echo
     echo "Select which interface you are using for Internet? (1-3):"
     echo
@@ -115,7 +115,7 @@ f_preplaunch(){
 
   sleep 2
 
-  echo 
+  echo
 
   #Put wlan1 into monitor mode - mon0 created
   airmon-ng start wlan1
@@ -127,8 +127,8 @@ f_evilap(){
   #Log path and name
   logname="/opt/pwnix/captures/wireless/evilap-$(date +%s).log"
 
-  #Start Airbase-ng with -P for preferred networks 
-  airbase-ng -P -C 70 -c $channel -e "$ssid" -v mon0 > $logname 2>&1 & 
+  #Start Airbase-ng with -P for preferred networks
+  airbase-ng -P -C 70 -c $channel -e "$ssid" -v mon0 > $logname 2>&1 &
   sleep 2
 
   #Bring up virtual interface at0
@@ -149,7 +149,7 @@ f_niceap(){
   #Log path and name
   logname="/opt/pwnix/captures/wireless/evilap-$(date +%s).log"
 
-  #Start Airbase-ng with -P for preferred networks 
+  #Start Airbase-ng with -P for preferred networks
   airbase-ng -c $channel -e "$ssid" -v mon0 > $logname 2>&1 &
   sleep 2
 
@@ -202,9 +202,6 @@ f_run(){
   else
   f_niceap
   fi
-
-
-
 }
 
 f_run
