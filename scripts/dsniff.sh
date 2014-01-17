@@ -42,13 +42,11 @@ f_logging_setup(){
 }
 
 f_validate(){
-	read -p "Choice: " logchoice
-  if [ $logchoice = 1 -o $logchoice = 2 ]; then
-    f_run $logchoice
-  else
+  read -p "Choice: " logchoice
+  if [ $logchoice != 1 -o $logchoice != 2 ]; then
     echo 'Please enter 1 for yes or 2 for no.'
     f_validate
-	fi
+  fi
 }
 
 f_run(){
@@ -65,6 +63,7 @@ f_run(){
 f_execute(){
   f_interface_setup
   f_logging_setup
+  f_run $logchoice
 }
 
 f_execute
