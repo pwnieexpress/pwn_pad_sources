@@ -38,24 +38,27 @@ f_logging_setup(){
   echo "1. Yes"
   echo "2. No "
   echo
-  f_validate
+  f_get_logchoice
 }
 
-f_validate(){
+f_get_logchoice(){
   read -p "Choice: " logchoice
-  if [ $logchoice != 1 -o $logchoice != 2 ]; then
-    echo 'Please enter 1 for yes or 2 for no.'
-    f_validate
-  fi
+  case $logchoice in
+    [1-2]*) ;;
+    *)
+      echo 'Please enter 1 for yes or 2 for no.'
+      f_get_logchoice
+      ;;
+  esac
 }
 
 f_run(){
   # If user chose to log, log to folder
   # else just run cmd
-  if [ $1 -eq 1 ]; then
+  if [ $logchoice -eq 1 ]; then
     filename=/opt/pwnix/captures/passwords/$(date +%F-%H%M).log
     ettercap -i $interface -u -T -q | tee $filename
-  elif [ $1 -eq 2 ]; then
+  elif [ $logchoice -eq 2 ]; then
     ettercap -i $interface -T -q -u
   fi
 }
@@ -63,7 +66,7 @@ f_run(){
 f_execute(){
   f_interface_setup
   f_logging_setup
-  f_run $logchoice
+  f_run
 }
 
 f_execute
