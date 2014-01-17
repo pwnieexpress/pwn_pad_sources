@@ -1,5 +1,5 @@
 #!/bin/sh
-#Bluetooth scanning / loggin script
+# Bluetooth scanning / logging script using bluelog
 
 hciconfig hci0 up
 
@@ -9,7 +9,4 @@ echo
 echo "Bluetooth Device Scan log saved in /opt/pwnix/captures/bluetooth/"
 echo
 
-#btscanlogname=bluelog$(date +%F-%H%M).log
-
 bluelog -vtnc -i hci0
-

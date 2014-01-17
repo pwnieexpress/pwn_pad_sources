@@ -1,5 +1,5 @@
 #!/bin/sh
-#Bluetooth scanning / loggin script
+#Bluetooth scanning / loggin script using hcitool
 
 
 cd /opt/pwnix/captures/bluetooth/
