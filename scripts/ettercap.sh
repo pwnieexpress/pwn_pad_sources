@@ -13,7 +13,7 @@ f_banner(){
 }
 
 f_interface(){
-  echo "Select which interface you would like to sniff / poison on? (1-6):"
+  echo "Select which interface you would like to sniff / poison on? (1-3):"
   echo
   echo "1. eth0  (USB ethernet adapter)"
   echo "2. wlan0  (Internal Nexus Wifi)"
