@@ -7,11 +7,11 @@ f_interface_setup(){
   clear
   echo "Select which interface you would like to sniff on? (1-6):"
   echo
-  echo "1. eth0  (USB ethernet adapter)"
-  echo "2. wlan0  (Internal Nexus Wifi)"
-  echo "3. wlan1  (USB TPlink Atheros)"
-  echo "4. mon0  (monitor mode interface)"
-  echo "5. at0  (Use with EvilAP)"
+  echo "1. eth0 (USB ethernet adapter)"
+  echo "2. wlan0 (Internal Nexus Wifi)"
+  echo "3. wlan1 (USB TPlink Atheros)"
+  echo "4. mon0 (monitor mode interface)"
+  echo "5. at0 (Use with EvilAP)"
   echo "6. rmnet_usb0 (4G connection)"
   echo
 
