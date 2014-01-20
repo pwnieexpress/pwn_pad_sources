@@ -1,7 +1,7 @@
 #!/bin/bash
-#Script to run airodump-ng without any flags
+# Script to run airodump-ng without any flags
 
-#set ctrl c (break) to gracefully take the card out of monitor mode
+# set ctrl c (break) to gracefully take the card out of monitor mode
 trap f_cleanup INT
 trap f_cleanup KILL
 
@@ -17,24 +17,21 @@ f_capture_dialogue(){
 	echo "1. Yes"
 	echo "2. No "
 	echo
-  f_validate
 }
 
-f_validate(){
-	read -p "Choice: " logchoice
-  if [ $logchoice = 1 -o $logchoice = 2 ]; then
-    f_run $logchoice
-  else
-    echo 'Please enter 1 for yes or 2 for no.'
-    f_validate
-	fi
+f_logchoice(){
+  read -p "Choice (1 or 2): " logchoice
+  case $logchoice in
+    [1-2]*) ;;
+    *) f_logchoice;;
+  esac
 }
 
 f_run(){
-  if [ $1 -eq 1 ]; then
+  if [ $logchoice -eq 1 ]; then
     airmon-ng start wlan1
     airodump-ng -w airodump mon0
-  elif [ $1 -eq 2 ]; then
+  elif [ $logchoice -eq 2 ]; then
     airmon-ng start wlan1
     airodump-ng mon0
   fi
@@ -46,3 +43,5 @@ f_cleanup(){
 }
 
 f_capture_dialogue
+f_logchoice
+f_run
