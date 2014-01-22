@@ -11,35 +11,17 @@ losetup $LOOP_BACK $SOURCE_IMG
 
 echo "Mounting filesystems..."
 
-# TODO: Check to see if these are already mounted before remounting them
-#mount -t ext4 $LOOP_BACK $NEW_ROOT
-#mount -o bind /dev $NEW_ROOT/dev
-#mount -t devpts devpts $NEW_ROOT/dev/pts # May not be needed
-#mount -t proc proc $NEW_ROOT/proc
-#mount -t sysfs sysfs $NEW_ROOT/sys
-
 # Remount the system partition with the rw flag set
 mount -o remount,rw -t yaffs /dev/block/mtdblock3 /system
-
-# Mount the various Android filesystems in the chroot environment for access
-#mount -o bind /system $NEW_ROOT/system
-#mount -o bind /sdcard $NEW_ROOT/sdcard
 
 # Mount USB OTG drive for copying files to from chroot environment, this may be
 # more appropriate in chrootboot.
 
 chroot $NEW_ROOT /bin/cp /proc/mounts /etc/mtab
 
-#if [ ! $(mount | grep UsbOtgDrives) ]; then 
-
-#  chroot $NEW_ROOT /bin/mount /dev/block/sda1 /UsbOtgDrives/
-#  chroot $NEW_ROOT /bin/mount /dev/block/sdb1 /UsbOtgDrives 
-#fi
-
 echo "Finished mounting filesystems."
 
 # TODO Validate command
-#busybox sysctl -w net.ipv4.ip_forward=1
 sysctl -w net.ipv4.ip_forward=1
 
 # Setup some environment variables for the shell environment.
@@ -54,22 +36,4 @@ stty columns 85
 stty rows 46
 
 #Copy mounts so chroot side can see mounts
-
-#chroot $NEW_ROOT /bin/cp /proc/mounts /etc/mtab
-
-#chroot in and drop into bash
-
 chroot $NEW_ROOT /bin/bash
-
-#echo "Cleaning up mounts."
-
-#umount $NEW_ROOT/system
-#umount $NEW_ROOT/sdcard
-#umount $NEW_ROOT/UsbOtgDrives
-#umount $NEW_ROOT/dev/pts # May not be needed 2x
-#umount $NEW_ROOT/dev
-#umount $NEW_ROOT/proc
-#umount $NEW_ROOT/sys
-#umount $NEW_ROOT
-
-#losetup -d $LOOP_BACK
