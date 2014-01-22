@@ -8,6 +8,7 @@
 CAPTURE_FILES=(
   "/opt/pwnix/captures/*.cap"
   "/opt/pwnix/captures/*.log"
+  "/opt/pwnix/captures/*.txt"
   "/opt/pwnix/captures/tshark/*"
   "/opt/pwnix/captures/tcpdump/*"
   "/opt/pwnix/captures/ettercap/*"
