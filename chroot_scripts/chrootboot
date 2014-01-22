@@ -47,6 +47,9 @@ fi
 
 . /system/bin/wlan_interface_assigner.sh
 
+#copy mounts so chroot can see what's mounted:
+chroot $NEW_ROOT /bin/cp /proc/mounts /etc/mtab
+
 chroot $NEW_ROOT /etc/init.d/cron start
 chroot $NEW_ROOT /etc/init.d/hermes start
 chroot $NEW_ROOT /etc/init.d/insight_api start

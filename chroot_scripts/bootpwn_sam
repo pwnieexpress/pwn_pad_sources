@@ -27,14 +27,12 @@ mount -o remount,rw -t yaffs /dev/block/mtdblock3 /system
 
 # Mount USB OTG drive for copying files to from chroot environment, this may be
 # more appropriate in chrootboot.
+if [ ! $(mount | grep UsbOtgDrives) ]; then
+  cp /proc/mounts /etc/mtab
+  mkdir -p $NEW_ROOT/UsbOtgDrives
+  mount -o bind /storage/UsbOtgDrives $NEW_ROOT/UsbOtgDrives
 
-chroot $NEW_ROOT /bin/cp /proc/mounts /etc/mtab
-
-#if [ ! $(mount | grep UsbOtgDrives) ]; then 
-
-#  chroot $NEW_ROOT /bin/mount /dev/block/sda1 /UsbOtgDrives/
-#  chroot $NEW_ROOT /bin/mount /dev/block/sdb1 /UsbOtgDrives 
-#fi
+fi
 
 echo "Finished mounting filesystems."
 
@@ -52,13 +50,6 @@ echo "The Pwnie has landed. Get your game face on."
 
 stty columns 85
 stty rows 46
-
-#Copy mounts so chroot side can see mounts
-
-#chroot $NEW_ROOT /bin/cp /proc/mounts /etc/mtab
-
-#chroot in and drop into bash
-
 chroot $NEW_ROOT /bin/bash
 
 #echo "Cleaning up mounts."
