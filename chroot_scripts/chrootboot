@@ -49,6 +49,9 @@ chroot $NEW_ROOT cp /proc/mounts /etc/mtab
 
 . /system/bin/wlan_interface_assigner.sh
 
+#copy mounts so chroot can see what's mounted:
+chroot $NEW_ROOT /bin/cp /proc/mounts /etc/mtab
+
 chroot $NEW_ROOT /etc/init.d/cron start
 sleep 2
 chroot $NEW_ROOT /etc/init.d/hermes start
