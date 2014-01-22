@@ -1,13 +1,8 @@
 # Location: /system/bin/
-# Chroot script to boot into Pwnie environment
-# Use the fourth loopback device to leave the first couple open
-export LOOP_BACK=/dev/block/loop4
-export SOURCE_IMG=/data/local/kali_img/kali.img
-export NEW_ROOT=/data/local/kali
+# Chroot script to launch scripts into Pwnie environment
 
-# TODO: Check to see if the loop back is already mounted
-echo "Setting up loopback device..."
-losetup $LOOP_BACK $SOURCE_IMG
+# Export chroot directory into a variable
+export NEW_ROOT=/data/local/kali
 
 echo "Mounting filesystems..."
 
@@ -16,7 +11,6 @@ mount -o remount,rw -t yaffs /dev/block/mtdblock3 /system
 
 echo "Finished mounting filesystems."
 
-# TODO Validate command
 sysctl -w net.ipv4.ip_forward=1
 
 # Setup some environment variables for the shell environment.
