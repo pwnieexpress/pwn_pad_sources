@@ -1,5 +1,5 @@
 #!/bin/bash
-#Script to run wifite 
+#Script to run wifite
 
 cd /opt/pwnix/captures/wpa_handshakes/
 

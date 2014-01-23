@@ -1,41 +1,16 @@
-#Location: /system/bin/
-#Chroot script to boot into Pwnie environment
-# Use the fourth loopback device to leave the first couple open
-export LOOP_BACK=/dev/block/loop4
-export SOURCE_IMG=/data/local/kali_img/kali.img
+# Location: /system/bin/
+# Chroot script to launch scripts into Pwnie environment
+
+# Export chroot directory into a variable
 export NEW_ROOT=/data/local/kali
 
-# TODO: Check to see if the loop back is already mounted
-echo "Setting up loopback device..."
-losetup $LOOP_BACK $SOURCE_IMG
-
 echo "Mounting filesystems..."
-
-# TODO: Check to see if these are already mounted before remounting them
-mount -t ext4 $LOOP_BACK $NEW_ROOT
-mount -o bind /dev $NEW_ROOT/dev
-mount -t devpts devpts $NEW_ROOT/dev/pts # May not be needed
-mount -t proc proc $NEW_ROOT/proc
-mount -t sysfs sysfs $NEW_ROOT/sys
 
 # Remount the system partition with the rw flag set
 mount -o remount,rw -t yaffs /dev/block/mtdblock3 /system
 
-# Mount the various Android filesystems in the chroot environment for access
-mount -o bind /system $NEW_ROOT/system
-mount -o bind /sdcard $NEW_ROOT/sdcard
-
-# Mount USB OTG drive for copying files to from chroot environment, this may be
-# more appropriate in chrootboot.
-if [ ! $(mount | grep UsbOtgDrives) ]; then
-  mkdir -p $NEW_ROOT/UsbOtgDrives
-  mount -o bind /storage/UsbOtgDrives $NEW_ROOT/UsbOtgDrives
-fi
-
 echo "Finished mounting filesystems."
 
-# TODO Validate command
-#busybox sysctl -w net.ipv4.ip_forward=1
 sysctl -w net.ipv4.ip_forward=1
 
 # Setup some environment variables for the shell environment.
@@ -48,19 +23,10 @@ echo "The Pwnie has landed. Get your game face on."
 
 stty columns 85
 stty rows 46
+
+# Mount USB OTG drive for copying files to from chroot environment, this may be
+# more appropriate in chrootboot.
+chroot $NEW_ROOT /bin/cp /proc/mounts /etc/mtab
+
+# Drop user to bash shell
 chroot $NEW_ROOT /bin/bash
-
-chroot $NEW_ROOT cp /proc/mounts /etc/mtab
-
-#echo "Cleaning up mounts."
-
-umount $NEW_ROOT/system
-umount $NEW_ROOT/sdcard
-umount $NEW_ROOT/UsbOtgDrives
-umount $NEW_ROOT/dev/pts # May not be needed 2x
-umount $NEW_ROOT/dev
-umount $NEW_ROOT/proc
-umount $NEW_ROOT/sys
-umount $NEW_ROOT
-
-losetup -d $LOOP_BACK
