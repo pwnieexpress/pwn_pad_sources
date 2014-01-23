@@ -37,8 +37,28 @@ f_run(){
   fi
 }
 
+f_mon_up_down(){
+  echo
+  echo "[!] Do you want to stay in monitor mode (mon0)?"
+  echo
+  read -p "Choice (1 or 2): " opt
+  case $opt in
+    1)
+      # do nothing
+      echo "[+] mon0 still active"
+      ;;
+    2)
+      echo "[+] Stopping mon0.."
+      airmon-ng stop mon0
+      ;;
+    *) f_one_or_two;;
+  esac
+}
+
 f_cleanup(){
-  airmon-ng stop mon0
+  f_mon_up_down
+
+  # ... and stay down!
   ifconfig wlan1 down
 }
 
