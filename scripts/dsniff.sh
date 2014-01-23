@@ -56,7 +56,7 @@ f_run(){
   # If user chose to log, log to folder
   # else just run cmd
   if [ $logchoice -eq 1 ]; then
-    filename=/opt/pwnix/captures/passwords/$(date +%F-%H%M).log
+    filename=/opt/pwnix/captures/passwords/dsniff_$(date +%F-%H%M).log
     ettercap -i $interface -u -T -q | tee $filename
   elif [ $logchoice -eq 2 ]; then
     ettercap -i $interface -T -q -u
