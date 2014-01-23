@@ -47,13 +47,12 @@ f_savecap(){
   esac
 }
 
-#########################################
 f_yes(){
-	filename=tcpdump$(date +%F-%H%M).cap
-  tcpdump -s0 -vvv -e -xx -w /opt/pwnix/captures/tcpdump/$filename -i $interface
+	filename=/opt/pwnix/captures/tcpdump/tcpdump_$(date +%F-%H%M).cap
+
+  tcpdump -s0 -vvv -e -xx -w $filename -i $interface
 }
 
-#########################################
 f_no(){
 	tcpdump -s0 -vvv -e -i $interface
 }
