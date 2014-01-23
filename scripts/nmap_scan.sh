@@ -64,7 +64,7 @@ f_scan(){
 f_interface
 f_scan
 
-if [ $interface -eq wlan1 ]; then
+if [ $interface = wlan1 ]; then
   ifconfig wlan1 down
 fi
 
