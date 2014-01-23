@@ -50,7 +50,7 @@ f_savecap(){
 f_yes(){
 	filename=/opt/pwnix/captures/tcpdump/tcpdump_$(date +%F-%H%M).cap
 
-  tcpdump -s0 -vvv -e -xx -w $filename -i $interface
+  tcpdump -l -s0 -vvv -e -xx -i $interface | tee $filename
 }
 
 f_no(){
