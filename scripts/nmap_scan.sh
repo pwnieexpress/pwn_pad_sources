@@ -12,7 +12,7 @@ f_interface(){
   echo "3. wlan1  (USB TPlink Atheros)"
   echo "4. at0  (Use with EvilAP)"
   echo
-  read -p "Choice: " interfacechoice
+  read -p "Choice (1-4): " interfacechoice
 
   case $interfacechoice in
     1) interface=eth0 ;;
@@ -24,7 +24,7 @@ f_interface(){
 }
 
 f_one_or_two(){
-  read -p "Choice (1 or 2): " input
+  read -p "Choice (1-2): " input
   case $input in
     [1-2]*) echo $input ;;
     *) f_one_or_two ;;
