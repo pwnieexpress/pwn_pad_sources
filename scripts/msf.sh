@@ -1,6 +1,8 @@
 #!/bin/bash
 
-echo "Starting Metasploit this will take a minute...." 
+clear
+echo
+echo "Starting Metasploit this will take a minute...."
 
-msfconsole 
+msfconsole
 
