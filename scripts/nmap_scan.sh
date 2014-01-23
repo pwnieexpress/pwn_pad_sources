@@ -35,12 +35,13 @@ f_scan(){
 
   network=$(ifconfig $interface| awk -F ":"  '/inet addr/{split($2,a," ");print a[1]}'|awk -F'.' '{print $1"."$2"."$3"."}')
   cd /opt/pwnix/captures/nmap_scans/
-  filename1="/opt/pwnix/captures/nmap_scans/host_scan$(date +%F-%H%M).txt"
-  filename2="/opt/pwnix/captures/nmap_scans/service_scan$(date +%F-%H%M).txt"
+
+  filename1="/opt/pwnix/captures/nmap_scans/host_scan_$(date +%F-%H%M).txt"
+  filename2="/opt/pwnix/captures/nmap_scans/service_scan_$(date +%F-%H%M).txt"
 
   nmap -sP $network* |tee $filename1
   echo
-  echo "Hostscan saved to /opt/pwnix/captures/nmap_scans/host_scan$(date +%F-%H%M).txt"
+  echo "Hostscan saved to $filename1"
   echo
   echo
 
@@ -55,7 +56,7 @@ f_scan(){
   if [ $scanagain -eq 1 ]; then
     nmap -sV $network* |tee $filename2
     echo
-    echo "Hostscan saved to /opt/pwnix/captures/nmap_scans/service_scan$(date +%F-%H%M).txt"
+    echo "Hostscan saved to $filename2"
     echo
     echo
   fi
@@ -63,8 +64,4 @@ f_scan(){
 
 f_interface
 f_scan
-
-if [ $interface = wlan1 ]; then
-  ifconfig wlan1 down
-fi
 
