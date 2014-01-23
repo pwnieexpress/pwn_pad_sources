@@ -46,7 +46,7 @@ f_interface(){
   echo "2. eth0  (USB ethernet adapter)"
   echo "3. wlan0  (Internal Nexus Wifi)"
   echo
-  read -p "Choice: " selection
+  read -p "Choice (1-3): " selection
 
   case $selection in
     1) interface=rmnet_usb0 ;;
@@ -60,6 +60,7 @@ f_ssid(){
   clear
   echo
   echo "[+] Enter an SSID name. [Public_Wireless]"
+  echo
   read -p "SSID: " ssid
   echo
 
@@ -72,11 +73,13 @@ f_channel(){
   clear
   echo
   echo "[+] Enter the channel to run the EvilAP on (1-14)."
+  echo "[+] Default Channel: [1]"
+  echo
   read -p "Channel:" channel
   echo
   case $channel in
     [1-14]*) ;;
-    *) f_channel ;;
+    *) channel=1 ;;
   esac
 }
 
@@ -158,7 +161,9 @@ f_karmaornot(){
   echo "1. Yes"
   echo "2. No"
   echo
-  read -p "Choice: " karma
+  read -p "Choice (1-2): " karma
+  echo
+  echo
   case $karma in
     [1-2]*) ;;
     *) f_karmaornot ;;
