@@ -4,10 +4,10 @@
 ##################################################
 f_interface(){
   clear
-  echo 
-  echo 
+  echo
+  echo
   echo "Select which interface you would like to sniff on? (1-6):"
-  echo 
+  echo
   echo "1. eth0  (USB ethernet adapter)"
   echo "2. wlan0  (Internal Nexus Wifi)"
   echo "3. wlan1  (USB TPlink Atheros)"
@@ -15,7 +15,7 @@ f_interface(){
   echo "5. at0  (Use with EvilAP)"
   echo "6. rmnet0 (Internal 4G GSM)"
   echo
-  read -p "Choice: " interfacechoice
+  read -p "Choice (1-6): " interfacechoice
 
   case $interfacechoice in
     1) interface=eth0 ;;
@@ -30,15 +30,15 @@ f_interface(){
 
 f_savecap(){
   clear
-  echo 
-  echo 
+  echo
+  echo
   echo "Would you like to save a packet capture to /opt/pwnix/captures/tcpdump?"
   echo "Note you can't see packets on screen when writing to a file"
   echo
   echo "1. Yes"
   echo "2. No"
   echo
-  read -p "Choice: " saveyesno
+  read -p "Choice (1-2): " saveyesno
 
   case $saveyesno in
     1) f_yes ;;
