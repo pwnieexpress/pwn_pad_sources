@@ -5,19 +5,20 @@ f_start_ssh(){
   echo "[+] Starting SSH Server..."
   service ssh start
   echo "[+] Done"
+  echo
 }
 
 f_stop_ssh(){
   echo "[+] Stopping SSH Server..."
   service ssh stop
   echo "[+] Done"
+  echo
 }
 
 clear
 echo
 echo "This script will enable / disable SSH Server access on port 22"
 echo
-sleep 1
 
 
 #check running processes to see if ssh is running
