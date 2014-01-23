@@ -4,10 +4,10 @@
 ##################################################
 f_interface(){
   clear
-  echo 
-  echo 
+  echo
+  echo
   echo "Select which interface you would like to sniff on? (1-6):"
-  echo 
+  echo
   echo "1. eth0  (USB ethernet adapter)"
   echo "2. wlan0  (Internal Nexus Wifi)"
   echo "3. wlan1  (USB TPlink Atheros)"
@@ -30,8 +30,8 @@ f_interface(){
 
 f_savecap(){
   clear
-  echo 
-  echo 
+  echo
+  echo
   echo "Would you like to save a packet capture to /opt/pwnix/captures/tshark?"
   echo
   echo "1. Yes"
@@ -49,12 +49,12 @@ f_savecap(){
 #########################################
 f_yes(){
 	filename=tshark$(date +%F-%H%M).cap
-  tshark -i $interface -w /opt/pwnix/captures/tshark/$filename -S
+  tshark -i $interface -w /opt/pwnix/captures/tshark/$filename -P
 }
 
 #########################################
 f_no(){
-	tshark -i $interface 
+	tshark -i $interface
 }
 
 f_interface
