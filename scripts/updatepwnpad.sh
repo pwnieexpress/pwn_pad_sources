@@ -31,11 +31,8 @@ f_confirm_and_do_update(){
   else
     echo "[-] Update cancelled."
     echo "[-] Exiting."
-    exit 1
   fi
 }
 
 f_banner
 f_confirm_and_do_update
-
-
