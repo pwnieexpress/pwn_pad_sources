@@ -65,3 +65,4 @@ f_cleanup(){
 f_capture_dialogue
 f_logchoice
 f_run
+f_cleanup
