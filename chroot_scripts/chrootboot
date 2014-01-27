@@ -1,17 +1,19 @@
-#Location: /system/bin/
-#Chroot boot script to start chroot environment when Android starts and start proper services
+# Location: /system/bin/
+#
+# Chroot boot script to start chroot environment when Android starts and start
+# proper services.
+
 # Use the fourth loopback device to leave the first couple open
 export LOOP_BACK=/dev/block/loop4
 export SOURCE_IMG=/data/local/kali_img/kali.img
 export NEW_ROOT=/data/local/kali
 
-# TODO: Check to see if the loop back is already mounted
 echo "Setting up loopback device..."
 losetup $LOOP_BACK $SOURCE_IMG
 
 echo "Mounting filesystems..."
 
-# TODO: Check to see if these are already mounted before remounting them
+# Mount the various filesystems for the chroot environment
 mount -t ext4 $LOOP_BACK $NEW_ROOT
 mount -o bind /dev $NEW_ROOT/dev
 mount -t devpts devpts $NEW_ROOT/dev/pts # May not be needed
@@ -27,36 +29,28 @@ mount -o bind /sdcard $NEW_ROOT/sdcard
 
 echo "Finished mounting filesystems."
 
-# TODO Validate command
-#busybox sysctl -w net.ipv4.ip_forward=1
-sysctl -w net.ipv4.ip_forward=1
+sysctl -w net.ipv4.ip_forward=1 &> /dev/null
 
 # Setup some environment variables for the shell environment.
 export HOME=/root
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
 export TERM=xterm-color
 
+. /system/bin/wlan_interface_assigner.sh
+
+# O: copy mounts so chroot can see what's mounted:
+# S: Is this actually the same format / file?
+chroot $NEW_ROOT /bin/cp /proc/mounts /etc/mtab
+
+chroot $NEW_ROOT /etc/init.d/cron start
+chroot $NEW_ROOT /etc/init.d/hermes start
+chroot $NEW_ROOT /etc/init.d/insight_api start
+
 # If the first boot script has been placed into the root of the chroot
-# filesystem we need to run it to setup things like ssh keys.
+# filesystem we need to run it to setup things like ssh keys. This should
+# always be run last in this script.
 if [ -x $NEW_ROOT/first_boot.sh ]; then
   chroot $NEW_ROOT /first_boot.sh
   rm -f $NEW_ROOT/first_boot.sh
 fi
-
-#chroot $NEW_ROOT /etc/init.d/ssh start
-
-chroot $NEW_ROOT cp /proc/mounts /etc/mtab
-
-. /system/bin/wlan_interface_assigner.sh
-
-#copy mounts so chroot can see what's mounted:
-chroot $NEW_ROOT /bin/cp /proc/mounts /etc/mtab
-
-chroot $NEW_ROOT /etc/init.d/cron start
-sleep 2
-chroot $NEW_ROOT /etc/init.d/hermes start
-sleep 2
-chroot $NEW_ROOT /etc/init.d/insight_api start
-
-echo "The Pwnie has landed. Get your game face on."
 
