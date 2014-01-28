@@ -1,4 +1,5 @@
-te: Jan 2014
+#!/bin/bash
+# Date: Jan 2014
 # Desc: EvilAP script to forcefully connect wireless clients
 # Authors: Awk, Sedd, Pasties
 # Company: Pwnie Express
