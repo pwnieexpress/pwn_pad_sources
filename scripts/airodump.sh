@@ -50,7 +50,6 @@ f_mon_up_down(){
       echo
       echo "[+] mon0 still active"
       echo
-      exit 0
       ;;
     2)
       echo
@@ -58,7 +57,6 @@ f_mon_up_down(){
       echo
       airmon-ng stop mon0
       echo
-      exit 0
       ;;
     *)f_mon_up_down ;;
   esac
