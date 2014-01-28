@@ -1,22 +1,18 @@
 #!/bin/bash
 # Script to run airodump-ng without any flags
 
-# set ctrl c (break) to gracefully take the card out of monitor mode
-trap f_cleanup INT
-trap f_cleanup KILL
-
 cd /opt/pwnix/captures/wireless/
 
 f_logging(){
-	clear
-	echo
-	echo "Would you like to save an Airodump capture?"
-	echo
-	echo "Captures saved to /opt/pwnix/captures/wireless/"
-	echo
-	echo "1. Yes"
-	echo "2. No "
-	echo
+  clear
+  echo
+  echo "Would you like to save an Airodump capture?"
+  echo
+  echo "Captures saved to /opt/pwnix/captures/wireless/"
+  echo
+  echo "1. Yes"
+  echo "2. No "
+  echo
   read -p "Choice (1 or 2): " logchoice
   case $logchoice in
     [1-2]*) ;;
@@ -70,17 +66,17 @@ f_cleanup(){
 }
 
 f_check_mon(){
- 
+
  ifconfig -a |grep mon &> /dev/null
  MON_STATUS=$?
- 
+
  if [ $MON_STATUS -eq 0 ]
  then
    echo
-   echo "[+] mon0 already active" 
+   echo "[+] mon0 already active"
    echo
  else
-   airmon-ng start wlan1 
+   airmon-ng start wlan1
  fi
 }
 
