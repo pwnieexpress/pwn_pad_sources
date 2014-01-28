@@ -154,7 +154,7 @@ f_niceap(){
 f_karmaornot(){
   clear
   echo
-  echo "[+] Force clients to connect based on their probe requests? [default: yes]: "
+  echo "[+] Force clients to connect based on their probe requests?: "
   echo
   echo "WARNING: Everything will start connecting to you if yes is selected"
   echo
