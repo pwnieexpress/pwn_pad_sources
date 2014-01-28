@@ -4,15 +4,15 @@
 cd /opt/pwnix/captures/wireless/
 
 f_logging(){
-        clear
-        echo
-        echo "Would you like to save an Airodump capture?"
-        echo
-        echo "Captures saved to /opt/pwnix/captures/wireless/"
-        echo
-        echo "1. Yes"
-        echo "2. No "
-        echo
+  clear
+  echo
+  echo "Would you like to save an Airodump capture?"
+  echo
+  echo "Captures saved to /opt/pwnix/captures/wireless/"
+  echo
+  echo "1. Yes"
+  echo "2. No "
+  echo
   read -p "Choice (1 or 2): " logchoice
   case $logchoice in
     [1-2]*) ;;
