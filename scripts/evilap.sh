@@ -5,6 +5,10 @@
 # Company: Pwnie Express
 # Version: 2.0
 
+
+trap f_endclean INT
+trap f_endclean KILL
+
 f_endclean(){
   echo "[!] Exiting..."
   f_restore_ident
