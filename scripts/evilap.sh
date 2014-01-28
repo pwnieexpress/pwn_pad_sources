@@ -1,20 +1,14 @@
-#!/bin/bash
-# Date: Jan 2014
+te: Jan 2014
 # Desc: EvilAP script to forcefully connect wireless clients
 # Authors: Awk, Sedd, Pasties
 # Company: Pwnie Express
 # Version: 2.0
 
-# Set CTRL-c (break) to stop evilap gracefully and restore orignal hostname and mac address
-trap f_endclean INT
-trap f_endclean KILL
-
 f_endclean(){
   echo "[!] Exiting..."
-  f_clean_up
   f_restore_ident
+  f_clean_up
   ifconfig wlan1 down
-  exit
 }
 
 f_clean_up(){
@@ -170,24 +164,21 @@ f_karmaornot(){
   esac
 }
 
-f_run(){
-  f_getmacaddress
-  f_clean_up
-  f_banner
-  f_interface
-  f_ssid
-  f_channel
-  f_karmaornot
-  f_preplaunch
+f_clean_up
+f_banner
+f_interface
+f_ssid
+f_channel
+f_karmaornot
+f_preplaunch
 
-  if [ $karma -eq 1 ]; then
-    echo "[+] Starting Evil AP with forced connection attack."
-    f_evilap
-  else
-    echo "[+] Starting Evil AP without forced connection attack."
-    f_niceap
-  fi
-}
+if [ $karma -eq 1 ]; then
+  echo "[+] Starting Evil AP with forced connection attack."
+  f_evilap
+else
+  echo "[+] Starting Evil AP without forced connection attack."
+  f_niceap
+fi
 
-f_run
+f_endclean
 
