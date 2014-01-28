@@ -13,6 +13,7 @@ NGINX_STATUS=$?
 if [ $NGINX_STATUS -eq 0 ]; then
   echo "[+] Stopping Pwnie User Interface...."
   service nginx stop
+  killall nginx
   echo "[+] Done"
   echo
 else
