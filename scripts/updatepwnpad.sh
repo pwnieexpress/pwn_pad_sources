@@ -5,6 +5,10 @@ f_banner(){
   echo "Pwn Pad Update"
   echo "Warning, this update will overwrite any modified config files !"
   echo
+  echo "Please note that this will start the Pwnie UI and SSHD services if they"
+  echo "are not running. Please stop those services after the update if you do not"
+  echo "want them to be running."
+  echo
   echo "Do you want to continue?"
   echo
   echo "1. Yes"
