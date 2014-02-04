@@ -15,14 +15,13 @@ cat /proc/cpuinfo |grep grouper &> /dev/null
 pad_old_or_new=`echo $?`
 
 #If pad_old_or_new = 1 then current device is New Pad
-if [ $pad_old_or_new -eq 1 ];
-  then
+if [ $pad_old_or_new -eq 1 ]; then
 #New Pad mounting process:
   losetup $LOOP_BACK $SOURCE_IMG
   mount -t ext4 $LOOP_BACK $NEW_ROOT
   else
 #Old Pad mounting process:
-    mount -o loop -t ext4 $SOURCE_IMG $NEW_ROOT
+  mount -o loop -t ext4 $SOURCE_IMG $NEW_ROOT
 fi
 
 echo "Mounting filesystems..."
@@ -50,8 +49,8 @@ export HOME=/root
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
 export TERM=xterm-color
 
-if [ $pad_old_or_new -eq 1 ];
-  then
+#If device is new pad - run wlan script
+if [ $pad_old_or_new -eq 1 ]; then
   . /system/bin/wlan_interface_assigner.sh
 fi
 
