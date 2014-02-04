@@ -1,6 +1,25 @@
 #!/bin/bash
 # Cleartext password sniffing on all available interfaces
 
+##################################################
+f_identify_device(){
+  # Function to determine whether current device is new pad or old pad
+  # Checking to see if this is the old pad or the new pad:
+  cat /proc/cpuinfo |grep grouper &> /dev/null
+  pad_old_or_new=`echo $?`
+  
+  # If pad_old_or_new = 1 then current device is New Pad
+  if [ $pad_old_or_new -eq 1 ]; then
+
+    # New Pad's GSM interface is rmnet_usb0
+    gsm_int="rmnet_usb0"
+    else
+    # Old Pad's GSM interface is rmnet0
+    gsm_int="rmnet0"
+  fi
+}
+
+
 f_interface_setup(){
   # echo "Since Dsniff currently has issues, ettercap will work like Dsniff"
   # echo
@@ -12,7 +31,7 @@ f_interface_setup(){
   echo "3. wlan1 (USB TPlink Atheros)"
   echo "4. mon0 (monitor mode interface)"
   echo "5. at0 (Use with EvilAP)"
-  echo "6. rmnet_usb0 (4G connection)"
+  echo "6. $gsm_int (4G connection)"
   echo
 
   read -p "Choice: " interfacechoice
@@ -23,7 +42,7 @@ f_interface_setup(){
     3) interface=wlan1 ;;
     4) interface=mon0 ;;
     5) interface=at0 ;;
-    6) interface=rmnet_usb0 ;;
+    6) interface=$gsm_int ;;
     *) f_interface_setup ;;
   esac
 }
@@ -64,6 +83,7 @@ f_run(){
 }
 
 f_execute(){
+  f_identify_device
   f_interface_setup
   f_logging_setup
   f_run

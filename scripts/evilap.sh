@@ -9,6 +9,23 @@
 trap f_endclean INT
 trap f_endclean KILL
 
+f_identify_device(){
+  # Function to determine whether current device is new pad or old pad
+  # Checking to see if this is the old pad or the new pad:
+  cat /proc/cpuinfo |grep grouper &> /dev/null
+  pad_old_or_new=`echo $?`
+  
+  # If pad_old_or_new = 1 then current device is New Pad
+  if [ $pad_old_or_new -eq 1 ]; then
+
+    # New Pad's GSM interface is rmnet_usb0
+    gsm_int="rmnet_usb0"
+    else
+    # Old Pad's GSM interface is rmnet0
+    gsm_int="rmnet0"
+  fi
+}
+
 f_endclean(){
   echo "[!] Exiting..."
   f_restore_ident
@@ -41,17 +58,17 @@ f_banner(){
 f_interface(){
   echo "[+] Select which interface you are using for Internet? (1-3):"
   echo
-  echo "1. [rmnet_usb0] (4G GSM connection)"
+  echo "1. [$gsm_int] (4G GSM connection)"
   echo "2. eth0  (USB ethernet adapter)"
   echo "3. wlan0  (Internal Nexus Wifi)"
   echo
   read -p "Choice (1-3): " selection
 
   case $selection in
-    1) interface=rmnet_usb0 ;;
+    1) interface=$gsm_int ;;
     2) interface=eth0 ;;
     3) interface=wlan0 ;;
-    *) interface=rmnet_usb0 ;;
+    *) interface=$gsm_int ;;
   esac
 }
 
@@ -169,6 +186,7 @@ f_karmaornot(){
   esac
 }
 
+f_identify_device
 f_clean_up
 f_banner
 f_interface
