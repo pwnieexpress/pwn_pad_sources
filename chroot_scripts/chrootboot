@@ -49,11 +49,8 @@ export HOME=/root
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
 export TERM=xterm-color
 
-# If device is new pad - run wlan script
-if [ $pad_old_or_new -eq 1 ]; then
+# Script to ensure proper interface assignment occurs (wlan0 is internal, wlan1 is tplink)
   . /system/bin/wlan_interface_assigner.sh
-fi
-
 
 # O: copy mounts so chroot can see what's mounted:
 # S: Is this actually the same format / file?
