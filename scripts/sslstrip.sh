@@ -1,6 +1,8 @@
 #!/bin/bash
-#SSLstripp script for sniffing on available interfaces
+# SSL strip script for sniffing on available interfaces
 
+trap f_clean_up INT
+trap f_clean_up KILL
 
 ##################################################
 f_identify_device(){
@@ -8,7 +10,7 @@ f_identify_device(){
   # Checking to see if this is the old pad or the new pad:
   cat /proc/cpuinfo |grep grouper &> /dev/null
   pad_old_or_new=`echo $?`
-  
+
   # If pad_old_or_new = 1 then current device is New Pad
   if [ $pad_old_or_new -eq 1 ]; then
 
@@ -18,6 +20,18 @@ f_identify_device(){
     # Old Pad's GSM interface is rmnet0
     gsm_int="rmnet0"
   fi
+}
+
+##################################################
+# Cleanup function to ensure sslstrip stops and iptable rules stop
+f_clean_up(){
+  echo
+  echo "[!] Killing any instances of sslstrip and flushing iptables"
+  echo
+  killall sslstrip
+
+  # Remove SSL Strip itables rule ONLY
+  iptables -t nat -D PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8888
 }
 
 ##################################################
@@ -75,4 +89,4 @@ f_run(){
 
 f_identify_device
 f_run
-
+f_clean_up
