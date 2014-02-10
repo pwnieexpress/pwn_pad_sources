@@ -52,7 +52,6 @@ f_savecap(){
   echo
   echo
   echo "Would you like to save a packet capture to /opt/pwnix/captures/tcpdump?"
-  echo "Note you can't see packets on screen when writing to a file"
   echo
   echo "1. Yes"
   echo "2. No"
