@@ -1,6 +1,22 @@
 #!/bin/bash
 #SSLstripp script for sniffing on available interfaces
 
+trap f_clean_up INT
+trap f_clean_up KILL
+
+##################################################
+# Cleanup function to ensure sslstrip stops and iptable rules stop
+f_clean_up(){
+  echo
+  echo "[!] Killing any instances of sslstrip and flushing iptables"
+  echo
+  killall sslstrip 
+  # Remove SSL Strip itables rule ONLY
+  iptables -t nat -D PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8888
+  #iptables --flush
+  #iptables --table nat --flush
+}
+
 ##################################################
 f_interface(){
   clear
@@ -55,4 +71,4 @@ f_run(){
 }
 
 f_run
-
+f_clean_up
