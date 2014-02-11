@@ -59,6 +59,7 @@ clear_bash_history(){
   echo '[+] Clearing bash history...'
   rm -r /root/.bash_history
   rm -r /home/pwnie/.bash_history
+  history -c
 }
 
 f_initialize(){
@@ -86,11 +87,21 @@ f_initialize(){
       echo "[+] Unless of course you forgot about something else this script didn't know about..."
     fi
   else
-    clear
-    echo
-    echo
-    echo "[+] Your logs, captures, and bash history have been left alone."
-    echo "[+] Have a nice day ^_^"
+
+      clear
+
+      if [ $clearhistory -eq 1 ]; then
+        echo
+        echo "[+] Bash history cleared"
+        echo
+        echo "[+] Logs and Captures have been left alone."
+        echo "[+] Have a nice day ^_^"
+      else 
+        echo
+        echo
+        echo "[+] Your logs, captures, and bash history have been left alone."
+        echo "[+] Have a nice day ^_^"
+      fi
   fi
   echo
   echo
