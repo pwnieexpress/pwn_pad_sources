@@ -9,6 +9,9 @@ f_banner(){
   echo "are not running. Please stop those services after the update if you do not"
   echo "want them to be running."
   echo
+  echo "The current version is:"
+  cat /etc/motd | grep -Ei "release (version|date)"
+  echo
   echo "Do you want to continue?"
   echo
   echo "1. Yes"
@@ -32,6 +35,8 @@ f_confirm_and_do_update(){
     /opt/pwnix/chef/update.sh
     echo
     echo "[+] Congratulations your PwnPad has been updated!"
+    echo "[+] The current version is:"
+    cat /etc/motd | grep -Ei "release (version|date)"
     echo "[!] Please reboot this devices for the update to take effect."
     echo "[!] Note: if an icon dissapears from your desktop it means that the app has been updated. Please re-add these apps from the main Android app menu."
   else
