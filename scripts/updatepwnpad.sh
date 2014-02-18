@@ -37,8 +37,9 @@ f_confirm_and_do_update(){
     echo "[+] Congratulations your PwnPad has been updated!"
     echo "[+] The current version is:"
     grep -Ei "release (version|date)" /etc/motd
-    echo "[!] Please reboot this devices for the update to take effect."
-    echo "[!] Note: if an icon dissapears from your desktop it means that the app has been updated. Please re-add these apps from the main Android app menu."
+    echo "[!] Please reboot this device for the update to take effect."
+    echo
+    echo "[!] Note: if an icon disappears from your desktop it means that the app has been updated. Please re-add these apps from the main Android menu."
   else
     echo "[-] Update cancelled."
     echo "[-] Exiting."
