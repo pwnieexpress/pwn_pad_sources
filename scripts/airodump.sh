@@ -38,16 +38,16 @@ f_airodump(){
 
   if [ $logchoice -eq 1 ]; then
     if [ $GPS_STATUS -eq 0 ]; then
-      airodump-ng --gpsd -w airodump mon0
+      airodump-ng --manufacturer --gpsd -w airodump mon0
     else
-    airodump-ng -w airodump mon0
+    airodump-ng --manufacturer -w airodump mon0
     fi
 
   elif [ $logchoice -eq 2 ]; then
     if [ $GPS_STATUS -eq 0 ]; then
-      airodump-ng --gpsd mon0
+      airodump-ng --manufacturer --gpsd mon0
     else
-    airodump-ng mon0
+    airodump-ng --manufacturer mon0
     fi
   fi
 }
