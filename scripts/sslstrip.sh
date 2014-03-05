@@ -1,5 +1,38 @@
 #!/bin/bash
-#SSLstripp script for sniffing on available interfaces
+# SSL strip script for sniffing on available interfaces
+
+trap f_clean_up INT
+trap f_clean_up KILL
+
+##################################################
+f_identify_device(){
+  # Function to determine whether current device is new pad or old pad
+  # Checking to see if this is the old pad or the new pad:
+  cat /proc/cpuinfo |grep grouper &> /dev/null
+  pad_old_or_new=`echo $?`
+
+  # If pad_old_or_new = 1 then current device is New Pad
+  if [ $pad_old_or_new -eq 1 ]; then
+
+    # New Pad's GSM interface is rmnet_usb0
+    gsm_int="rmnet_usb0"
+    else
+    # Old Pad's GSM interface is rmnet0
+    gsm_int="rmnet0"
+  fi
+}
+
+##################################################
+# Cleanup function to ensure sslstrip stops and iptable rules stop
+f_clean_up(){
+  echo
+  echo "[!] Killing any instances of sslstrip and flushing iptables"
+  echo
+  killall sslstrip
+
+  # Remove SSL Strip itables rule ONLY
+  iptables -t nat -D PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8888
+}
 
 ##################################################
 f_interface(){
@@ -11,7 +44,7 @@ f_interface(){
   echo "3. wlan1  (USB TPlink Atheros)"
   echo "4. mon0  (monitor mode interface)"
   echo "5. at0  (Use with EvilAP)"
-  echo "6. rmnet_usb0 (Internal 3G GSM)"
+  echo "6. $gsm_int (Internal 3G GSM)"
   echo
 
   read -p "Choice: " interfacechoice
@@ -22,7 +55,7 @@ f_interface(){
     3) interface=wlan1 ;;
     4) interface=mon0 ;;
     5) interface=at0 ;;
-    6) interface=rmnet_usb0 ;;
+    6) interface=$gsm_int ;;
     *) f_interface ;;
 esac
 }
@@ -54,5 +87,6 @@ f_run(){
   tail -f $logfile
 }
 
+f_identify_device
 f_run
-
+f_clean_up

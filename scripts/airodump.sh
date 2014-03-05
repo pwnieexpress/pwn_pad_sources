@@ -20,15 +20,35 @@ f_logging(){
   esac
 }
 
+# Function to check for BlueNMEA and start GPSD if present for GPS logging
+f_gps_check(){
+
+  ps ax |grep bluenmea |grep -v grep &> /dev/null
+  GPS_STATUS=$?
+
+  if [ $GPS_STATUS -eq 0 ]; then
+    gpsd -n -D5 tcp://localhost:4352
+  fi
+}
+
 f_airodump(){
 
   #check to see if mon0 active
   f_check_mon
 
   if [ $logchoice -eq 1 ]; then
-    airodump-ng -w airodump mon0
+    if [ $GPS_STATUS -eq 0 ]; then
+      airodump-ng --manufacturer --gpsd -w airodump mon0
+    else
+    airodump-ng --manufacturer -w airodump mon0
+    fi
+
   elif [ $logchoice -eq 2 ]; then
-    airodump-ng mon0
+    if [ $GPS_STATUS -eq 0 ]; then
+      airodump-ng --manufacturer --gpsd mon0
+    else
+    airodump-ng --manufacturer mon0
+    fi
   fi
 }
 
@@ -52,6 +72,8 @@ f_mon_up_down(){
       echo "[+] Stopping mon0.."
       echo
       airmon-ng stop mon0
+      # stop any instances of gpsd
+      killall -9 gpsd
       echo
       ;;
     *)f_mon_up_down ;;
@@ -63,6 +85,8 @@ f_cleanup(){
 
   # ... and stay down!
   ifconfig wlan1 down
+
+
 }
 
 f_check_mon(){
@@ -82,5 +106,6 @@ f_check_mon(){
 
 
 f_logging
+f_gps_check
 f_airodump
 f_cleanup
