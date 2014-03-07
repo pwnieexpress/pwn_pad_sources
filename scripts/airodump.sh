@@ -4,14 +4,10 @@
 cd /opt/pwnix/captures/wireless/
 
 f_oui_check(){
-
-# Update oui.txt in background if oui.txt not found
-
-file="/etc/aircrack-ng/airodump-ng-oui.txt"
-
-    if [ ! -f $file ]; then
-      airodump-ng-oui-update &> /dev/null &
-    fi
+  # Update oui.txt in background if oui.txt not found
+  if [ ! -f /etc/aircrack-ng/airodump-ng-oui.txt ]; then
+    airodump-ng-oui-update &> /dev/null &
+  fi
 }
 
 f_logging(){
@@ -39,7 +35,7 @@ f_gps_check(){
   GPSD_STATUS=$?
 
   if [ $GPSD_STATUS -eq 1 ]; then
-   
+
     ps ax |grep bluenmea |grep -v grep &> /dev/null
     GPS_STATUS=$?
 
@@ -94,7 +90,7 @@ f_mon_up_down(){
       ;;
     *)f_mon_up_down ;;
   esac
-  
+
   if [ $GPS_STATUS -eq 0 ]; then
     f_gps_up_down
   fi
@@ -121,7 +117,7 @@ f_gps_up_down(){
       echo "[+] Killing gpsd.."
       echo
       # stop any instances of gpsd
-      killall -9 gpsd &> /dev/null 
+      killall -9 gpsd &> /dev/null
       echo
       ;;
     *)f_gps_up_down ;;
