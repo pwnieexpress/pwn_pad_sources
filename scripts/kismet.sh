@@ -11,14 +11,12 @@ trap f_endclean KILL
 
 # Place kismet_ui.conf in proper place for kismet if first time running kismet
 f_uicheck(){
+  if [ ! -f /root/.kismet/kismet_ui.conf ]; then
+    mkdir /root/.kismet
+    cp /etc/kismet/.kismet/kismet_ui.conf /root/.kismet/
+  fi
+}
 
-file="/root/.kismet/kismet_ui.conf"
-
-    if [ ! -f $file ]; then
-      mkdir /root/.kismet
-      cp /etc/kismet/.kismet/kismet_ui.conf /root/.kismet/
-    fi
-  }
 # Function to check for BlueNMEA and start GPSD if present for GPS logging
 f_gps_check(){
 
