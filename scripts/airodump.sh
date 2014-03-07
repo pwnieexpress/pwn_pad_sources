@@ -3,6 +3,17 @@
 
 cd /opt/pwnix/captures/wireless/
 
+f_oui_check(){
+
+# Update oui.txt in background if oui.txt not found
+
+file="/etc/aircrack-ng/airodump-ng-oui.txt"
+
+    if [ ! -f $file ]; then
+      airodump-ng-oui-update &> /dev/null &
+    fi
+}
+
 f_logging(){
   clear
   echo
@@ -21,13 +32,20 @@ f_logging(){
 }
 
 # Function to check for BlueNMEA and start GPSD if present for GPS logging
+# Function first checks to see if GPSD is already running as well
 f_gps_check(){
 
-  ps ax |grep bluenmea |grep -v grep &> /dev/null
-  GPS_STATUS=$?
+  ps ax |grep gpsd |grep -v grep &> /dev/null
+  GPSD_STATUS=$?
 
-  if [ $GPS_STATUS -eq 0 ]; then
-    gpsd -n -D5 tcp://localhost:4352
+  if [ $GPSD_STATUS -eq 1 ]; then
+   
+    ps ax |grep bluenmea |grep -v grep &> /dev/null
+    GPS_STATUS=$?
+
+    if [ $GPS_STATUS -eq 0 ]; then
+      gpsd -n -D5 tcp://localhost:4352
+    fi
   fi
 }
 
@@ -72,11 +90,41 @@ f_mon_up_down(){
       echo "[+] Stopping mon0.."
       echo
       airmon-ng stop mon0
-      # stop any instances of gpsd
-      killall -9 gpsd
       echo
       ;;
     *)f_mon_up_down ;;
+  esac
+  
+  if [ $GPS_STATUS -eq 0 ]; then
+    f_gps_up_down
+  fi
+}
+
+f_gps_up_down(){
+
+  echo
+  echo "[!] Do you want to keep gpsd running?"
+  echo
+  echo "1. Yes"
+  echo "2. No"
+  echo
+  read -p "Choice (1 or 2): " gps
+  case $gps in
+    1)
+      # do nothing
+      echo
+      echo "[+] gpsd still running"
+      echo
+      ;;
+    2)
+      echo
+      echo "[+] Killing gpsd.."
+      echo
+      # stop any instances of gpsd
+      killall -9 gpsd &> /dev/null 
+      echo
+      ;;
+    *)f_gps_up_down ;;
   esac
 }
 
@@ -85,8 +133,6 @@ f_cleanup(){
 
   # ... and stay down!
   ifconfig wlan1 down
-
-
 }
 
 f_check_mon(){
@@ -104,7 +150,7 @@ f_check_mon(){
  fi
 }
 
-
+f_oui_check
 f_logging
 f_gps_check
 f_airodump
