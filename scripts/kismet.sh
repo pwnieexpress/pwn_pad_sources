@@ -13,7 +13,7 @@ trap f_endclean KILL
 f_uicheck(){
   if [ ! -f /root/.kismet/kismet_ui.conf ]; then
     mkdir /root/.kismet
-    cp /etc/kismet/.kismet/kismet_ui.conf /root/.kismet/
+    cp /etc/kismet/kismet_ui.conf /root/.kismet/
   fi
 }
 
