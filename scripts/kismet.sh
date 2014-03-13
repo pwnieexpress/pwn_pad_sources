@@ -13,7 +13,7 @@ trap f_endclean KILL
 f_uicheck(){
   if [ ! -f /root/.kismet/kismet_ui.conf ]; then
     mkdir /root/.kismet
-    cp /etc/kismet/.kismet/kismet_ui.conf /root/.kismet/
+    cp /etc/kismet/kismet_ui.conf /root/.kismet/
   fi
 }
 
@@ -31,7 +31,7 @@ f_gps_check(){
 f_endclean(){
   ifconfig wlan1mon down
   ifconfig wlan1 down
-
+  iw dev wlan1mon del
 
   if [ $GPS_STATUS -eq 0 ]; then
     killall -9 gpsd
