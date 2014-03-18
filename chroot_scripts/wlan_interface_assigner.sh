@@ -3,6 +3,9 @@
 # Revision 3.18.2013
 # Authors: Grep and Awk
 
+# Delay script starting for Android bootup
+sleep 5
+
 # Checking to see if this is the old pad or the new pad:
 cat /proc/cpuinfo |grep grouper &> /dev/null
 pad_old_or_new=`echo $?`
@@ -18,12 +21,12 @@ if [ $pad_old_or_new -eq 1 ]; then
     # Acquire MAC address of external wlan USB adapter and save as variable
     external_wlan_mac=`busybox ifconfig -a | grep "^wlan" | grep -v "${onboard_wlan_mac}" | awk '{print$5}'`
     
-    # Added sleep 15 in order to ensure svc commands run properly on boot - needed more time
-    sleep 15
+    # Added sleep 10 in order to ensure svc commands run properly on boot - needed more time
+    sleep 10
     
     # Disable Android wifi manager
     svc wifi disable
-    sleep 1
+    sleep 2
     
     # Assign a temporary inferface name to internal wlan
     busybox nameif temp_onboard "${onboard_wlan_mac}"
@@ -34,6 +37,7 @@ if [ $pad_old_or_new -eq 1 ]; then
     # Assign internal wlan hardware to "wlan0"
     busybox nameif wlan0 "${onboard_wlan_mac}"
     
+    ifconfig wlan0 up
     # Assign external wlan hardware to "wlan1"
     busybox nameif wlan1 "${external_wlan_mac}"
     
