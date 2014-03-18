@@ -30,5 +30,3 @@ busybox nameif wlan1 "${external_wlan_mac}"
 # Re-enable Android wifi manager
 svc wifi enable
 
-# Disable internal wifi on boot by default so as not to interfere with wireless tools 
-svc wifi disable
