@@ -46,7 +46,7 @@ sysctl -w net.ipv4.ip_forward=1 &> /dev/null
 
 # Setup some environment variables for the shell environment.
 export HOME=/root
-export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/pwnix/bin:$PATH
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
 export TERM=xterm-color
 
 # Script to ensure proper interface assignment occurs (wlan0 is internal, wlan1 is tplink)
