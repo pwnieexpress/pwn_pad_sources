@@ -1,21 +1,16 @@
 #!/bin/bash
-#TcpDump script for sniffing on available interfaces
-
+# Tcpdump script for sniffing on available interfaces
 
 ##################################################
 f_identify_device(){
-  # Function to determine whether current device is new pad or old pad
-  # Checking to see if this is the old pad or the new pad:
-  cat /proc/cpuinfo |grep grouper &> /dev/null
-  pad_old_or_new=`echo $?`
-  
-  # If pad_old_or_new = 1 then current device is New Pad
-  if [ $pad_old_or_new -eq 1 ]; then
 
-    # New Pad's GSM interface is rmnet_usb0
+# Check device
+  hardw=`getprop ro.hardware`
+  if [[ "$hardw" == "deb" || "$hardw" == "flo" ]]; then
+    # Set interface for new Pwn Pad
     gsm_int="rmnet_usb0"
-    else
-    # Old Pad's GSM interface is rmnet0
+  else
+    # Set interface for Pwn Phone and old Pwn Pad
     gsm_int="rmnet0"
   fi
 }
@@ -23,18 +18,16 @@ f_identify_device(){
 ##################################################
 f_interface(){
   clear
+  echo "Select which interface to sniff on [1-6]:"
   echo
-  echo
-  echo "Select which interface you would like to sniff on? (1-6):"
-  echo
-  echo "1. eth0  (USB ethernet adapter)"
-  echo "2. wlan0  (Internal Nexus Wifi)"
-  echo "3. wlan1  (USB TPlink Atheros)"
+  echo "1. eth0  (USB Ethernet adapter)"
+  echo "2. wlan0  (internal Wifi)"
+  echo "3. wlan1  (USB TP-Link adapter)"
   echo "4. mon0  (monitor mode interface)"
   echo "5. at0  (Use with EvilAP)"
-  echo "6. $gsm_int (Internal 4G GSM)"
+  echo "6. $gsm_int (4G GSM connection)"
   echo
-  read -p "Choice (1-6): " interfacechoice
+  read -p "Choice [1-6]: " interfacechoice
 
   case $interfacechoice in
     1) interface=eth0 ;;
@@ -50,13 +43,12 @@ f_interface(){
 f_savecap(){
   clear
   echo
-  echo
-  echo "Would you like to save a packet capture to /opt/pwnix/captures/tcpdump?"
+  echo "Save packet capture to /opt/pwnix/captures/tcpdump?"
   echo
   echo "1. Yes"
   echo "2. No"
   echo
-  read -p "Choice (1-2): " saveyesno
+  read -p "Choice [1-2]: " saveyesno
 
   case $saveyesno in
     1) f_yes ;;
@@ -66,13 +58,12 @@ f_savecap(){
 }
 
 f_yes(){
-	filename=/opt/pwnix/captures/tcpdump/tcpdump_$(date +%F-%H%M).cap
-
+  filename=/opt/pwnix/captures/tcpdump/tcpdump_$(date +%F-%H%M).cap
   tcpdump -l -s0 -vvv -e -xx -i $interface | tee $filename
 }
 
 f_no(){
-	tcpdump -s0 -vvv -e -i $interface
+  tcpdump -s0 -vvv -e -i $interface
 }
 
 f_identify_device

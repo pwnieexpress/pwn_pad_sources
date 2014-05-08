@@ -1,14 +1,13 @@
 #!/bin/bash
 # Description: Script to remove all logs and anything potentially legally binding
-# Authors: Awk, Sed
+# Authors: Awk, Sed, t1mz0r
 # Company: Pwnie Express
-# Date: January 23 2014
-# Rev: 1.1
+# Date: May 2014
 
 CAPTURE_FILES=$(find /opt/pwnix/captures -type f)
 
 f_one_or_two(){
-  read -p "Choice (1-2): " input
+  read -p "Choice [1-2]: " input
   case $input in
     [1-2]*) echo $input ;;
     *)
@@ -19,7 +18,9 @@ f_one_or_two(){
 
 set_choosewisely(){
   echo
-  echo "[+] This script will remove ALL LOGS and CAPTURES are you sure you want to continue?"
+  echo "[!] This will remove ALL LOGS and CAPTURES!"
+  echo 
+  echo "[?] Are you sure you want to continue?"
   echo
   echo " 1. Yes"
   echo " 2. No"
@@ -29,7 +30,7 @@ set_choosewisely(){
 
 set_clearhistory(){
   echo
-  echo "[+] Would you like to remove Bash history as well?"
+  echo "[?] Would you like to remove Bash history as well?"
   echo
   echo " 1. Yes"
   echo " 2. No"
@@ -75,35 +76,30 @@ f_initialize(){
       clear_bash_history
       clear
       echo
-      echo
-      echo "[+] Congratulations all your logs, captures, and bash history have been cleared!"
-      echo "[+] Unless of course you forgot about something else this script didn't know about..."
+      echo "[!] All logs, captures, and bash history have been cleared!"
+      echo "[-] Unless of course you hid something..."
     else
       clear
       echo
-      echo
-      echo "[-] Skipping clearing bash history today"
-      echo "[+] Congratulations all your logs and captures have been cleared!"
-      echo "[+] Unless of course you forgot about something else this script didn't know about..."
+      echo "[-] Skipping bash history clear"
+      echo "[!] All logs and captures have been cleared!"
+      echo "[-] Unless of course you hid something..."
     fi
   else
 
-      clear
-
-      if [ $clearhistory -eq 1 ]; then
-        echo
-        echo "[+] Bash history cleared"
-        echo
-        echo "[+] Logs and Captures have been left alone."
-        echo "[+] Have a nice day ^_^"
-      else 
-        echo
-        echo
-        echo "[+] Your logs, captures, and bash history have been left alone."
-        echo "[+] Have a nice day ^_^"
-      fi
+    clear
+    if [ $clearhistory -eq 1 ]; then
+      echo
+      echo "[+] Bash history has been cleared!"
+      echo
+      echo "[+] Logs and captures have been left alone"
+      echo "[!] Pwnies run wild!"
+    else 
+      echo
+      echo "[+] All logs, captures, and bash history have been left alone"
+      echo "[!] Have a nice day! ^_^"
+    fi
   fi
-  echo
   echo
 }
 

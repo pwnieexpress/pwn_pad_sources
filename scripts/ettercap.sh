@@ -1,26 +1,25 @@
 #!/bin/bash
-# Ettercap arp cache poison script script
+# Ettercap ARP cache poison script
 
 f_banner(){
   clear
+  echo "Ettercap-NG 0.8.0 ARP Cache Poison Tool"
   echo
-  echo "Ettercap-NG 0.8.0 ARP Cache Poison Script"
+  echo "[!] Use on networks you are connected to!"
   echo
-  echo "NOTE: This only works on networks you are connected to"
-  echo
-  echo "DO NOT USE WITH EVILAP - IT WON'T WORK"
+  echo "[!] DO NOT USE WITH EVILAP - IT WON'T WORK!"
   echo
 }
 
 f_interface(){
-  echo "Select which interface you would like to sniff / poison on? (1-3):"
+  echo "Select which interface to sniff/poison on [1-3]:"
   echo
-  echo "1. eth0  (USB ethernet adapter)"
-  echo "2. wlan0  (Internal Nexus Wifi)"
-  echo "3. wlan1  (USB TPlink Atheros)"
+  echo "1. eth0  (USB Ethernet adapter)"
+  echo "2. wlan0  (internal Wifi)"
+  echo "3. wlan1  (USB TP-Link adapter)"
   echo
 
-  read -p "Choice (1-3): " interfacechoice
+  read -p "Choice [1-3]: " interfacechoice
 
   case $interfacechoice in
     1) interface=eth0 ;;
@@ -31,7 +30,7 @@ f_interface(){
 }
 
 f_one_or_two(){
-  read -p "Choice (1-2): " input
+  read -p "Choice [1-2]: " input
   case $input in
     [1-2]*) echo $input ;;
     *)
@@ -43,11 +42,11 @@ f_one_or_two(){
 f_sslfake(){
   clear
   echo
-  echo "Would you like to use the Invalid SSL Cert Option?"
+  echo "Would you like to use the Invalid SSL Cert option?"
   echo
-  echo "Good for testing user policy to make sure users aren't accpeting bad certs!"
+  echo "Good for testing user policy to make sure users aren't accepting bad certs!"
   echo
-  echo "NOTE: if using SSLstrip with ettercap this is not needed"
+  echo "NOTE: if using SSLstrip with Ettercap this is unnecessary"
   echo
   echo "1. Yes"
   echo "2. No "
@@ -80,12 +79,12 @@ f_run(){
 
   clear
   echo
-  read -p "Enter Target IP to arp cache poison: " target1
+  read -p "Enter target IP to ARP cache poison: " target1
   echo
 
   clear
   echo
-  read -p "Enter Target IP of Gateway / Router: " gw
+  read -p "Enter target IP of gateway/router: " gw
   echo
 
   if [ $logchoice -eq 1 ]; then

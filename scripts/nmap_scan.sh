@@ -1,18 +1,16 @@
 #!/bin/bash
-#script to scan current network
+# Script to scan current network
 
 f_interface(){
   clear
+  echo "Select which interface to scan on [1-4]:"
   echo
-  echo
-  echo "Select which interface you would like to scan on? (1-4):"
-  echo
-  echo "1. eth0  (USB ethernet adapter)"
-  echo "2. wlan0  (Internal Nexus Wifi)"
-  echo "3. wlan1  (USB TPlink Atheros)"
+  echo "1. eth0  (USB Ethernet adapter)"
+  echo "2. wlan0  (internal Wifi)"
+  echo "3. wlan1  (USB TP-Link adapter)"
   echo "4. at0  (Use with EvilAP)"
   echo
-  read -p "Choice (1-4): " interfacechoice
+  read -p "Choice [1-4]: " interfacechoice
 
   case $interfacechoice in
     1) interface=eth0 ;;
@@ -24,7 +22,7 @@ f_interface(){
 }
 
 f_one_or_two(){
-  read -p "Choice (1-2): " input
+  read -p "Choice [1-2]: " input
   case $input in
     [1-2]*) echo $input ;;
     *) f_one_or_two ;;
@@ -43,9 +41,8 @@ f_scan(){
   echo
   echo "Hostscan saved to $filename1"
   echo
-  echo
 
-  echo "Do you want to run a service scan against the found devices?"
+  echo "[?] Run a service scan against the discovered?"
   echo
   echo "1. Yes"
   echo "2. No"

