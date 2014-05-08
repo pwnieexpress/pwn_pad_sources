@@ -1,70 +1,68 @@
-# Location: /system/bin/
-#
-# Chroot boot script to start chroot environment when Android starts and start
-# proper services.
+# /system/bin/chrootboot
+# Start chroot environment and services at system startup
+
+# Developer mode toggle to allow for easier development
+DEV_MODE:=0
+
+if [ "DEV_MODE" = "0" ]; then
+  echo "WARNING!!! WARNING!!! WARNING!!!"
+  echo "Developer mode active, critical system components can be damaged."
+  echo "DANGER: please disable developer mode."
+fi
 
 # Use the fourth loopback device to leave the first couple open
 export LOOP_BACK=/dev/block/loop4
 export SOURCE_IMG=/data/local/kali_img/kali.img
 export NEW_ROOT=/data/local/kali
 
-echo "Mounting kali.img file..."
-
-# Checking to see if this is the old pad or the new pad:
-cat /proc/cpuinfo |grep grouper &> /dev/null
-pad_old_or_new=`echo $?`
-
-# If pad_old_or_new = 1 then current device is New Pad
-if [ $pad_old_or_new -eq 1 ]; then
-  # New Pad mounting process:
-  losetup $LOOP_BACK $SOURCE_IMG
+# Check device
+hardw=`getprop ro.hardware`
+if [[ "$hardw" == "deb" || "$hardw" == "flo" || "$hardw" == "hammerhead" ]]; then
+  # Mount chroot for new Pwn Pad and Pwn Phone
+  losetup $LOOP_BACK $SOURCE_IMG 
   mount -t ext4 $LOOP_BACK $NEW_ROOT
 else
-  # Old Pad mounting process:
-  mount -o loop -t ext4 $SOURCE_IMG $NEW_ROOT
+  # Mount chroot for old Pwn Pad
+  mount -o loop -t ext4 $SOURCE_IMG $NEW_ROOT 
 fi
 
-echo "Mounting filesystems..."
-
-# Mount the various filesystems for the chroot environment
-
+# Mount other filesystems for chroot environment
 mount -o bind /dev $NEW_ROOT/dev
-mount -t devpts devpts $NEW_ROOT/dev/pts # May not be needed
+mount -t devpts devpts $NEW_ROOT/dev/pts # Might not need
 mount -t proc proc $NEW_ROOT/proc
 mount -t sysfs sysfs $NEW_ROOT/sys
 
-# Remount the system partition with the rw flag set
-mount -o remount,rw -t yaffs /dev/block/mtdblock3 /system
+if [ "DEV_MODE" = "0" ]; then
+  # Remount system partition with rw flag set
+  mount -o remount,rw -t yaffs /dev/block/mtdblock3 /system
+fi
 
-# Mount the various Android filesystems in the chroot environment for access
-mount -o bind /system $NEW_ROOT/system
+# Mount Android filesystems for chroot environment
 mount -o bind /sdcard $NEW_ROOT/sdcard
-
-echo "Finished mounting filesystems."
+mount -o bind /system $NEW_ROOT/system
 
 sysctl -w net.ipv4.ip_forward=1 &> /dev/null
 
-# Setup some environment variables for the shell environment.
+# Setup environment variables for shell environment.
 export HOME=/root
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
 export TERM=xterm-color
 
-# Script to ensure proper interface assignment occurs (wlan0 is internal, wlan1 is tplink)
+# Run script to assign interfaces at system startup (wlan0 internal, wlan1 TP-Link)
 . /system/bin/wlan_interface_assigner.sh
 
-# O: copy mounts so chroot can see what's mounted:
-# S: Is this actually the same format / file?
+# Copy mounts so chroot can see what is mounted
 chroot $NEW_ROOT /bin/cp /proc/mounts /etc/mtab
 
+# Start services in chroot environment
 chroot $NEW_ROOT /etc/init.d/cron start
 chroot $NEW_ROOT /etc/init.d/hermes start
 chroot $NEW_ROOT /etc/init.d/insight_api start
 
-# If the first boot script has been placed into the root of the chroot
-# filesystem we need to run it to setup things like ssh keys. This should
-# always be run last in this script.
+# If first_boot.sh is in chroot root filesystem (/data/local/kali); then
+# run it to generate SSH keys, etc.
+# Run this last in /system/bin/chrootboot
 if [ -x $NEW_ROOT/first_boot.sh ]; then
-  chroot $NEW_ROOT /first_boot.sh
+  chroot $NEW_ROOT/first_boot.sh
   rm -f $NEW_ROOT/first_boot.sh
 fi
-
