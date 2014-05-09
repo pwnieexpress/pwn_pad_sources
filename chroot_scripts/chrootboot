@@ -1,15 +1,6 @@
 # /system/bin/chrootboot
 # Start chroot environment and services at system startup
 
-# Developer mode toggle to allow for easier development
-DEV_MODE:=0
-
-if [ "DEV_MODE" = "0" ]; then
-  echo "WARNING!!! WARNING!!! WARNING!!!"
-  echo "Developer mode active, critical system components can be damaged."
-  echo "DANGER: please disable developer mode."
-fi
-
 # Use the fourth loopback device to leave the first couple open
 export LOOP_BACK=/dev/block/loop4
 export SOURCE_IMG=/data/local/kali_img/kali.img
@@ -32,10 +23,8 @@ mount -t devpts devpts $NEW_ROOT/dev/pts # Might not need
 mount -t proc proc $NEW_ROOT/proc
 mount -t sysfs sysfs $NEW_ROOT/sys
 
-if [ "DEV_MODE" = "0" ]; then
-  # Remount system partition with rw flag set
-  mount -o remount,rw -t yaffs /dev/block/mtdblock3 /system
-fi
+# Remount system partition with rw flag set
+mount -o remount,rw -t yaffs /dev/block/mtdblock3 /system
 
 # Mount Android filesystems for chroot environment
 mount -o bind /sdcard $NEW_ROOT/sdcard
