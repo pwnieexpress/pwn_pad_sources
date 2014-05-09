@@ -1,88 +1,75 @@
 #!/system/bin/sh
-# Pwnie Express: PwnPad Script to assign internal wlan hardware to "wlan0" and external wlan hardware to "wlan1".
-# Revision 3.18.2013
-# Authors: Grep and Awk
+# Set internal wlan to wlan0 and external wlan to wlan1
+# Author: Grep, Awk, t1mz0r
 
-# Delay script starting for Android bootup
+# Delay script start for Android bootup
 sleep 5
 
-# Checking to see if this is the old pad or the new pad:
-cat /proc/cpuinfo |grep grouper &> /dev/null
-pad_old_or_new=`echo $?`
-
-# If pad_old_or_new = 1 then current device is New Pad
-if [ $pad_old_or_new -eq 1 ]; then
+# Check device
+hardw=`getprop ro.hardware`
   
-  # New Pad wlan fix:
+if [[ "$hardw" == "deb" || "$hardw" == "flo" || "$hardw" == "hammerhead" ]]; then    
+  # Fix for new Pwn Pad and Pwn Phone
+  # Get MAC address of internal wlan and save as variable
+  onboard_wlan_mac=`grep "^Intf0MacAddress=" /data/misc/wifi/WCNSS_qcom_cfg.ini | awk -F"=" '{print$2}' | sed -e 's/\([0-9A-Fa-f]\{2\}\)/\1:/g' -e 's/\(.*\):$/\1/'`
 
-    # Acquire MAC address of internal wlan hardware and save as variable
-    onboard_wlan_mac=`grep "^Intf0MacAddress=" /data/misc/wifi/WCNSS_qcom_cfg.ini | awk -F"=" '{print$2}' | sed -e 's/\([0-9A-Fa-f]\{2\}\)/\1:/g' -e 's/\(.*\):$/\1/'`
-    
-    # Acquire MAC address of external wlan USB adapter and save as variable
-    external_wlan_mac=`busybox ifconfig -a | grep "^wlan" | grep -v "${onboard_wlan_mac}" | awk '{print$5}'`
-    
-    # Added sleep 10 in order to ensure svc commands run properly on boot - needed more time
-    sleep 10
-    
-    # Disable Android wifi manager
-    svc wifi disable
-    sleep 2
-    
-    # Assign a temporary inferface name to internal wlan
-    busybox nameif temp_onboard "${onboard_wlan_mac}"
-    
-    # Assign a temporary inferface name to external wlan
-    busybox nameif temp_external "${external_wlan_mac}"
-    
-    # Assign internal wlan hardware to "wlan0"
-    busybox nameif wlan0 "${onboard_wlan_mac}"
-    
-    ifconfig wlan0 up
-    # Assign external wlan hardware to "wlan1"
-    busybox nameif wlan1 "${external_wlan_mac}"
-    
-    # Re-enable Android wifi manager
-    svc wifi enable
+  # Get MAC address of external wlan USB adapter and save as variable
+  external_wlan_mac=`busybox ifconfig -a | grep "^wlan" | grep -v "${onboard_wlan_mac}" | awk '{print$5}'`
 
+  # Sleep such that svc commands run properly on boot
+  sleep 10
+
+  # Disable Android wifi manager
+  svc wifi disable
+  sleep 2
+
+  # Set temporary interface name for internal wlan
+  busybox nameif temp_onboard "${onboard_wlan_mac}"
+
+  # Set temporary interface name for external wlan
+  busybox nameif temp_external "${external_wlan_mac}"
+
+  # Set internal wlan to wlan0
+  busybox nameif wlan0 "${onboard_wlan_mac}"
+
+  ifconfig wlan0 up
+  # Set external wlan to wlan1
+  busybox nameif wlan1 "${external_wlan_mac}"
+
+  # Re-enable Android wifi manager
+  svc wifi enable
 else
-  
-  # Old pad wlan fix:
+  # Fix for old Pwn Pad
+  # Sleep such that svc commands run properly on boot
+  sleep 15
 
-    # Added sleep 15 in order to ensure svc commands run properly on boot - needed more time
-    sleep 15
-    
-    # Enable wifi to grab onboard mac address
-    svc wifi enable
-    
-    sleep 5
-    # Acquire MAC address of internal wlan hardware and save as variable
-    onboard_wlan_mac=`dmesg |egrep -ri "Broadcom Dongle Host Driver mac=" | awk '{print$10}' |awk -F"mac=" '{print$1$2$3$4$5$6}' | head -n 1`
-    
-    #echo $onboard_wlan_mac
-    
-    # Acquire MAC address of external wlan USB adapter and save as variable
-    external_wlan_mac=`busybox ifconfig -a | grep "^wlan" | grep -iv "${onboard_wlan_mac}" | awk '{print$5}'`
-    
-    
-    sleep 2
-    # Disable Android wifi manager
-    svc wifi disable
-    sleep 1
-    
-    # Assign a temporary inferface name to internal wlan
-    busybox nameif temp_onboard "${onboard_wlan_mac}"
-    
-    # Assign a temporary inferface name to external wlan
-    busybox nameif temp_external "${external_wlan_mac}"
-    
-    # Assign internal wlan hardware to "wlan0"
-    busybox nameif wlan0 "${onboard_wlan_mac}"
-    
-    # Assign external wlan hardware to "wlan1"
-    busybox nameif wlan1 "${external_wlan_mac}"
-    
-    # Re-enable Android wifi manager
-    svc wifi enable
-    
+  # Enable Android wifi manager to snag onboard MAC address
+  svc wifi enable
+  sleep 5
 
+  # Get MAC address of internal wlan and save as variable
+  onboard_wlan_mac=`dmesg |egrep -ri "Broadcom Dongle Host Driver mac=" | awk '{print$10}' |awk -F"mac=" '{print$1$2$3$4$5$6}' | head -n 1`
+
+  # Get MAC address of external wlan USB adapter and save as variable
+  external_wlan_mac=`busybox ifconfig -a | grep "^wlan" | grep -iv "${onboard_wlan_mac}" | awk '{print$5}'`
+
+  sleep 1
+  # Disable Android wifi manager
+  svc wifi disable
+  sleep 2
+
+  # Set temporary interface name for internal wlan
+  busybox nameif temp_onboard "${onboard_wlan_mac}"
+
+  # Set temporary interface name for external wlan
+  busybox nameif temp_external "${external_wlan_mac}"
+
+  # Set internal wlan to wlan0
+  busybox nameif wlan0 "${onboard_wlan_mac}"
+
+  # Set external wlan to wlan1
+  busybox nameif wlan1 "${external_wlan_mac}"
+
+  # Re-enable Android wifi manager
+  svc wifi enable
 fi

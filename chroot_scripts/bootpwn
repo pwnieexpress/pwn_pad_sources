@@ -1,32 +1,32 @@
-# Location: /system/bin/
-# Chroot script to launch scripts into Pwnie environment
+# /system/bin/bootpwn
+# Boot into chroot environment
 
-# Export chroot directory into a variable
+# Export chroot directory into variable
 export NEW_ROOT=/data/local/kali
 
-echo "Mounting filesystems..."
+echo "[+] Mounting filesystems..."
 
-# Remount the system partition with the rw flag set
+# Remount system partition with rw flag set
 mount -o remount,rw -t yaffs /dev/block/mtdblock3 /system
 
-echo "Finished mounting filesystems."
+echo "[+] Filesystems mounted."
 
 sysctl -w net.ipv4.ip_forward=1 &> /dev/null
 
-# Setup some environment variables for the shell environment.
+# Setup environment variables for shell environment
 export HOME=/root
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/pwnix/bin:$PATH
 export TERM=xterm-color
 export TZ=America/New_York
 
-echo "The Pwnie has landed. Get your game face on."
+echo "[!] Welcome to the Pwn zone. Get your game face on."
 
 stty columns 85
 stty rows 46
 
-# Mount USB OTG drive for copying files to from chroot environment, this may be
-# more appropriate in chrootboot.
+# Copy mounts so chroot can see what is mounted
+# Can then mount USB OTG flash drive to copy files to/from chroot environment
 chroot $NEW_ROOT /bin/cp /proc/mounts /etc/mtab
 
-# Drop user to bash shell
+# Drop user to shell
 chroot $NEW_ROOT /bin/bash

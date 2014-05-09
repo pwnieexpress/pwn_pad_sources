@@ -2,7 +2,7 @@
 
 clear
 echo
-echo "Starting Metasploit this will take a minute...."
+echo "[!] Starting Metasploit.. This is gonna take a sec.."
 
 msfconsole
 

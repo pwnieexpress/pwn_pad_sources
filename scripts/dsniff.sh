@@ -1,37 +1,30 @@
 #!/bin/bash
 # Cleartext password sniffing on all available interfaces
 
-##################################################
-f_identify_device(){
-  # Function to determine whether current device is new pad or old pad
-  # Checking to see if this is the old pad or the new pad:
-  cat /proc/cpuinfo |grep grouper &> /dev/null
-  pad_old_or_new=`echo $?`
-  
-  # If pad_old_or_new = 1 then current device is New Pad
-  if [ $pad_old_or_new -eq 1 ]; then
 
-    # New Pad's GSM interface is rmnet_usb0
+f_identify_device(){
+  
+  # Check device
+  hardw=`getprop ro.hardware`
+  if [[ "$hardw" == "deb" || "$hardw" == "flo" ]]; then
+    # Set interface for new Pwn Pad
     gsm_int="rmnet_usb0"
-    else
-    # Old Pad's GSM interface is rmnet0
+  else
+    # Set interface for Pwn Phone and old Pwn Pad
     gsm_int="rmnet0"
   fi
 }
-
-
+  
 f_interface_setup(){
-  # echo "Since Dsniff currently has issues, ettercap will work like Dsniff"
-  # echo
   clear
-  echo "Select which interface you would like to sniff on? (1-6):"
+  echo "Select which interface to sniff on [1-6]:"
   echo
-  echo "1. eth0 (USB ethernet adapter)"
-  echo "2. wlan0 (Internal Nexus Wifi)"
-  echo "3. wlan1 (USB TPlink Atheros)"
+  echo "1. eth0 (USB Ethernet adapter)"
+  echo "2. wlan0 (internal Wifi)"
+  echo "3. wlan1 (USB TP-Link adapter)"
   echo "4. mon0 (monitor mode interface)"
   echo "5. at0 (Use with EvilAP)"
-  echo "6. $gsm_int (4G connection)"
+  echo "6. $gsm_int (4G GSM connection)"
   echo
 
   read -p "Choice: " interfacechoice
@@ -65,7 +58,7 @@ f_get_logchoice(){
   case $logchoice in
     [1-2]*) ;;
     *)
-      echo 'Please enter 1 for yes or 2 for no.'
+      echo 'Please enter 1 for YES or 2 for NO.'
       f_get_logchoice
       ;;
   esac
