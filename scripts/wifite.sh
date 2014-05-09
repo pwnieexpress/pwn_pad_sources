@@ -1,8 +1,9 @@
 #!/bin/bash
-#Script to run wifite
+# Script to run Wifite
 
 cd /opt/pwnix/captures/wpa_handshakes/
 
+clear
 wifite
 
 if [ -d hs ]; then
@@ -15,6 +16,6 @@ then
   mv cracked.txt ../passwords/
 fi
 
-airmon-ng stop mon0
-ifconfig wlan1 down
+airmon-ng stop mon0 &> /dev/null
+ifconfig wlan1 down &> /dev/null
 

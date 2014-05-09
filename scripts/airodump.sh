@@ -1,41 +1,82 @@
 #!/bin/bash
-# Script to run airodump-ng without any flags
+# Run airodump-ng with no flags
 
-cd /opt/pwnix/captures/wireless/
+f_run(){
 
-f_oui_check(){
-  # Update oui.txt in background if oui.txt not found
+  # Check for OUI
+  f_oui
+  # Check to log
+  f_log
+  # Check for mon0
+  f_mon
+  # Check for GPS
+  f_gps 
+
+  if [ $opt_log -eq 1 ]; then
+    if [ $GPS_STATUS -eq 0 ]; then
+      airodump-ng --manufacturer --gpsd -w airodump mon0
+    else
+      airodump-ng --manufacturer -w airodump mon0
+    fi
+
+  elif [ $opt_log -eq 2 ]; then
+    if [ $GPS_STATUS -eq 0 ]; then
+      airodump-ng --manufacturer --gpsd mon0
+    else
+      airodump-ng --manufacturer mon0
+    fi
+  fi
+}
+
+# Check for oui.txt
+f_oui(){
+
+  # Upate if not found
   if [ ! -f /etc/aircrack-ng/airodump-ng-oui.txt ]; then
     airodump-ng-oui-update &> /dev/null &
   fi
 }
 
-f_logging(){
+# Prompt user to log
+f_log(){
+
   clear
-  echo
-  echo "Would you like to save an Airodump capture?"
-  echo
-  echo "Captures saved to /opt/pwnix/captures/wireless/"
+  echo "Save capture to /opt/pwnix/captures/wireless/?"
   echo
   echo "1. Yes"
-  echo "2. No "
+  echo "2. No"
   echo
-  read -p "Choice (1 or 2): " logchoice
-  case $logchoice in
+  read -p "Choice [1 or 2]: " opt_log
+  case $opt_log in
     [1-2]*) ;;
-    *) f_logging;;
+    *) f_log;;
   esac
 }
 
-# Function to check for BlueNMEA and start GPSD if present for GPS logging
-# Function first checks to see if GPSD is already running as well
-f_gps_check(){
+# Check for monitor mode
+f_mon(){
+
+  ifconfig -a |grep mon &> /dev/null
+  MON_STATUS=$?
+
+  if [ $MON_STATUS -eq 0 ]
+  then
+    echo
+    echo "[!] mon0 is up"
+  else
+    # Start if down
+    echo
+    airmon-ng start wlan1
+  fi
+}
+
+# Check for BlueNMEA to log GPS data
+f_gps(){
 
   ps ax |grep gpsd |grep -v grep &> /dev/null
   GPSD_STATUS=$?
 
   if [ $GPSD_STATUS -eq 1 ]; then
-
     ps ax |grep bluenmea |grep -v grep &> /dev/null
     GPS_STATUS=$?
 
@@ -45,109 +86,75 @@ f_gps_check(){
   fi
 }
 
-f_airodump(){
-
-  #check to see if mon0 active
-  f_check_mon
-
-  if [ $logchoice -eq 1 ]; then
-    if [ $GPS_STATUS -eq 0 ]; then
-      airodump-ng --manufacturer --gpsd -w airodump mon0
-    else
-    airodump-ng --manufacturer -w airodump mon0
-    fi
-
-  elif [ $logchoice -eq 2 ]; then
-    if [ $GPS_STATUS -eq 0 ]; then
-      airodump-ng --manufacturer --gpsd mon0
-    else
-    airodump-ng --manufacturer mon0
-    fi
-  fi
-}
-
-f_mon_up_down(){
+# Prompt user to keep mon0 up
+f_mon_toggle(){
+  
   echo
-  echo "[!] Do you want to stay in monitor mode (mon0)?"
+  echo "[?] Stay in monitor mode (mon0)?"
   echo
   echo "1. Yes"
   echo "2. No"
   echo
-  read -p "Choice (1 or 2): " opt
-  case $opt in
+  read -p "Choice [1 or 2]: " opt_mon
+  case $opt_mon in
     1)
-      # do nothing
       echo
-      echo "[+] mon0 still active"
+      echo "[!] mon0 is still up"
       echo
       ;;
     2)
       echo
-      echo "[+] Stopping mon0.."
-      echo
+      echo "[+] Bring mon0 down.."
       airmon-ng stop mon0
       echo
+      echo "[!] mon0 is down"
+      echo
       ;;
-    *)f_mon_up_down ;;
+    *)f_mon_toggle ;;
   esac
 
   if [ $GPS_STATUS -eq 0 ]; then
-    f_gps_up_down
+    f_gps_toggle
   fi
 }
 
-f_gps_up_down(){
+# Prompt user to keep gpsd running
+f_gps_toggle(){
 
   echo
-  echo "[!] Do you want to keep gpsd running?"
+  echo "[?] Keep gpsd running?"
   echo
   echo "1. Yes"
   echo "2. No"
   echo
-  read -p "Choice (1 or 2): " gps
+  read -p "Choice [1 or 2]: " gps
   case $gps in
     1)
-      # do nothing
+      # Keep gpsd running
       echo
-      echo "[+] gpsd still running"
+      echo "[!] gpsd is still running"
       echo
       ;;
     2)
       echo
-      echo "[+] Killing gpsd.."
-      echo
-      # stop any instances of gpsd
+      echo "[+] Stopping gpsd.."
+      # Kill gpsd
       killall -9 gpsd &> /dev/null
       echo
+      echo "[!] gpsd has been stopped"
+      echo
       ;;
-    *)f_gps_up_down ;;
+    *)f_gps_toggle ;;
   esac
 }
 
 f_cleanup(){
-  f_mon_up_down
 
-  # ... and stay down!
+  # Prompt user for monitor mode
+  f_mon_toggle
+  # Bring wlan1 down
   ifconfig wlan1 down
 }
 
-f_check_mon(){
-
- ifconfig -a |grep mon &> /dev/null
- MON_STATUS=$?
-
- if [ $MON_STATUS -eq 0 ]
- then
-   echo
-   echo "[+] mon0 already active"
-   echo
- else
-   airmon-ng start wlan1
- fi
-}
-
-f_oui_check
-f_logging
-f_gps_check
-f_airodump
+f_run
 f_cleanup

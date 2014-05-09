@@ -3,12 +3,11 @@
 
 f_banner(){
   clear
-  echo "This script will mount a USB drive attached via OTG and copy the /opt/pwnix/captures/ "
-  echo "folder to the USB drive mounted at /usb-otg/"
+  echo "This script will mount a USB drive attached via OTG and copy the /opt/pwnix/captures/ folder to the USB drive mounted at /usb-otg/"
   echo
-  echo "Copy captures folder to usb drive?"
+  echo "[?] Copy captures folder to usb drive?"
   echo
-  echo "NOTE: This will overwrite any pre-existing captures folder on the drive!"
+  echo "[!] This will overwrite any pre-existing captures folder on the drive!"
   echo
   echo "Do you want to continue?"
   echo
@@ -16,7 +15,7 @@ f_banner(){
   echo "2. No"
   echo
 
-  read -p "Choice (1 or 2): " input
+  read -p "Choice [1 or 2]: " input
   case $input in
     1) proceed=1 ;;
     2) proceed=2 ;;
@@ -24,38 +23,34 @@ f_banner(){
   esac
 }
 
-# Function to mount usb drive, copy captures folder to drive
-
+# Mount USB drive and copy captures folder to drive
 f_mount_cp(){
   if [ $proceed -eq 1 ]; then
-    
     if [ -x /usb-otg ]; then
       echo 
     else
       mkdir /usb-otg
     fi
-
     echo
-    echo "[+] Mounting USB drive to /usb-otg/..."
+    echo "[+] Mounting USB drive to /usb-otg/.."
     mount /dev/block/sda1 /usb-otg/
     echo
-    echo "[+] ...Done."
+    echo "[!] ..Done"
     echo
-    echo "[!] Copying captures directory..."
+    echo "[+] Copying captures directory..."
     echo
     cp -a /opt/pwnix/captures/ /usb-otg/
     echo
-    echo "[+] ...Done."
+    echo "[!] ..Done"
     echo
     f_umount
   else
-    echo "[-] Not mounting or copying captures folder."
-    echo "[-] Exiting."
+    echo "[-] Not mounting or copying captures folder"
+    echo "[-] Exiting"
   fi
 }
 
-# Function to umount USB drive
-
+# Umount USB drive
 f_umount(){
 
   echo
@@ -65,7 +60,7 @@ f_umount(){
   echo "1. Yes"
   echo "2. No"
   echo
-  read -p "Choice (1 or 2): " input2
+  read -p "Choice [1 or 2]: " input2
   case $input2 in
     1) unmount=1 ;;
     2) unmount=2 ;;
@@ -80,8 +75,8 @@ f_umount(){
     echo "[-] Exiting"
   else
     echo "[!] USB drive still mounted to /usb-otg/"
-    echo "[!] un-mount manually with: umount /usb-otg"
-    echo "[-] Exiting."
+    echo "[!] Unmount manually with: umount /usb-otg"
+    echo "[-] Exiting"
   fi
 }
 

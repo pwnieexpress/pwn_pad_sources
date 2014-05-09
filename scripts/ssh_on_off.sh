@@ -2,22 +2,22 @@
 # Script to turn SSHD on and off
 
 f_start_ssh(){
-  echo "[+] Starting SSH Server..."
+  echo "[+] Starting SSH server..."
   service ssh start
-  echo "[+] Done"
+  echo "[!] Done"
   echo
 }
 
 f_stop_ssh(){
-  echo "[+] Stopping SSH Server..."
+  echo "[-] Stopping SSH server..."
   service ssh stop
-  echo "[+] Done"
+  echo "[!] Done"
   echo
 }
 
 clear
 echo
-echo "This script will enable / disable SSH Server access on port 22"
+echo "[-] This will enable/disable SSH server access on port 22"
 echo
 
 

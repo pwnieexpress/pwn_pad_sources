@@ -1,15 +1,11 @@
 #!/bin/bash
 # Script to start Kismet wireless sniffer
 
-# Set term type to vt100 for now, only thing that displays curses properly atm
-# export TERM=vt100
-
-# Set ctrl c (break) to gracefully stop wlan1mon that kismet creates
-
+# Set CTRL-C (break) to bring down wlan1mon interface that Kismet creates
 trap f_endclean INT
 trap f_endclean KILL
 
-# Place kismet_ui.conf in proper place for kismet if first time running kismet
+# Put kismet_ui.conf into position if first run
 f_uicheck(){
   if [ ! -f /root/.kismet/kismet_ui.conf ]; then
     mkdir /root/.kismet
@@ -17,7 +13,7 @@ f_uicheck(){
   fi
 }
 
-# Function to check for BlueNMEA and start GPSD if present for GPS logging
+# Check for BlueNMEA then start gpsd to log GPS data
 f_gps_check(){
 
   ps ax |grep bluenmea |grep -v grep &> /dev/null
@@ -29,9 +25,9 @@ f_gps_check(){
 }
 
 f_endclean(){
-  ifconfig wlan1mon down
-  ifconfig wlan1 down
-  iw dev wlan1mon del
+  ifconfig wlan1mon down &> /dev/null
+  ifconfig wlan1 down &> /dev/null
+  iw dev wlan1mon del &> /dev/null
 
   if [ $GPS_STATUS -eq 0 ]; then
     killall -9 gpsd
@@ -41,7 +37,6 @@ f_endclean(){
 clear
 echo
 echo  "Kismet captures saved to /opt/pwnix/captures/wireless/"
-echo
 echo
 
 wait 3

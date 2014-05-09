@@ -1,20 +1,19 @@
 #!/bin/bash
-#
-# Script to use ettercap to redirect all dns traffic back to the pwnpad
-# use with Social Engineering Toolkit (site cloner)
-#
+# Script to use ettercap to redirect all DNS traffic back to the device
+# Use with SET (site cloner)
 
 f_banner(){
   clear
+  echo "EvilAP Ettercap-NG 0.8.0 DNS Spoofing Tool"
   echo
-  echo "EvilAP Ettercap-NG 0.8.0 DNS Spoofing script"
+  echo "[!] This only works when EvilAP is running!"
+  echo "[!] Monitor mode (at0) must be active!"
   echo
-  echo "Warning: Currently only works when evilap is running!"
+  echo "[-] All DNS requests from wireless clients connected to EvilAP will be redirected to IP of EvilAP (192.168.7.1)"
   echo
-  echo "Note: All DNS requests from wireless clients connect to EvilAP "
-  echo "will be redirected to IP of EvilAP (192.168.7.1)"
+  echo "[+] Use with Social Engineering Toolkit"
+  echo "[-] (site cloner uses 192.168.7.1)"
   echo
-  echo "Use with Social Engineering Toolkit (site cloner use 192.168.7.1)"
 }
 
 f_run(){
