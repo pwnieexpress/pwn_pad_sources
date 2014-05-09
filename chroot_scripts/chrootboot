@@ -52,6 +52,6 @@ chroot $NEW_ROOT /etc/init.d/insight_api start
 # run it to generate SSH keys, etc.
 # Run this last in /system/bin/chrootboot
 if [ -x $NEW_ROOT/first_boot.sh ]; then
-  chroot $NEW_ROOT/first_boot.sh
+  chroot $NEW_ROOT /first_boot.sh
   rm -f $NEW_ROOT/first_boot.sh
 fi
