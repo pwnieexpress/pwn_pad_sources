@@ -37,7 +37,7 @@ sysctl -w net.ipv4.ip_forward=1 &> /dev/null
 
 # Setup environment variables for shell environment.
 export HOME=/root
-export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 export TERM=xterm-color
 
 # Copy mounts so chroot can see what is mounted
