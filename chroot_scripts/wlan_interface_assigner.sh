@@ -7,16 +7,16 @@ sleep 5
 
 # Check device
 hardw=`getprop ro.hardware`
-
-if [[ "$hardw" == "deb" || "$hardw" == "flo" || "$hardw" == "hammerhead" ]]; then
-  # Fix for new Pwn Pad and Pwn Phone
+  
+if [[ "$hardw" == "deb" || "$hardw" == "flo" ]]; then   
+  # Fix for new Pwn Pad
   # Get MAC address of internal wlan and save as variable
   onboard_wlan_mac=`grep "^Intf0MacAddress=" /data/misc/wifi/WCNSS_qcom_cfg.ini | awk -F"=" '{print$2}' | sed -e 's/\([0-9A-Fa-f]\{2\}\)/\1:/g' -e 's/\(.*\):$/\1/'`
 
   # Get MAC address of external wlan USB adapter and save as variable
   external_wlan_mac=`busybox ifconfig -a | grep "^wlan" | grep -v "${onboard_wlan_mac}" | awk '{print$5}'`
 
-  # Sleep such that svc commands run properly on boot
+  # Sleep long enough for svc commands to run at boot
   sleep 10
 
   # Disable Android wifi manager
@@ -39,8 +39,8 @@ if [[ "$hardw" == "deb" || "$hardw" == "flo" || "$hardw" == "hammerhead" ]]; the
   # Re-enable Android wifi manager
   svc wifi enable
 else
-  # Fix for old Pwn Pad
-  # Sleep such that svc commands run properly on boot
+  # Fix for Pwn Phone and old Pwn Pad
+  # Sleep long enough for svc commands to run at boot
   sleep 15
 
   # Enable Android wifi manager to snag onboard MAC address
