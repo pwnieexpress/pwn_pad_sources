@@ -32,26 +32,26 @@ mount -o bind /system $NEW_ROOT/system
 
 sysctl -w net.ipv4.ip_forward=1 &> /dev/null
 
+# Run script to assign interfaces at system startup (wlan0 internal, wlan1 TP-Link)
+. /system/bin/wlan_interface_assigner.sh
+
 # Setup environment variables for shell environment.
 export HOME=/root
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 export TERM=xterm-color
 
-# Run script to assign interfaces at system startup (wlan0 internal, wlan1 TP-Link)
-. /system/bin/wlan_interface_assigner.sh
-
 # Copy mounts so chroot can see what is mounted
-chroot $NEW_ROOT /bin/cp /proc/mounts /etc/mtab
+/system/xbin/chroot $NEW_ROOT /bin/cp /proc/mounts /etc/mtab
 
 # Start services in chroot environment
-chroot $NEW_ROOT /etc/init.d/cron start
-chroot $NEW_ROOT /etc/init.d/hermes start
-chroot $NEW_ROOT /etc/init.d/insight_api start
+/system/xbin/chroot $NEW_ROOT /etc/init.d/cron start
+/system/xbin/chroot $NEW_ROOT /etc/init.d/hermes start
+/system/xbin/chroot $NEW_ROOT /etc/init.d/insight_api start
 
 # If first_boot.sh is in chroot root filesystem (/data/local/kali); then
 # run it to generate SSH keys, etc.
 # Run this last in /system/bin/chrootboot
 if [ -x $NEW_ROOT/first_boot.sh ]; then
-  chroot $NEW_ROOT /first_boot.sh
+  /system/xbin/chroot $NEW_ROOT /first_boot.sh
   rm -f $NEW_ROOT/first_boot.sh
 fi

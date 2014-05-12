@@ -21,12 +21,12 @@ export TZ=America/New_York
 
 echo "[!] Welcome to the Pwn zone. Get your game face on."
 
-stty columns 85
-stty rows 46
+/system/xbin/stty columns 85
+/system/xbin/stty rows 46
 
 # Copy mounts so chroot can see what is mounted
 # Can then mount USB OTG flash drive to copy files to/from chroot environment
-chroot $NEW_ROOT /bin/cp /proc/mounts /etc/mtab
+/system/xbin/chroot $NEW_ROOT /bin/cp /proc/mounts /etc/mtab
 
 # Drop user to shell
-chroot $NEW_ROOT /bin/bash
+/system/xbin/chroot $NEW_ROOT /bin/bash
