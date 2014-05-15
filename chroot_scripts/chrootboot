@@ -53,5 +53,5 @@ export TERM=xterm-color
 # Run this last in /system/bin/chrootboot
 if [ -x $NEW_ROOT/first_boot.sh ]; then
   /system/xbin/chroot $NEW_ROOT /first_boot.sh
-  rm -f $NEW_ROOT/first_boot.sh
+  /system/xbin/rm -f $NEW_ROOT/first_boot.sh
 fi
