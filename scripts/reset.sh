@@ -49,7 +49,16 @@ f_reset(){
   f_getstorage
 
   # Construst cmd for script
-  echo -e 'restore /data/media/0/TWRP/BACKUPS/'$serialno'/'$backup'\nprint  [SETUP STARTED]\ncmd export PATH=/usr/bin:/usr/sbin:/bin:/usr/local/bin:/usr/local/sbin:$PATH\ncmd mount -o bind /dev /data/local/kali/dev\ncmd chroot /data/local/kali/ /bin/dd if=/dev/zero of=/kali.img bs=1 count=0 seek='$seeksi'G;chroot /data/local/kali/ /sbin/mkfs.ext4 -F /kali.img\ncmd mv /data/local/kali/kali.img /data/local/kali_img/;mkdir /data/local/kali_img/kalitmp;mount -t ext4 /data/local/kali_img/kali.img /data/local/kali_img/kalitmp/;cp -a /data/local/kali/* /data/local/kali_img/kalitmp/;umount /data/local/kali_img/kalitmp/;rm -r /data/local/kali_img/kalitmp\nprint  [SETUP COMPLETE]\nprint  [FACTORY RESET COMPLETE]' > /cache/recovery/openrecoveryscript
+  cat << EOF > /cache/recovery/openrecoveryscript
+restore /data/media/0/TWRP/BACKUPS/'$serialno'/'$backup'
+print  [SETUP STARTED]
+cmd export PATH=/usr/bin:/usr/sbin:/bin:/usr/local/bin:/usr/local/sbin:$PATH
+cmd mount -o bind /dev /data/local/kali/dev
+cmd chroot /data/local/kali/ /bin/dd if=/dev/zero of=/kali.img bs=1 count=0 seek='$seeksi'G;chroot /data/local/kali/ /sbin/mkfs.ext4 -F /kali.img
+cmd mv /data/local/kali/kali.img /data/local/kali_img/;mkdir /data/local/kali_img/kalitmp;mount -t ext4 /data/local/kali_img/kali.img /data/local/kali_img/kalitmp/;cp -a /data/local/kali/* /data/local/kali_img/kalitmp/;umount /data/local/kali_img/kalitmp/;rm -r /data/local/kali_img/kalitmp
+print  [SETUP COMPLETE]
+print  [FACTORY RESET COMPLETE] 
+EOF
 
   # Reboot into recovery; run script
   reboot recovery
