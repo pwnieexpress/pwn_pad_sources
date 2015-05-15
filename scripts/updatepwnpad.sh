@@ -46,7 +46,6 @@ f_confirm_and_do_update(){
     grep -Ei "release (version|date)" /etc/motd
     echo "[!] Reboot for the update to take effect!"
     echo
-    echo "[!] If an app disappears from the home screen, then that app has been updated."    echo "[+] You can re-add it from the app drawer."
   else
     echo "Update cancelled."
     echo "Exiting."

@@ -7,23 +7,23 @@ f_run(){
   f_oui
   # Check to log
   f_log
-  # Check for mon0
+  # Check for wlan1mon
   f_mon
   # Check for GPS
   f_gps 
 
   if [ $opt_log -eq 1 ]; then
     if [ $GPS_STATUS -eq 0 ]; then
-      airodump-ng --manufacturer --gpsd -w airodump mon0
+      airodump-ng --manufacturer --gpsd -w airodump wlan1mon
     else
-      airodump-ng --manufacturer -w airodump mon0
+      airodump-ng --manufacturer -w airodump wlan1mon
     fi
 
   elif [ $opt_log -eq 2 ]; then
     if [ $GPS_STATUS -eq 0 ]; then
-      airodump-ng --manufacturer --gpsd mon0
+      airodump-ng --manufacturer --gpsd wlan1mon
     else
-      airodump-ng --manufacturer mon0
+      airodump-ng --manufacturer wlan1mon
     fi
   fi
 }
@@ -62,7 +62,7 @@ f_mon(){
   if [ $MON_STATUS -eq 0 ]
   then
     echo
-    echo "[!] mon0 is up"
+    echo "[!] wlan1mon is up"
   else
     # Start if down
     echo
@@ -86,11 +86,11 @@ f_gps(){
   fi
 }
 
-# Prompt user to keep mon0 up
+# Prompt user to keep wlan1mon up
 f_mon_toggle(){
   
   echo
-  echo "[?] Stay in monitor mode (mon0)?"
+  echo "[?] Stay in monitor mode (wlan1mon)?"
   echo
   echo "1. Yes"
   echo "2. No"
@@ -99,15 +99,15 @@ f_mon_toggle(){
   case $opt_mon in
     1)
       echo
-      echo "[!] mon0 is still up"
+      echo "[!] wlan1mon is still up"
       echo
       ;;
     2)
       echo
-      echo "[+] Bring mon0 down.."
-      airmon-ng stop mon0
+      echo "[+] Bring wlan1mon down.."
+      airmon-ng stop wlan1mon
       echo
-      echo "[!] mon0 is down"
+      echo "[!] wlan1mon is down"
       echo
       ;;
     *)f_mon_toggle ;;
@@ -153,7 +153,7 @@ f_cleanup(){
   # Prompt user for monitor mode
   f_mon_toggle
   # Bring wlan1 down
-  ifconfig wlan1 down
+  ifconfig wlan1 down &> /dev/null
 }
 
 f_run

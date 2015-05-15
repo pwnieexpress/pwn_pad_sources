@@ -25,14 +25,14 @@ f_endclean(){
   echo "[-] Exiting..."
   f_restore_ident
   f_clean_up
-  ifconfig wlan1 down
+  ifconfig wlan1 down &> /dev/null
 }
 
 f_clean_up(){
   echo "[-] Killing other instances of airbase or dhcpd"
   killall airbase-ng &> /dev/null
   killall dhcpd &> /dev/null
-  airmon-ng stop mon0 8> /dev/null
+  airmon-ng stop wlan1mon &> /dev/null
   iptables --flush
   iptables --table nat --flush
 }
@@ -40,7 +40,7 @@ f_clean_up(){
 f_restore_ident(){
   echo "[+] Restoring network identity"
   hostn=`cat /etc/hostname`
-  ifconfig wlan1 down
+  ifconfig wlan1 down &> /dev/null
   macchanger -p wlan1 &> /dev/null
   hostname $hostn
 }
@@ -127,10 +127,10 @@ f_preplaunch(){
   echo "[+] New hostname set: $hn"
 
   sleep 2
-  #Put wlan1 into monitor mode - mon0 created
+  #Put wlan1 into monitor mode - wlan1mon created
   airmon-ng start wlan1
-  mkdir /dev/net/
-  ln -s /dev/tun /dev/net/tun
+  mkdir /dev/net/ &> /dev/null
+  ln -s /dev/tun /dev/net/tun &> /dev/null
 }
 
 f_logname(){
@@ -143,7 +143,7 @@ f_evilap(){
   echo "[+] Creating new logfile: $logname"
 
   #Start Airbase-ng with -P for preferred networks
-  airbase-ng -P -C $brate -c $channel -e "$ssid" -v mon0 > $logname 2>&1 &
+  airbase-ng -P -C $brate -c $channel -e "$ssid" -v wlan1mon > $logname 2>&1 &
   sleep 2
 
   #Bring up virtual interface at0
@@ -165,7 +165,7 @@ f_niceap(){
   echo "[+] Creating new logfile: $logname"
 
   #Start Airbase-ng with -P for preferred networks
-  airbase-ng -c $channel -e "$ssid" -v mon0 > $logname 2>&1 &
+  airbase-ng -c $channel -e "$ssid" -v wlan1mon > $logname 2>&1 &
   sleep 2
 
   #Bring up virtual interface at0
