@@ -129,8 +129,8 @@ f_preplaunch(){
   sleep 2
   #Put wlan1 into monitor mode - wlan1mon created
   airmon-ng start wlan1
-  mkdir /dev/net/
-  ln -s /dev/tun /dev/net/tun
+  mkdir /dev/net/ &> /dev/null
+  ln -s /dev/tun /dev/net/tun &> /dev/null
 }
 
 f_logname(){
