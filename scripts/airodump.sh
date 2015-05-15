@@ -66,7 +66,7 @@ f_mon(){
   else
     # Start if down
     echo
-    airmon-zc start wlan1
+    airmon-ng start wlan1
   fi
 }
 
@@ -105,7 +105,7 @@ f_mon_toggle(){
     2)
       echo
       echo "[+] Bring wlan1mon down.."
-      airmon-zc stop wlan1mon
+      airmon-ng stop wlan1mon
       echo
       echo "[!] wlan1mon is down"
       echo

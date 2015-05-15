@@ -32,7 +32,7 @@ f_clean_up(){
   echo "[-] Killing other instances of airbase or dhcpd"
   killall airbase-ng &> /dev/null
   killall dhcpd &> /dev/null
-  airmon-zc stop wlan1mon &> /dev/null
+  airmon-ng stop wlan1mon &> /dev/null
   iptables --flush
   iptables --table nat --flush
 }
@@ -128,7 +128,7 @@ f_preplaunch(){
 
   sleep 2
   #Put wlan1 into monitor mode - wlan1mon created
-  airmon-zc start wlan1
+  airmon-ng start wlan1
   mkdir /dev/net/
   ln -s /dev/tun /dev/net/tun
 }

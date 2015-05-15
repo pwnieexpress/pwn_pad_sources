@@ -16,6 +16,6 @@ then
   mv cracked.txt ../passwords/
 fi
 
-airmon-zc stop wlan1mon &> /dev/null
+airmon-ng stop wlan1mon &> /dev/null
 ifconfig wlan1 down &> /dev/null
 
