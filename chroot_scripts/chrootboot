@@ -14,7 +14,7 @@ mount -o loop -t ext4 $SOURCE_IMG $NEW_ROOT
 # Mount other filesystems for chroot environment
 /system/xbin/mount --rbind /dev $NEW_ROOT/dev
 /system/xbin/mount --rbind /proc $NEW_ROOT/proc
-/system/xbin/mount --rbind /sysfs $NEW_ROOT/sys
+/system/xbin/mount --rbind /sys $NEW_ROOT/sys
 
 # Remount system partition with rw flag set
 mount -o remount,rw -t yaffs /dev/block/mtdblock3 /system
