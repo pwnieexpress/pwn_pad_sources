@@ -21,17 +21,16 @@ else
 fi
 
 # Mount other filesystems for chroot environment
-mount -o bind /dev $NEW_ROOT/dev
-mount -t devpts devpts $NEW_ROOT/dev/pts # Might not need
-mount -t proc proc $NEW_ROOT/proc
-mount -t sysfs sysfs $NEW_ROOT/sys
+/system/xbin/mount --rbind /dev $NEW_ROOT/dev
+/system/xbin/mount --rbind /proc $NEW_ROOT/proc
+/system/xbin/mount --rbind /sysfs $NEW_ROOT/sys
 
 # Remount system partition with rw flag set
 mount -o remount,rw -t yaffs /dev/block/mtdblock3 /system
 
 # Mount Android filesystems for chroot environment
-mount -o bind /sdcard $NEW_ROOT/sdcard
-mount -o bind /system $NEW_ROOT/system
+/system/xbin/mount --rbind /sdcard $NEW_ROOT/sdcard
+/system/xbin/mount --rbind /system $NEW_ROOT/system
 
 sysctl -w net.ipv4.ip_forward=1 &> /dev/null
 
