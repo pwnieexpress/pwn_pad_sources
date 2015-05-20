@@ -10,7 +10,7 @@ f_run(){
   # Check for wlan1mon
   f_mon
   # Check for GPS
-  f_gps 
+  f_gps
 
   if [ $opt_log -eq 1 ]; then
     if [ $GPS_STATUS -eq 0 ]; then
@@ -88,7 +88,7 @@ f_gps(){
 
 # Prompt user to keep wlan1mon up
 f_mon_toggle(){
-  
+
   echo
   echo "[?] Stay in monitor mode (wlan1mon)?"
   echo

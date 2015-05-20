@@ -8,9 +8,9 @@ trap f_endclean INT
 trap f_endclean KILL
 
 f_identify_device(){
-  
+
 # Check device
-  hardw=`getprop ro.hardware`
+  hardw=`/system/bin/getprop ro.hardware`
   if [[ "$hardw" == "deb" || "$hardw" == "flo" ]]; then
     # Set interface for new Pwn Pad
     gsm_int="rmnet_usb0"
@@ -58,6 +58,7 @@ f_interface(){
   echo "2. eth0  (USB Ethernet adapter)"
   echo "3. wlan0  (internal Wifi)"
   echo
+  echo "NOTE: If selected interface is unavailable, this menu will loop."
   read -p "Choice [1-3]: " selection
 
   case $selection in
@@ -66,6 +67,7 @@ f_interface(){
     3) interface=wlan0 ;;
     *) interface=$gsm_int ;;
   esac
+  ifconfig $interface || f_interface
 }
 
 f_ssid(){

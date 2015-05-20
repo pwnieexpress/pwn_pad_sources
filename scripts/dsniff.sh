@@ -3,9 +3,9 @@
 
 
 f_identify_device(){
-  
+
   # Check device
-  hardw=`getprop ro.hardware`
+  hardw=`/system/bin/getprop ro.hardware`
   if [[ "$hardw" == "deb" || "$hardw" == "flo" ]]; then
     # Set interface for new Pwn Pad
     gsm_int="rmnet_usb0"
@@ -14,7 +14,7 @@ f_identify_device(){
     gsm_int="rmnet0"
   fi
 }
-  
+
 f_interface_setup(){
   clear
   echo "Select which interface to sniff on [1-6]:"
@@ -22,22 +22,23 @@ f_interface_setup(){
   echo "1. eth0 (USB Ethernet adapter)"
   echo "2. wlan0 (internal Wifi)"
   echo "3. wlan1 (USB TP-Link adapter)"
-  echo "4. mon0 (monitor mode interface)"
+  echo "4. wlan1mon (monitor mode interface)"
   echo "5. at0 (Use with EvilAP)"
   echo "6. $gsm_int (4G GSM connection)"
   echo
-
+  echo "NOTE: If selected interface is unavailable, this menu will loop."
   read -p "Choice: " interfacechoice
 
   case $interfacechoice in
     1) interface=eth0 ;;
     2) interface=wlan0 ;;
     3) interface=wlan1 ;;
-    4) interface=mon0 ;;
+    4) interface=wlan1mon ;;
     5) interface=at0 ;;
     6) interface=$gsm_int ;;
     *) f_interface_setup ;;
   esac
+  ifconfig $interface || f_interface
 }
 
 f_logging_setup(){

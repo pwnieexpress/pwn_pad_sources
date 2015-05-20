@@ -19,7 +19,7 @@ f_one_or_two(){
 set_choosewisely(){
   echo
   echo "[!] This will remove ALL LOGS and CAPTURES!"
-  echo 
+  echo
   echo "[?] Are you sure you want to continue?"
   echo
   echo " 1. Yes"
@@ -94,7 +94,7 @@ f_initialize(){
       echo
       echo "[+] Logs and captures have been left alone"
       echo "[!] Pwnies run wild!"
-    else 
+    else
       echo
       echo "[+] All logs, captures, and bash history have been left alone"
       echo "[!] Have a nice day! ^_^"
