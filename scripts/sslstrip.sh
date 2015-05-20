@@ -8,7 +8,7 @@ trap f_clean_up KILL
 f_identify_device(){
 
 # Check device
-  hardw=`getprop ro.hardware`
+  hardw=`/system/bin/getprop ro.hardware`
   if [[ "$hardw" == "deb" || "$hardw" == "flo" ]]; then
     # Set interface for new Pwn Pad
     gsm_int="rmnet_usb0"
