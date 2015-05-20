@@ -38,7 +38,7 @@ f_interface(){
   echo "1. eth0  (USB Ethernet adapter)"
   echo "2. wlan0  (internal Wifi)"
   echo "3. wlan1  (USB TP-Link adapter)"
-  echo "4. mon0  (monitor mode interface)"
+  echo "4. wlan1mon  (monitor mode interface)"
   echo "5. at0  (Use with EvilAP)"
   echo "6. $gsm_int (4G GSM connection)"
   echo
@@ -49,7 +49,7 @@ f_interface(){
     1) interface=eth0 ;;
     2) interface=wlan0 ;;
     3) interface=wlan1 ;;
-    4) interface=mon0 ;;
+    4) interface=wlan1mon ;;
     5) interface=at0 ;;
     6) interface=$gsm_int ;;
     *) f_interface ;;
