@@ -3,7 +3,7 @@
 
 
 f_identify_device(){
-  
+
   # Check device
   hardw=`/system/bin/getprop ro.hardware`
   if [[ "$hardw" == "deb" || "$hardw" == "flo" ]]; then
@@ -14,7 +14,7 @@ f_identify_device(){
     gsm_int="rmnet0"
   fi
 }
-  
+
 f_interface_setup(){
   clear
   echo "Select which interface to sniff on [1-6]:"

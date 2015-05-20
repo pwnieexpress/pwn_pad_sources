@@ -27,7 +27,7 @@ f_banner(){
 f_mount_cp(){
   if [ $proceed -eq 1 ]; then
     if [ -x /usb-otg ]; then
-      echo 
+      echo
     else
       mkdir /usb-otg
     fi
@@ -70,7 +70,7 @@ f_umount(){
   if [ $unmount -eq 1 ]; then
     umount /usb-otg/
     rm -r /usb-otg/
-    echo 
+    echo
     echo "[-] USB Drive has been un-mounted and is safe to remove"
     echo "[-] Exiting"
   else

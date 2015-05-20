@@ -1,5 +1,5 @@
 #!/system/bin/sh
-# Description: Factory resets Pwn Pad 2013/2014 and Pwn Phone 2014 
+# Description: Factory resets Pwn Pad 2013/2014 and Pwn Phone 2014
 # Result: Stock Pwn Pad 2013/2014 or Pwn Phone 2014
 # Author: t1mz0r
 # Company: Pwnie Express
@@ -57,7 +57,7 @@ cmd mount -o bind /dev /data/local/kali/dev
 cmd chroot /data/local/kali/ /bin/dd if=/dev/zero of=/kali.img bs=1 count=0 seek=$seeksi;chroot /data/local/kali/ /sbin/mkfs.ext4 -F /kali.img
 cmd mv /data/local/kali/kali.img /data/local/kali_img/;mkdir /data/local/kali_img/kalitmp;mount -t ext4 /data/local/kali_img/kali.img /data/local/kali_img/kalitmp/;cp -a /data/local/kali/* /data/local/kali_img/kalitmp/;umount /data/local/kali_img/kalitmp/;rm -r /data/local/kali_img/kalitmp
 print  [SETUP COMPLETE]
-print  [FACTORY RESET COMPLETE] 
+print  [FACTORY RESET COMPLETE]
 EOF
 
   # Reboot into recovery; run script

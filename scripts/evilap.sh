@@ -8,7 +8,7 @@ trap f_endclean INT
 trap f_endclean KILL
 
 f_identify_device(){
-  
+
 # Check device
   hardw=`/system/bin/getprop ro.hardware`
   if [[ "$hardw" == "deb" || "$hardw" == "flo" ]]; then
