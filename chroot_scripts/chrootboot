@@ -1,6 +1,9 @@
 # /system/bin/chrootboot
 # Start chroot environment and services at system startup
 
+# Set SELinux to permissive
+su 0 setenforce 0
+
 # Use the fourth loopback device to leave the first couple open
 export LOOP_BACK=/dev/block/loop4
 export SOURCE_IMG=/data/local/kali_img/kali.img
@@ -8,13 +11,13 @@ export NEW_ROOT=/data/local/kali
 
 # Check device
 hardw=`getprop ro.hardware`
-if [[ "$hardw" == "deb" || "$hardw" == "flo" || "$hardw" == "hammerhead" ]]; then
-  # Mount chroot for new Pwn Pad and Pwn Phone
-  losetup $LOOP_BACK $SOURCE_IMG 
-  mount -t ext4 $LOOP_BACK $NEW_ROOT
+if [[ "$hardw" == "grouper" || "$hardw" == "tilapia" ]]; then
+  # Mount chroot for Pwn Pad 1
+  mount -o loop -t ext4 $SOURCE_IMG $NEW_ROOT
 else
-  # Mount chroot for old Pwn Pad
-  mount -o loop -t ext4 $SOURCE_IMG $NEW_ROOT 
+  # Mount chroot for Pwn Phone, Pwn Pad 2 and Pwn Pad 3
+  losetup $LOOP_BACK $SOURCE_IMG
+  mount -t ext4 $LOOP_BACK $NEW_ROOT
 fi
 
 # Mount other filesystems for chroot environment
@@ -33,12 +36,13 @@ mount -o bind /system $NEW_ROOT/system
 sysctl -w net.ipv4.ip_forward=1 &> /dev/null
 
 # Run script to assign interfaces at system startup (wlan0 internal, wlan1 TP-Link)
-. /system/bin/wlan_interface_assigner.sh
+#. /system/bin/wlan_interface_assigner.sh
 
 # Setup environment variables for shell environment.
 export HOME=/root
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 export TERM=xterm-color
+unset LD_PRELOAD
 
 # Copy mounts so chroot can see what is mounted
 /system/xbin/chroot $NEW_ROOT /bin/cp /proc/mounts /etc/mtab

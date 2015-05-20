@@ -18,6 +18,7 @@ export HOME=/root
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/pwnix/bin
 export TERM=xterm-color
 export TZ=America/New_York
+unset LD_PRELOAD
 
 echo "[!] Welcome to the Pwn zone. Get your game face on."
 
@@ -26,7 +27,7 @@ echo "[!] Welcome to the Pwn zone. Get your game face on."
 
 # Copy mounts so chroot can see what is mounted
 # Can then mount USB OTG flash drive to copy files to/from chroot environment
-/system/xbin/chroot $NEW_ROOT /bin/cp /proc/mounts /etc/mtab
+/system/xbin/cp /proc/mounts $NEW_ROOT/etc/mtab
 
 # Drop user to shell
 /system/xbin/chroot $NEW_ROOT /bin/bash
