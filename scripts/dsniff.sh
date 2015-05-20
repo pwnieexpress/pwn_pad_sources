@@ -26,7 +26,7 @@ f_interface_setup(){
   echo "5. at0 (Use with EvilAP)"
   echo "6. $gsm_int (4G GSM connection)"
   echo
-
+  echo "NOTE: If selected interface is unavailable, this menu will loop."
   read -p "Choice: " interfacechoice
 
   case $interfacechoice in
@@ -38,6 +38,7 @@ f_interface_setup(){
     6) interface=$gsm_int ;;
     *) f_interface_setup ;;
   esac
+  ifconfig $interface || f_interface
 }
 
 f_logging_setup(){

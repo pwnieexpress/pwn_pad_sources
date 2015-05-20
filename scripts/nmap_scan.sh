@@ -10,6 +10,7 @@ f_interface(){
   echo "3. wlan1  (USB TP-Link adapter)"
   echo "4. at0  (Use with EvilAP)"
   echo
+  echo "NOTE: If selected interface is unavailable, this menu will loop."
   read -p "Choice [1-4]: " interfacechoice
 
   case $interfacechoice in
@@ -19,6 +20,7 @@ f_interface(){
     4) interface=at0 ;;
     *) f_interface ;;
   esac
+  ifconfig $interface || f_interface
 }
 
 f_one_or_two(){

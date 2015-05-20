@@ -58,6 +58,7 @@ f_interface(){
   echo "2. eth0  (USB Ethernet adapter)"
   echo "3. wlan0  (internal Wifi)"
   echo
+  echo "NOTE: If selected interface is unavailable, this menu will loop."
   read -p "Choice [1-3]: " selection
 
   case $selection in
@@ -66,6 +67,7 @@ f_interface(){
     3) interface=wlan0 ;;
     *) interface=$gsm_int ;;
   esac
+  ifconfig $interface || f_interface
 }
 
 f_ssid(){

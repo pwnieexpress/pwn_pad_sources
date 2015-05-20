@@ -11,6 +11,7 @@ f_interface(){
   echo "2. wlan0  (internal Wifi)"
   echo "3. wlan1  (USB TP-Link adapter)"
   echo
+  echo "NOTE: If selected interface is unavailable, this menu will loop."
   read -p "Choice: " interfacechoice
 
   case $interfacechoice in
@@ -19,6 +20,7 @@ f_interface(){
     3) interface=wlan1 ;;
     *) f_interface ;;
   esac
+  ifconfig $interface || f_interface
 }
 
 f_roll_mac(){
