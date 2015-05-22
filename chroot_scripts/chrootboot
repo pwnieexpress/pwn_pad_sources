@@ -47,5 +47,4 @@ unset LD_PRELOAD
 # Run this last in /system/bin/chrootboot
 if [ -x $NEW_ROOT/first_boot.sh ]; then
   /system/xbin/chroot $NEW_ROOT /first_boot.sh
-  /system/bin/rm -f $NEW_ROOT/first_boot.sh
 fi
