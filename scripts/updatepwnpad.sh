@@ -30,16 +30,7 @@ f_one_or_two(){
 f_confirm_and_do_update(){
   if [ $(f_one_or_two) -eq 1 ]; then
     echo "Starting update..."
-    # If /system is mounted ro then mount rw for update then mount back
-    # Avoid having /system mounted rw
-    if [ ! -w /system ]; then
-      local remount=yes
-      mount -o rw,remount /system
-  fi
     /opt/pwnix/chef/update.sh
-    if [ "remount" = "yes" ]; then
-      mount -o ro,remount /system
-    fi
     echo
     echo "[!] Congratulations, this device has been updated!"
     echo "The current version is:"
