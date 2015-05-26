@@ -1,27 +1,7 @@
 #!/bin/sh +x
 # /usr/bin/macchanger --help
 # Roll MAC address and hostname
-
-# Get interface to change MAC address of
-f_interface(){
-  clear
-  echo "Select which interface to randomly roll MAC of [1-3]:"
-  echo
-  echo "1. eth0  (USB Ethernet adapter)"
-  echo "2. wlan0  (internal Wifi)"
-  echo "3. wlan1  (USB TP-Link adapter)"
-  echo
-  echo "NOTE: If selected interface is unavailable, this menu will loop."
-  read -p "Choice: " interfacechoice
-
-  case $interfacechoice in
-    1) interface=eth0 ;;
-    2) interface=wlan0 ;;
-    3) interface=wlan1 ;;
-    *) f_interface ;;
-  esac
-  ifconfig $interface || f_interface
-}
+. px_interface_selector.sh
 
 f_roll_mac(){
   echo
@@ -44,16 +24,12 @@ f_roll_hostname(){
   echo
 }
 
-f_run(){
-  f_interface
+f_interface 0
 
-  ifconfig $interface down
+ifconfig $interface down
 
-  f_roll_mac
-  f_roll_hostname
+f_roll_mac
+f_roll_hostname
 
-  ifconfig $interface up
-  ifconfig $interface
-}
-
-f_run
+ifconfig $interface up
+ifconfig $interface
