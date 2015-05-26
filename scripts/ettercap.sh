@@ -11,25 +11,6 @@ f_banner(){
   echo
 }
 
-f_interface(){
-  echo "Select which interface to sniff/poison on [1-3]:"
-  echo
-  echo "1. eth0  (USB Ethernet adapter)"
-  echo "2. wlan0  (internal Wifi)"
-  echo "3. wlan1  (USB TP-Link adapter)"
-  echo
-  echo "NOTE: If selected interface is unavailable, this menu will loop."
-  read -p "Choice [1-3]: " interfacechoice
-
-  case $interfacechoice in
-    1) interface=eth0 ;;
-    2) interface=wlan0 ;;
-    3) interface=wlan1 ;;
-    *) f_interface ;;
-  esac
-  ifconfig $interface || f_interface
-}
-
 f_one_or_two(){
   read -p "Choice [1-2]: " input
   case $input in
@@ -104,7 +85,7 @@ f_run(){
 }
 
 f_banner
-f_interface
+f_interface 0 0
 f_sslfake
 f_logging
 f_run
