@@ -105,7 +105,12 @@ f_mon_toggle(){
     2)
       echo
       echo "[+] Bring wlan1mon down.."
-      airmon-ng stop wlan1mon
+      if [[ "$hardw" == "deb" || "$hardw" == "flo" ]]; then
+        iw dev wlan1mon del
+        iw phy $(cat /sys/class/net/wlan0/phy80211/name) interface add wlan1 type station
+      else
+        airmon-ng stop wlan1mon &> /dev/null
+      fi
       echo
       echo "[!] wlan1mon is down"
       echo
