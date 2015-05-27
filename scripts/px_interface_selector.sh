@@ -52,7 +52,7 @@ f_interface(){
     5) interface=at0 ;;
     6) interface=$gsm_int ;;
     0) cell_enabled=1 all_wifi=1 f_interface  ;;
-    *) f_interface ;;
+    *) interface=${default_interface} ;;
   esac
   ifconfig $interface >/dev/zero 2>&1 || f_interface $cell_enabled $all_wifi
 }
