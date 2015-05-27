@@ -22,7 +22,7 @@ fi
 
 if [[ "$hardw" == "deb" || "$hardw" == "flo" ]]; then
   iw dev wlan1mon del
-  iw phy $(cat /sys/class/net/wlan0/phy80211/name) interface add wlan1 type station
+  iw phy $(cat /sys/class/net/wlan1/phy80211/name) interface add wlan1 type station
 else
   airmon-ng stop wlan1mon &> /dev/null
 fi
