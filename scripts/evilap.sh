@@ -32,6 +32,7 @@ f_clean_up(){
   echo "[-] Killing other instances of airbase or dhcpd"
   killall airbase-ng &> /dev/null
   killall dhcpd &> /dev/null
+  hardw=`/system/bin/getprop ro.hardware`
   if [[ "$hardw" == "deb" || "$hardw" == "flo" ]]; then
     iw dev wlan1mon del
     iw phy $(cat /sys/class/net/wlan1/phy80211/name) interface add wlan1 type station
