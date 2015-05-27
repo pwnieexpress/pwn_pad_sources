@@ -1,5 +1,6 @@
 #!/bin/bash
 # Cleartext password sniffing on all available interfaces
+cell_enabled=1
 . px_interface_selector.sh
 
 f_logging_setup(){
@@ -37,6 +38,6 @@ f_run(){
   fi
 }
 
-f_interface 1
+f_interface
 f_logging_setup
 f_run

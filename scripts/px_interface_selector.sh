@@ -1,8 +1,10 @@
 #!/bin/sh
 #unified f_interface function abstract
-#usage:   px_interface_selector.sh [cell allowed (default off)] [all wifi interfaces allowed (default on)]
-#example: px_interface_selector.sh 1 0
-#           cell allowed, wlan1mon and at0 not allowed
+# variables consumed:
+#  cell_enabled - enable or disable $gsm_int
+#  all_wifi - enable or disable wlan1mon and at0
+#  include_monitor - enable or disable wlan1mon
+#  default_interface - contains default interface, if any
 #TODO: handle default interface
 
 f_identify_device(){
@@ -23,20 +25,21 @@ f_identify_device(){
 }
 
 f_interface(){
-  all_wifi=${2:-1}
-  cell_enabled=${1:-0}
+  : ${all_wifi:=-1}
+  : ${cell_enabled:=0}
+  : ${include_monitor:=1}
   if [ "$cell_enabled" = "1" ]; then
     f_identify_device
   fi
   clear
   printf "Select which interface to sniff on [1-6]:\n"
   printf "\n"
-  printf "$(f_colorize eth0)1. eth0  (USB Ethernet adapter)\e[0m\n"
-  printf "$(f_colorize wlan0)2. wlan0  (internal Wifi)\e[0m\n"
-  printf "$(f_colorize wlan1)3. wlan1  (USB TP-Link adapter)\e[0m\n"
-  [ "$all_wifi" = "1" ] && printf "$(f_colorize wlan1mon)4. wlan1mon  (monitor mode interface)\e[0m\n"
-  [ "$all_wifi" = "1" ] && printf "$(f_colorize at0)5. at0  (Use with EvilAP)\e[0m\n"
-  [ "$cell_enabled" = "1" ] && printf "$(f_colorize $gsm_int)6. $gsm_int (4G GSM connection)\e[0m\n"
+  printf "$(f_colorize eth0)1. eth0  (USB Ethernet adapter)$(f_isdefault eth0)\e[0m\n"
+  printf "$(f_colorize wlan0)2. wlan0  (internal Wifi)$(f_isdefault wlan0)\e[0m\n"
+  printf "$(f_colorize wlan1)3. wlan1  (USB TP-Link adapter)$(f_isdefault wlan1)\e[0m\n"
+  [ "$all_wifi" = "1" ] || [ "$include_monitor" = "1" ] && printf "$(f_colorize wlan1mon)4. wlan1mon  (monitor mode interface)$(f_isdefault wlan1mon)\e[0m\n"
+  [ "$all_wifi" = "1" ] && printf "$(f_colorize at0)5. at0  (Use with EvilAP)$(f_isdefault at0)\e[0m\n"
+  [ "$cell_enabled" = "1" ] && printf "$(f_colorize $gsm_int)6. $gsm_int (4G GSM connection)$(f_isdefault $gsm_int)\e[0m\n"
   printf "\n"
   printf "NOTE: If selected interface is unavailable, this menu will loop.\n"
   read -p "Choice: " interfacechoice
@@ -48,8 +51,8 @@ f_interface(){
     4) interface=wlan1mon ;;
     5) interface=at0 ;;
     6) interface=$gsm_int ;;
-    0) f_interface 1 1 ;;
-    *) f_interface $cell_enabled $all_wifi;;
+    0) cell_enabled=1 all_wifi=1 f_interface  ;;
+    *) f_interface ;;
   esac
   ifconfig $interface >/dev/zero 2>&1 || f_interface $cell_enabled $all_wifi
 }
@@ -68,5 +71,11 @@ f_colorize(){
   fi
 }
 
-#f_interface $1 $2
-#printf "interface=$interface\n"
+f_isdefault(){
+  if [ "$default_interface" = "$1" ]; then
+    printf " (default)"
+  fi
+}
+
+f_interface
+printf "interface=$interface\n"

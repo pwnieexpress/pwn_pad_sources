@@ -4,6 +4,7 @@
 trap f_clean_up INT
 trap f_clean_up KILL
 
+cell_enabled=1
 . px_interface_selector.sh
 
 # Cleanup function to ensure sslstrip stops and iptable rules stop
@@ -30,7 +31,7 @@ f_run(){
   echo
   sleep 2
 
-  f_interface 1
+  f_interface
   f_ip_tables
 
   logfile=/opt/pwnix/captures/passwords/sslstrip_$(date +%F-%H%M).log

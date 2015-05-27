@@ -1,5 +1,7 @@
 #!/bin/bash
 # Ettercap ARP cache poison script
+all_wifi=0
+. px_interface_selector.sh
 
 f_banner(){
   clear
@@ -85,7 +87,7 @@ f_run(){
 }
 
 f_banner
-f_interface 0 0
+f_interface
 f_sslfake
 f_logging
 f_run

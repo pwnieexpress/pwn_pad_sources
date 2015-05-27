@@ -1,5 +1,6 @@
 #!/bin/bash
 # Tshark script for sniffing on available interfaces
+cell_enabled=1
 . px_interface_selector.sh
 
 f_savecap(){
@@ -30,5 +31,5 @@ f_no(){
   tshark -i $interface
 }
 
-f_interface 1
+f_interface
 f_savecap

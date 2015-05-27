@@ -4,6 +4,7 @@
 #Company: Pwnie Express
 #Date: May 2014
 
+cell_enabled=1
 . px_interface_selector.sh
 
 f_savecap(){
@@ -34,5 +35,5 @@ f_no(){
   tshark -i $interface -q -w - | strings -n 8
 }
 
-f_interface 1
+f_interface
 f_savecap
