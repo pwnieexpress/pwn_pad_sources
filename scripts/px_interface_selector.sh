@@ -40,12 +40,13 @@ f_interface(){
   : ${include_cell:=0}
   : ${include_usb:=1}
   : ${include_all:=0}
+  : ${message:=use}
 
   if ( [ "$include_cell" = "1" ] || [ "$include_all" = "1" ] ) && [ -z "$gsm_int" ]; then
     f_identify_device
   fi
   clear
-  printf "Select which interface to sniff on [1-7]:\n"
+  printf "Select which interface to $message [1-7]:\n"
   printf "\n"
   printf "$(f_colorize eth0)1. eth0  (USB Ethernet adapter)$(f_isdefault eth0)\e[0m\n"
   printf "$(f_colorize wlan0)2. wlan0  (internal Wifi)$(f_isdefault wlan0)\e[0m\n"

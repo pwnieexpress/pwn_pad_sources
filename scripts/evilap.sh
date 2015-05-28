@@ -7,6 +7,7 @@ include_monitor=0
 include_airbase=0
 include_cell=1
 default_interface="${!gsm_int}"
+message="be used for Internet uplink"
 . /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 
 trap f_endclean INT
