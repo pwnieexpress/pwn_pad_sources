@@ -1,8 +1,5 @@
 #!/bin/bash
 # Description: Script to remove all logs and anything potentially legally binding
-# Authors: Awk, Sed, t1mz0r
-# Company: Pwnie Express
-# Date: May 2014
 
 CAPTURE_FILES=$(find /opt/pwnix/captures -type f)
 

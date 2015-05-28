@@ -1,8 +1,5 @@
 #!/bin/bash
 #Description: Script to watch strings go by in real time
-#Author: Awk, Sed, t1mz0r
-#Company: Pwnie Express
-#Date: May 2014
 
 cell_enabled=1
 . px_interface_selector.sh

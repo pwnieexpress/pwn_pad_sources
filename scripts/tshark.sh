@@ -1,5 +1,6 @@
 #!/bin/bash
 # Tshark script for sniffing on available interfaces
+
 cell_enabled=1
 . px_interface_selector.sh
 

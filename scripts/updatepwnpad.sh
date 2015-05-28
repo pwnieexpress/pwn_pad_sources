@@ -1,4 +1,5 @@
 # /bin/bash
+#script to update mobile line using standard chef update procedure
 
 f_banner(){
   clear
