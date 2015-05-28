@@ -94,20 +94,22 @@ f_beacon_rate(){
 
 f_preplaunch(){
   #Change the hostname and mac address randomly
-
   echo "[+] Rolling MAC address and hostname randomly"
   echo
 
   ifconfig wlan1 down
-  macchanger -r wlan1
 
   hn=`ifconfig wlan1 |grep HWaddr |awk '{print$5}' |awk -F":" '{print$1$2$3$4$5$6}'`
   hostname $hn
   echo "[+] New hostname set: $hn"
 
   sleep 2
-  #Put wlan1 into monitor mode - wlan1mon created
+  #Put wlan1 into monitor mode and randomize mac - wlan1mon created
   airmon-ng start wlan1
+  ifconfig wlan1mon down
+  macchanger -r wlan1mon
+  ifconfig wlan1mon up
+
   mkdir /dev/net/ &> /dev/null
   ln -s /dev/tun /dev/net/tun &> /dev/null
 }
@@ -202,4 +204,3 @@ else
 fi
 
 f_endclean
-
