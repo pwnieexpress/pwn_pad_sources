@@ -96,5 +96,5 @@ f_isdefault(){
   fi
 }
 
-f_interface
-printf "interface=$interface\n"
+#f_interface
+#printf "interface=$interface\n"
