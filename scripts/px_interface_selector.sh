@@ -1,11 +1,14 @@
 #!/bin/sh
 #unified f_interface function abstract
 # variables consumed:
-#  cell_enabled - enable or disable $gsm_int
-#  all_wifi - enable or disable wlan1mon and at0
-#  include_monitor - enable or disable wlan1mon
+#  include_extwifi  - enable or disable wlan1
+#  include_monitor  - enable or disable wlan1mon
+#  include_airbase  - enable or disable at0
+#  include_cell     - enable or disable $gsm_int
+#  include_usb      - enable or disable rndis0
+#  include_all      - enable everything
+#
 #  default_interface - contains default interface, if any
-#TODO: handle default interface
 
 f_identify_device(){
 # Check device
@@ -13,33 +16,44 @@ f_identify_device(){
     hardw=`/system/bin/getprop ro.hardware`
     if [[ "$hardw" == "deb" || "$hardw" == "flo" ]]; then
       # Set interface for new Pwn Pad
-      gsm_int="rmnet_usb0"
+      ifconfig rmnet_usb0 > /dev/zero 2>&1
+      if [ "$?" = "0" ]; then
+        gsm_int="rmnet_usb0"
+      fi
     else
       # Set interface for Pwn Phone and old Pwn Pad
-      gsm_int="rmnet0"
+      ifconfig rmnet0 > /dev/zero 2>&1
+      if [ "$?" = "0" ]; then
+        gsm_int="rmnet0"
+      fi
     fi
   else
-    #we don't have access to /system/bin/getprop, use sane default
-    gsm_int="rmnet0"
+    #we don't have access to /system/bin/getprop, abort
+    gsm_int=""
   fi
 }
 
 f_interface(){
-  : ${all_wifi:=-1}
-  : ${cell_enabled:=0}
-  : ${include_monitor:=1}
-  if [ "$cell_enabled" = "1" ]; then
+  : ${include_extwifi:=1}
+  : ${include_monitor:=0}
+  : ${include_airbase:=1}
+  : ${include_cell:=0}
+  : ${include_usb:=1}
+  : ${include_all:=0}
+
+  if ( [ "$include_cell" = "1" ] || [ "$include_all" = "1" ] ) && [ -n "$gsm_int" ]; then
     f_identify_device
   fi
   clear
-  printf "Select which interface to sniff on [1-6]:\n"
+  printf "Select which interface to sniff on [1-7]:\n"
   printf "\n"
   printf "$(f_colorize eth0)1. eth0  (USB Ethernet adapter)$(f_isdefault eth0)\e[0m\n"
   printf "$(f_colorize wlan0)2. wlan0  (internal Wifi)$(f_isdefault wlan0)\e[0m\n"
-  printf "$(f_colorize wlan1)3. wlan1  (USB TP-Link adapter)$(f_isdefault wlan1)\e[0m\n"
-  [ "$all_wifi" = "1" ] || [ "$include_monitor" = "1" ] && printf "$(f_colorize wlan1mon)4. wlan1mon  (monitor mode interface)$(f_isdefault wlan1mon)\e[0m\n"
-  [ "$all_wifi" = "1" ] && printf "$(f_colorize at0)5. at0  (Use with EvilAP)$(f_isdefault at0)\e[0m\n"
-  [ "$cell_enabled" = "1" ] && printf "$(f_colorize $gsm_int)6. $gsm_int (4G GSM connection)$(f_isdefault $gsm_int)\e[0m\n"
+  [ "$include_all" = "1" ] || [ "$include_extwifi" = "1" ] && printf "$(f_colorize wlan1)3. wlan1  (USB TP-Link adapter)$(f_isdefault wlan1)\e[0m\n"
+  [ "$include_all" = "1" ] || [ "$include_monitor" = "1" ] && printf "$(f_colorize wlan1mon)4. wlan1mon  (monitor mode interface)$(f_isdefault wlan1mon)\e[0m\n"
+  [ "$include_all" = "1" ] || [ "$include_airbase" = "1" ] && printf "$(f_colorize at0)5. at0  (Use with EvilAP)$(f_isdefault at0)\e[0m\n"
+  ( [ "$include_all" = "1" ] || [ "$include_cell" = "1" ] ) && [ -n "$gsm_int" ] && printf "$(f_colorize $gsm_int)6. $gsm_int (4G GSM connection)$(f_isdefault $gsm_int)\e[0m\n"
+  [ "$include_all" = "1" ] || [ "$include_usb" = "1" ] && printf "$(f_colorize wlan1)7. rndis0  (USB tether)$(f_isdefault rndis0)\e[0m\n"
   printf "\n"
   printf "NOTE: If selected interface is unavailable, this menu will loop.\n"
   read -p "Choice: " interfacechoice
@@ -51,10 +65,15 @@ f_interface(){
     4) interface=wlan1mon ;;
     5) interface=at0 ;;
     6) interface=$gsm_int ;;
-    0) cell_enabled=1 all_wifi=1 f_interface  ;;
+    7) interface=rndis0 ;;
+    0) include_all=1 f_interface  ;;
     *) interface=${default_interface} ;;
   esac
-  ifconfig $interface >/dev/zero 2>&1 || f_interface $cell_enabled $all_wifi
+  if [ -n "$interface" ]; then
+    ifconfig $interface >/dev/zero 2>&1 || f_interface
+  else
+    f_interface
+  fi
 }
 
 f_colorize(){
