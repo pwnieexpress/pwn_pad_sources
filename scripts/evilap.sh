@@ -1,9 +1,12 @@
 #!/bin/bash
 # Desc: EvilAP script to forcefully connect wireless clients
 
-all_wifi=0
+#this interface selection is for the uplink, attack always uses wlan1
+include_extwifi=0
 include_monitor=0
+include_airbase=0
 cell_enabled=1
+default_interface="${!gsm_int}"
 . px_interface_selector.sh
 
 trap f_endclean INT

@@ -1,6 +1,7 @@
 #!/bin/bash
 # Ettercap ARP cache poison script
 
+include_monitor=0
 . px_interface_selector.sh
 
 f_banner(){
