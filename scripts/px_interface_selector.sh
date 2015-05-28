@@ -54,7 +54,7 @@ f_interface(){
   [ "$include_all" = "1" ] || [ "$include_monitor" = "1" ] && printf "$(f_colorize wlan1mon)4. wlan1mon  (monitor mode interface)$(f_isdefault wlan1mon)\e[0m\n"
   [ "$include_all" = "1" ] || [ "$include_airbase" = "1" ] && printf "$(f_colorize at0)5. at0  (Use with EvilAP)$(f_isdefault at0)\e[0m\n"
   ( [ "$include_all" = "1" ] || [ "$include_cell" = "1" ] ) && [ -n "$gsm_int" ] && printf "$(f_colorize $gsm_int)6. $gsm_int (4G GSM connection)$(f_isdefault $gsm_int)\e[0m\n"
-  [ "$include_all" = "1" ] || [ "$include_usb" = "1" ] && printf "$(f_colorize wlan1)7. rndis0  (USB tether)$(f_isdefault rndis0)\e[0m\n"
+  [ "$include_all" = "1" ] || [ "$include_usb" = "1" ] && printf "$(f_colorize rndis0)7. rndis0  (USB tether)$(f_isdefault rndis0)\e[0m\n"
   printf "\n"
   printf "NOTE: If selected interface is unavailable, this menu will loop.\n"
   read -p "Choice: " interfacechoice
