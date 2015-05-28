@@ -30,4 +30,4 @@ echo "[!] Welcome to the Pwn zone. Get your game face on."
 /system/xbin/busybox cp /proc/mounts $NEW_ROOT/etc/mtab
 
 # Drop user to shell
-/system/xbin/busybox chroot $NEW_ROOT /bin/bash
+/system/xbin/busybox chroot $NEW_ROOT /bin/bash --login
