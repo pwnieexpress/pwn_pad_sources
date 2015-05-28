@@ -41,7 +41,7 @@ f_interface(){
   : ${include_usb:=1}
   : ${include_all:=0}
 
-  if ( [ "$include_cell" = "1" ] || [ "$include_all" = "1" ] ) && [ -n "$gsm_int" ]; then
+  if ( [ "$include_cell" = "1" ] || [ "$include_all" = "1" ] ) && [ -z "$gsm_int" ]; then
     f_identify_device
   fi
   clear
