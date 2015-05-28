@@ -20,7 +20,7 @@ mount -o loop -t ext4 $SOURCE_IMG $NEW_ROOT
 mount -o remount,rw -t yaffs /dev/block/mtdblock3 /system
 
 # Mount Android filesystems for chroot environment
-/system/xbin/busybox mount --rbind /sdcard $NEW_ROOT/sdcard
+/system/xbin/busybox mount --rbind /storage/emulated/legacy $NEW_ROOT/sdcard
 /system/xbin/busybox mount --rbind /system $NEW_ROOT/system
 
 sysctl -w net.ipv4.ip_forward=1 &> /dev/null
