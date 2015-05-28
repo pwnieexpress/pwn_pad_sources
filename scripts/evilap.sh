@@ -7,7 +7,7 @@ include_monitor=0
 include_airbase=0
 cell_enabled=1
 default_interface="${!gsm_int}"
-. px_interface_selector.sh
+. /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 
 trap f_endclean INT
 trap f_endclean KILL

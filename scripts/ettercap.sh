@@ -2,7 +2,7 @@
 # Ettercap ARP cache poison script
 
 include_monitor=0
-. px_interface_selector.sh
+. /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 
 f_banner(){
   clear

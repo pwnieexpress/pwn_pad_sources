@@ -2,7 +2,7 @@
 # /usr/bin/macchanger --help
 # Roll MAC address and hostname
 
-. px_interface_selector.sh
+. /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 
 f_roll_mac(){
   echo

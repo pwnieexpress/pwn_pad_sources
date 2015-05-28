@@ -2,7 +2,7 @@
 # Tcpdump script for sniffing on available interfaces
 
 include_cell=1
-. px_interface_selector.sh
+. /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 
 f_savecap(){
   clear

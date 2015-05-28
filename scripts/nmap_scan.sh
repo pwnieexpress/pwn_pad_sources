@@ -2,7 +2,7 @@
 # Script to scan current network
 
 include_monitor=0
-. px_interface_selector.sh
+. /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 
 f_one_or_two(){
   read -p "Choice [1-2]: " input
