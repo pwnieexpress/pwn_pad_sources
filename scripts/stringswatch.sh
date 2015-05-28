@@ -1,7 +1,7 @@
 #!/bin/bash
 #Description: Script to watch strings go by in real time
 
-cell_enabled=1
+include_cell=1
 . px_interface_selector.sh
 
 f_savecap(){

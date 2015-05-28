@@ -1,7 +1,7 @@
 #!/bin/bash
 # Tcpdump script for sniffing on available interfaces
 
-cell_enabled=1
+include_cell=1
 . px_interface_selector.sh
 
 f_savecap(){

@@ -1,12 +1,12 @@
 #!/bin/sh
 #unified f_interface function abstract
 # variables consumed:
-#  include_extwifi  - enable or disable wlan1
-#  include_monitor  - enable or disable wlan1mon
-#  include_airbase  - enable or disable at0
-#  include_cell     - enable or disable $gsm_int
-#  include_usb      - enable or disable rndis0
-#  include_all      - enable everything
+#  include_extwifi  - enable or disable wlan1 (default on)
+#  include_monitor  - enable or disable wlan1mon (default on)
+#  include_airbase  - enable or disable at0 (default on)
+#  include_cell     - enable or disable $gsm_int (default OFF)
+#  include_usb      - enable or disable rndis0 (default on)
+#  include_all      - enable everything (default OFF)
 #
 #  default_interface - contains default interface, if any
 
@@ -35,7 +35,7 @@ f_identify_device(){
 
 f_interface(){
   : ${include_extwifi:=1}
-  : ${include_monitor:=0}
+  : ${include_monitor:=1}
   : ${include_airbase:=1}
   : ${include_cell:=0}
   : ${include_usb:=1}

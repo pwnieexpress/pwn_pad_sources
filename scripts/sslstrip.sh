@@ -4,7 +4,7 @@
 trap f_clean_up INT
 trap f_clean_up KILL
 
-cell_enabled=1
+include_cell=1
 . px_interface_selector.sh
 
 # Cleanup function to ensure sslstrip stops and iptable rules stop
