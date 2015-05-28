@@ -5,7 +5,7 @@
 include_extwifi=0
 include_monitor=0
 include_airbase=0
-cell_enabled=1
+include_cell=1
 default_interface="${!gsm_int}"
 . /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 
