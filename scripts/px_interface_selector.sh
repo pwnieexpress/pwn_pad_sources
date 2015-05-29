@@ -43,7 +43,7 @@ f_interface(){
   : ${include_usb:=1}
   : ${include_all:=0}
   : ${require_ip:=0}
-  : ${message:=use}
+  : ${message:="sniff on"}
 
   if [ "$require_ip" = "1" ]; then
     what_valid="have an IP on the target network"

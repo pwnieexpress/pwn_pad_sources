@@ -7,7 +7,6 @@ trap f_clean_up KILL
 #this block controls the features for px_interface_selector
 include_cell=1
 require_ip=1
-message="sniff on"
 . /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 
 # Cleanup function to ensure sslstrip stops and iptable rules stop
