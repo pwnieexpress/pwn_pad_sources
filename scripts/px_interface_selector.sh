@@ -1,4 +1,3 @@
-#!/bin/sh
 #unified f_interface function abstract
 # variables consumed:
 #  include_extwifi  - enable or disable wlan1 (default on)
@@ -99,6 +98,3 @@ f_isdefault(){
     printf " (default)"
   fi
 }
-
-#f_interface
-#printf "interface=$interface\n"
