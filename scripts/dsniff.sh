@@ -1,5 +1,7 @@
 #!/bin/bash
 # Cleartext password sniffing on all available interfaces
+
+#this block controls the features for px_interface_selector
 include_all=1
 message="sniff on"
 . /opt/pwnix/pwnpad-scripts/px_interface_selector.sh

@@ -1,6 +1,7 @@
 #!/bin/bash
 # Ettercap ARP cache poison script
 
+#this block controls the features for px_interface_selector
 include_monitor=0
 require_ip=1
 message="sniff/poison on"

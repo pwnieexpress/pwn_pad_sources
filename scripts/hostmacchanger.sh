@@ -2,6 +2,7 @@
 # /usr/bin/macchanger --help
 # Roll MAC address and hostname
 
+#this block controls the features for px_interface_selector
 message="randomly roll the MAC address of"
 . /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 

@@ -1,11 +1,12 @@
 #!/bin/bash
 # Desc: EvilAP script to forcefully connect wireless clients
 
-#this interface selection is for the uplink, attack always uses wlan1
+#this block controls the features for px_interface_selector
 include_extwifi=0
 include_monitor=0
 include_airbase=0
 include_cell=1
+#this interface selection is for the uplink, attack always uses wlan1
 default_interface=gsm_int
 message="be used for Internet uplink"
 . /opt/pwnix/pwnpad-scripts/px_interface_selector.sh

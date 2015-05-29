@@ -1,6 +1,7 @@
 #!/bin/bash
 #Description: Script to watch strings go by in real time
 
+#this block controls the features for px_interface_selector
 include_cell=1
 message="sniff on"
 . /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
