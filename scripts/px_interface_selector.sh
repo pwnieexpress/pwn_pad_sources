@@ -31,6 +31,9 @@ f_identify_device(){
     #we don't have access to /system/bin/getprop, abort
     gsm_int=""
   fi
+  if [ "$default_interface" = "gsm_int" ] && [ -n "$gsm_int" ]; then
+    default_interface=$gsm_int
+  fi
 }
 
 f_interface(){
