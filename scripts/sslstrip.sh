@@ -5,6 +5,7 @@ trap f_clean_up INT
 trap f_clean_up KILL
 
 include_cell=1
+require_ip=1
 message="sniff on"
 . /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 

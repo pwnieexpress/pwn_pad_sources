@@ -2,6 +2,7 @@
 # Ettercap ARP cache poison script
 
 include_monitor=0
+require_ip=1
 message="sniff/poison on"
 . /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 

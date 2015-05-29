@@ -1,12 +1,12 @@
 #unified f_interface function abstract
 # variables consumed:
-#  include_extwifi  - enable or disable wlan1 (default on)
-#  include_monitor  - enable or disable wlan1mon (default on)
-#  include_airbase  - enable or disable at0 (default on)
-#  include_cell     - enable or disable $gsm_int (default OFF)
-#  include_usb      - enable or disable rndis0 (default on)
-#  include_all      - enable everything (default OFF)
-#
+#  include_extwifi   - enable or disable wlan1 (default on)
+#  include_monitor   - enable or disable wlan1mon (default on)
+#  include_airbase   - enable or disable at0 (default on)
+#  include_cell      - enable or disable $gsm_int (default OFF)
+#  include_usb       - enable or disable rndis0 (default on)
+#  include_all       - enable everything (default OFF)
+#  require_ip        - require an ip for the interface to show as available (default OFF)#
 #  default_interface - contains default interface, if any
 
 f_identify_device(){
@@ -42,7 +42,14 @@ f_interface(){
   : ${include_cell:=0}
   : ${include_usb:=1}
   : ${include_all:=0}
+  : ${require_ip:=0}
   : ${message:=use}
+
+  if [ "$require_ip" = "1" ]; then
+    what_valid="have an IP on the target network"
+  else
+    what_valid="exist"
+  fi
 
   if ( [ "$include_cell" = "1" ] || [ "$include_all" = "1" ] ) && [ -z "$gsm_int" ]; then
     f_identify_device
@@ -58,7 +65,8 @@ f_interface(){
   ( [ "$include_all" = "1" ] || [ "$include_cell" = "1" ] ) && [ -n "$gsm_int" ] && printf "$(f_colorize $gsm_int)6. $gsm_int (4G GSM connection)$(f_isdefault $gsm_int)\e[0m\n"
   [ "$include_all" = "1" ] || [ "$include_usb" = "1" ] && printf "$(f_colorize rndis0)7. rndis0  (USB tether)$(f_isdefault rndis0)\e[0m\n"
   printf "\n"
-  printf "NOTE: If selected interface is unavailable, this menu will loop.\n"
+  printf "NOTE: If selected interface is \e[1;31minvalid\e[0m, this menu will loop.\n"
+  printf "      To be \e[1;32mvalid\e[0m, this interface must $what_valid.\n"
   read -p "Choice: " interfacechoice
 
   case $interfacechoice in
@@ -73,19 +81,32 @@ f_interface(){
     *) interface=${default_interface} ;;
   esac
   if [ -n "$interface" ]; then
-    ifconfig $interface >/dev/zero 2>&1 || f_interface
+    f_validate_choice $interface || f_interface
   else
     f_interface
   fi
 }
 
+f_validate_choice(){
+  #valid actually holds 0 for good and 1 for bad, I know, I know.
+  ip addr show dev $1 > /dev/zero 2>&1
+  local valid=$?
+  if [ "$require_ip" = "1" ] && [ "$valid" = 0 ];then
+    local has_ip="$(ip addr show dev $1 | awk '/inet / {print $2}')"
+    if [ -z "$has_ip" ]; then
+      valid=1
+    fi
+  fi
+  return $valid
+}
+
 f_colorize(){
-  ifconfig $1 > /dev/zero 2>&1
+  f_validate_choice $1
   if [ $? = 0 ]; then
-    #greeen text for exists
+    #green text for valid
     printf "\e[1;32m"
   elif  [ $? = 1 ]; then
-    #red text for does not exist
+    #red text for invalid
     printf "\e[1;31m"
   else
     #blue on unknown
