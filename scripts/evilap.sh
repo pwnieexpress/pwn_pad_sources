@@ -1,24 +1,18 @@
 #!/bin/bash
-# Date: May 2015
 # Desc: EvilAP script to forcefully connect wireless clients
-# Authors: Awk, Sedd, Pasties, t1mz0r
-# Company: Pwnie Express
+
+#this block controls the features for px_interface_selector
+include_extwifi=0
+include_monitor=0
+include_airbase=0
+include_cell=1
+#this interface selection is for the uplink, attack always uses wlan1
+default_interface=gsm_int
+message="be used for Internet uplink"
+. /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 
 trap f_endclean INT
 trap f_endclean KILL
-
-f_identify_device(){
-
-# Check device
-  hardw=`/system/bin/getprop ro.hardware`
-  if [[ "$hardw" == "deb" || "$hardw" == "flo" ]]; then
-    # Set interface for new Pwn Pad
-    gsm_int="rmnet_usb0"
-  else
-    # Set interface for Pwn Phone and old Pwn Pad
-    gsm_int="rmnet0"
-  fi
-}
 
 f_endclean(){
   echo
@@ -56,25 +50,6 @@ f_banner(){
   clear
   echo "[+] Welcome to EvilAP"
   echo
-}
-
-f_interface(){
-  echo "[+] Select which interface is being used for Internet [1-3]:"
-  echo
-  echo "1. [$gsm_int] (4G GSM connection)"
-  echo "2. eth0  (USB Ethernet adapter)"
-  echo "3. wlan0  (internal Wifi)"
-  echo
-  echo "NOTE: If selected interface is unavailable, this menu will loop."
-  read -p "Choice [1-3]: " selection
-
-  case $selection in
-    1) interface=$gsm_int ;;
-    2) interface=eth0 ;;
-    3) interface=wlan0 ;;
-    *) interface=$gsm_int ;;
-  esac
-  ifconfig $interface || f_interface
 }
 
 f_ssid(){
@@ -234,4 +209,3 @@ else
 fi
 
 f_endclean
-

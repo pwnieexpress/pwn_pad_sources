@@ -1,4 +1,5 @@
 #!/bin/bash
+#Script to run msfconsole with no flags
 
 clear
 echo

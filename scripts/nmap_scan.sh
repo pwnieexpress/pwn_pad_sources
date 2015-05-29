@@ -1,27 +1,11 @@
 #!/bin/bash
 # Script to scan current network
 
-f_interface(){
-  clear
-  echo "Select which interface to scan on [1-4]:"
-  echo
-  echo "1. eth0  (USB Ethernet adapter)"
-  echo "2. wlan0  (internal Wifi)"
-  echo "3. wlan1  (USB TP-Link adapter)"
-  echo "4. at0  (Use with EvilAP)"
-  echo
-  echo "NOTE: If selected interface is unavailable, this menu will loop."
-  read -p "Choice [1-4]: " interfacechoice
-
-  case $interfacechoice in
-    1) interface=eth0 ;;
-    2) interface=wlan0 ;;
-    3) interface=wlan1 ;;
-    4) interface=at0 ;;
-    *) f_interface ;;
-  esac
-  ifconfig $interface || f_interface
-}
+#this block controls the features for px_interface_selector
+include_monitor=0
+require_ip=1
+message="scan on"
+. /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 
 f_one_or_two(){
   read -p "Choice [1-2]: " input
@@ -63,4 +47,3 @@ f_scan(){
 
 f_interface
 f_scan
-

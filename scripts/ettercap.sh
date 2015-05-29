@@ -1,6 +1,12 @@
 #!/bin/bash
 # Ettercap ARP cache poison script
 
+#this block controls the features for px_interface_selector
+include_monitor=0
+require_ip=1
+message="sniff/poison on"
+. /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
+
 f_banner(){
   clear
   echo "Ettercap-NG 0.8.0 ARP Cache Poison Tool"
@@ -9,25 +15,6 @@ f_banner(){
   echo
   echo "[!] DO NOT USE WITH EVILAP - IT WON'T WORK!"
   echo
-}
-
-f_interface(){
-  echo "Select which interface to sniff/poison on [1-3]:"
-  echo
-  echo "1. eth0  (USB Ethernet adapter)"
-  echo "2. wlan0  (internal Wifi)"
-  echo "3. wlan1  (USB TP-Link adapter)"
-  echo
-  echo "NOTE: If selected interface is unavailable, this menu will loop."
-  read -p "Choice [1-3]: " interfacechoice
-
-  case $interfacechoice in
-    1) interface=eth0 ;;
-    2) interface=wlan0 ;;
-    3) interface=wlan1 ;;
-    *) f_interface ;;
-  esac
-  ifconfig $interface || f_interface
 }
 
 f_one_or_two(){

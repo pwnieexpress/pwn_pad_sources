@@ -1,45 +1,9 @@
 #!/bin/bash
 # Cleartext password sniffing on all available interfaces
 
-
-f_identify_device(){
-
-  # Check device
-  hardw=`/system/bin/getprop ro.hardware`
-  if [[ "$hardw" == "deb" || "$hardw" == "flo" ]]; then
-    # Set interface for new Pwn Pad
-    gsm_int="rmnet_usb0"
-  else
-    # Set interface for Pwn Phone and old Pwn Pad
-    gsm_int="rmnet0"
-  fi
-}
-
-f_interface_setup(){
-  clear
-  echo "Select which interface to sniff on [1-6]:"
-  echo
-  echo "1. eth0 (USB Ethernet adapter)"
-  echo "2. wlan0 (internal Wifi)"
-  echo "3. wlan1 (USB TP-Link adapter)"
-  echo "4. wlan1mon (monitor mode interface)"
-  echo "5. at0 (Use with EvilAP)"
-  echo "6. $gsm_int (4G GSM connection)"
-  echo
-  echo "NOTE: If selected interface is unavailable, this menu will loop."
-  read -p "Choice: " interfacechoice
-
-  case $interfacechoice in
-    1) interface=eth0 ;;
-    2) interface=wlan0 ;;
-    3) interface=wlan1 ;;
-    4) interface=wlan1mon ;;
-    5) interface=at0 ;;
-    6) interface=$gsm_int ;;
-    *) f_interface_setup ;;
-  esac
-  ifconfig $interface || f_interface
-}
+#this block controls the features for px_interface_selector
+include_all=1
+. /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 
 f_logging_setup(){
   clear
@@ -76,11 +40,6 @@ f_run(){
   fi
 }
 
-f_execute(){
-  f_identify_device
-  f_interface_setup
-  f_logging_setup
-  f_run
-}
-
-f_execute
+f_interface
+f_logging_setup
+f_run
