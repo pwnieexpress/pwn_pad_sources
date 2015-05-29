@@ -1,7 +1,7 @@
 #!/bin/bash
 # Script to scan current network
 
-messages="scan on"
+message="scan on"
 include_monitor=0
 . /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 
