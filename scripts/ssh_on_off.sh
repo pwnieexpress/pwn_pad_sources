@@ -4,6 +4,7 @@
 f_start_ssh(){
   echo "[+] Starting SSH server..."
   service ssh start
+  /system/bin/setenforce 0
   echo "[!] Done"
   echo
 }
