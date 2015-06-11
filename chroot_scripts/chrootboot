@@ -15,6 +15,7 @@ mount -o loop -t ext4 $SOURCE_IMG $NEW_ROOT
 /system/xbin/busybox mount --rbind /dev $NEW_ROOT/dev
 /system/xbin/busybox mount --rbind /proc $NEW_ROOT/proc
 /system/xbin/busybox mount --rbind /sys $NEW_ROOT/sys
+/system/xbin/busybox mount -o nosuid,noexec,relatime -t tmpfs tmpfs $NEW_ROOT/run
 
 # Mount Android filesystems for chroot environment
 /system/xbin/busybox mount --rbind /data/media/0 $NEW_ROOT/sdcard
