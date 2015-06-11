@@ -1,12 +1,24 @@
 #!/bin/bash
 # Script to turn SSHD on and off
 
+f_show_ip(){
+  IP_SUBNET=$(ip addr show | awk '/inet / {print $2}')
+  if [ -n "${IP_SUBNET}" ]; then
+    printf "\nIPs currently assigned to system:\n"
+    for i in $IP_SUBNET; do
+      printf "${i%/*}\n"
+    done
+  else
+    printf "No current IP found.\n"
+  fi
+}
+
 f_start_ssh(){
   echo "[+] Starting SSH server..."
   service ssh start
   /system/bin/setenforce 0
   echo "[!] Done"
-  echo
+  f_show_ip
 }
 
 f_stop_ssh(){
