@@ -96,7 +96,12 @@ f_endmsg(){
   printf  "Kismet captures saved to /opt/pwnix/captures/wireless/\n"
 }
 
-cd /opt/pwnix/captures/wireless/
+LOGDIR="/opt/pwnix/captures/wireless/"
+cd "$LOGDIR" &> /dev/null
+if [ $? != 0 ]; then
+  printf "Failed to cd into /opt/pwnix/captures/wireless, storing logs in $(pwd)\n"
+  LOGDIR="$(pwd)"
+fi
 
 f_pulse_suspend
 f_uicheck
