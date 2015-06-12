@@ -6,6 +6,7 @@ trap f_cleanup INT
 trap f_cleanup KILL
 
 include_wired=0
+include_intwifi=0
 include_airbase=0
 include_usb=0
 . /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
