@@ -24,7 +24,7 @@ f_gps_check(){
   fi
 }
 
-f_endclean(){
+f_cleanup(){
   ifconfig wlan1mon down &> /dev/null
   ifconfig wlan1 down &> /dev/null
   iw dev wlan1mon del &> /dev/null
@@ -85,12 +85,9 @@ check_port(){
   fi
 }
 
-clear
-echo
-echo  "Kismet captures saved to /opt/pwnix/captures/wireless/"
-echo
-
-wait 3
+f_endmsg(){
+  printf  "Kismet captures saved to /opt/pwnix/captures/wireless/\n"
+}
 
 cd /opt/pwnix/captures/wireless/
 
@@ -98,6 +95,6 @@ f_pulse_suspend
 f_uicheck
 f_gps_check
 kismet
-f_endclean
+f_cleanup
 f_pulse_restore
-
+f_endmsg
