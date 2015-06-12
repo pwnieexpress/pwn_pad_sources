@@ -11,6 +11,9 @@ default_interface=gsm_int
 message="be used for Internet uplink"
 . /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 
+f_validate_one wlan1
+
+
 trap f_endclean INT
 trap f_endclean KILL
 
