@@ -9,6 +9,7 @@ if f_validate_one wlan1mon; then
 elif f_validate_one wlan1; then
   interface=wlan1
 fi
+clear
 
 if [ -n "$interface" ]; then
 

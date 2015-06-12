@@ -5,7 +5,14 @@ clear
 . /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 
 #drop if after apks fixed
-if f_validate_one wlan1; then
+if f_validate_one wlan1mon; then
+  interface=wlan1mon
+elif f_validate_one wlan1; then
+  interface=wlan1
+fi
+clear
+
+if [ -n "$interface" ]; then
 
 f_run(){
 
