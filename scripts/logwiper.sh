@@ -33,13 +33,14 @@ clear_capture_files(){
   printf "[+] Removing logs and captures from /opt/pwnix/captures/\n"
   for file in "${CAPTURE_FILES[@]}"; do
     printf "  Removing $file\n"
-    wipe -f -i -r $file
+    shred --remove --force --iteration=1 --verbose "$file"
   done
 }
 
 clear_tmp_files(){
   printf '[+] Removing all files from /tmp/\n'
-  wipe -f -i -r /tmp/*
+  find /tmp -type f -exec shred --remove --force --iteration=1 --verbose {} \;
+  rm -rf /tmp/*
 }
 
 clear_all_files(){
