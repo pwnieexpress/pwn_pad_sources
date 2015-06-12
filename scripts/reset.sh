@@ -5,9 +5,7 @@ clear
 
 f_run(){
 
-  echo
-  echo '[!] FACTORY RESET in progress. All changes will be lost.'
-  echo
+  printf '\n[!] FACTORY RESET in progress. All changes will be lost.\n\n'
 
   f_reset
 }

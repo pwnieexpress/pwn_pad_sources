@@ -11,9 +11,7 @@ hciconfig hci0 up
 cd /opt/pwnix/captures/bluetooth/
 
 clear
-echo
-echo "[-] Bluelog scan log saved to /opt/pwnix/captures/bluetooth/"
-echo
+printf "\n[-] Bluelog scan log saved to /opt/pwnix/captures/bluetooth/\n\n"
 
 bluelog -vtnc -i hci0
 #drop if after apks fixed

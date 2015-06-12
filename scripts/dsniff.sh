@@ -19,7 +19,7 @@ f_get_logchoice(){
   case $logchoice in
     [1-2]*) ;;
     *)
-      echo 'Please enter 1 for YES or 2 for NO.'
+      printf 'Please enter 1 for YES or 2 for NO.\n'
       f_get_logchoice
       ;;
   esac

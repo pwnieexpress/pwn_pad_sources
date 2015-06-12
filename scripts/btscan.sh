@@ -11,9 +11,7 @@ hciconfig hci0 up
 cd /opt/pwnix/captures/bluetooth/
 
 clear
-echo
-echo "[-] Bluetooth scan log saved to /opt/pwnix/captures/bluetooth/"
-echo
+printf "\n[-] Bluetooth scan log saved to /opt/pwnix/captures/bluetooth/\n\n"
 
 btscanlogname=hcitool$(date +%F-%H%M).log
 

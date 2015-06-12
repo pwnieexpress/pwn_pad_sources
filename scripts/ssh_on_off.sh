@@ -17,18 +17,17 @@ f_show_ip(){
 }
 
 f_start_ssh(){
-  echo "[+] Starting SSH server..."
+  printf "[+] Starting SSH server...\n"
   service ssh start
   /system/bin/setenforce 0
-  echo "[!] Done"
+  printf "[!] Done\n"
   f_show_ip
 }
 
 f_stop_ssh(){
-  echo "[-] Stopping SSH server..."
+  printf "[-] Stopping SSH server...\n"
   service ssh stop
-  echo "[!] Done"
-  echo
+  printf "[!] Done\n\n"
 }
 
 printf "\n[-] This will enable/disable SSH server access on port 22\n\n"

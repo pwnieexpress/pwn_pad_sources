@@ -12,9 +12,7 @@ require_ip=1
 
 # Cleanup function to ensure sslstrip stops and iptable rules stop
 f_clean_up(){
-  echo
-  echo "[!] Killing other instances of sslstrip and flushing iptables"
-  echo
+  printf "\n[!] Killing other instances of sslstrip and flushing iptables\n\n"
   killall sslstrip
 
   # Remove SSL Strip iptables rule ONLY
@@ -39,8 +37,7 @@ f_run(){
   sslstrip -pfk -w $logfile  -l 8888 $interface &
 
   sleep 3
-  echo
-  echo
+  printf "\n\n"
   tail -f $logfile
 }
 

@@ -47,11 +47,9 @@ f_oui(){
 f_log(){
 
   clear
-  echo "Save capture to /opt/pwnix/captures/wireless/?"
-  echo
-  echo "1. Yes"
-  echo "2. No"
-  echo
+  printf "\nSave capture to /opt/pwnix/captures/wireless/?\n\n"
+  printf "1. Yes\n"
+  printf "2. No\n\n"
   read -p "Choice [1 or 2]: " opt_log
   case $opt_log in
     [1-2]*) ;;
@@ -67,11 +65,10 @@ f_mon(){
 
   if [ $MON_STATUS -eq 0 ]
   then
-    echo
-    echo "[!] wlan1mon is up"
+    printf "\n[!] wlan1mon is up\n"
   else
     # Start if down
-    echo
+    printf "\n"
     airmon-ng start wlan1
   fi
 }
@@ -95,22 +92,16 @@ f_gps(){
 # Prompt user to keep wlan1mon up
 f_mon_toggle(){
 
-  echo
-  echo "[?] Stay in monitor mode (wlan1mon)?"
-  echo
-  echo "1. Yes"
-  echo "2. No"
-  echo
+  printf "\n[?] Stay in monitor mode (wlan1mon)?\n\n"
+  printf "1. Yes\n"
+  printf "2. No\n\n"
   read -p "Choice [1 or 2]: " opt_mon
   case $opt_mon in
     1)
-      echo
-      echo "[!] wlan1mon is still up"
-      echo
+      printf "\n[!] wlan1mon is still up\n\n"
       ;;
     2)
-      echo
-      echo "[+] Bring wlan1mon down.."
+      printf "\n[+] Bring wlan1mon down..\n"
       hardw=`/system/bin/getprop ro.hardware`
       if [[ "$hardw" == "deb" || "$hardw" == "flo" ]]; then
         PHY=$(cat /sys/class/net/wlan1mon/phy80211/name)
@@ -119,9 +110,7 @@ f_mon_toggle(){
       else
         airmon-ng stop wlan1mon &> /dev/null
       fi
-      echo
-      echo "[!] wlan1mon is down"
-      echo
+      printf "\n[!] wlan1mon is down\n\n"
       ;;
     *)f_mon_toggle ;;
   esac
@@ -134,28 +123,20 @@ f_mon_toggle(){
 # Prompt user to keep gpsd running
 f_gps_toggle(){
 
-  echo
-  echo "[?] Keep gpsd running?"
-  echo
-  echo "1. Yes"
-  echo "2. No"
-  echo
+  printf "\n[?] Keep gpsd running?\n\n"
+  printf "1. Yes\n"
+  printf "2. No\n\n"
   read -p "Choice [1 or 2]: " gps
   case $gps in
     1)
       # Keep gpsd running
-      echo
-      echo "[!] gpsd is still running"
-      echo
+      printf "\n[!] gpsd is still running\n\n"
       ;;
     2)
-      echo
-      echo "[+] Stopping gpsd.."
+      printf "\n[+] Stopping gpsd..\n"
       # Kill gpsd
       killall -9 gpsd &> /dev/null
-      echo
-      echo "[!] gpsd has been stopped"
-      echo
+      printf "\n[!] gpsd has been stopped\n\n"
       ;;
     *)f_gps_toggle ;;
   esac

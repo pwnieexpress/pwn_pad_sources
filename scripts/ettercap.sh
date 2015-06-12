@@ -18,7 +18,7 @@ f_banner(){
 f_one_or_two(){
   read -p "Choice [1-2]: " input
   case $input in
-    [1-2]*) echo $input ;;
+    [1-2]*) printf "$input\n" ;;
     *)
       f_one_or_two
       ;;
@@ -36,36 +36,32 @@ f_sslfake(){
 
 f_logging(){
   clear
-  echo
-  echo "Would you like to log data?"
-  echo
-  echo "Captures saved to /opt/pwnix/captures/ettercap/"
-  echo
-  echo "1. Yes"
-  echo "2. No "
-  echo
+  printf "\nWould you like to log data?\n\n"
+  printf "Captures saved to /opt/pwnix/captures/ettercap/\n\n"
+  printf "1. Yes\n"
+  printf "2. No\n\n"
 
   logchoice=$(f_one_or_two)
 }
 
 f_generate_filename(){
-  echo "/opt/pwnix/captures/ettercap/ettercap$(date +%F-%H%M)"
+  printf "/opt/pwnix/captures/ettercap/ettercap$(date +%F-%H%M)\n"
 }
 
 f_run(){
-  echo 1 > /proc/sys/net/ipv4/ip_forward
+  printf 1 > /proc/sys/net/ipv4/ip_forward
 
   filename=$(f_generate_filename)
 
   clear
-  echo
+  printf "\n"
   read -p "Enter target IP to ARP cache poison: " target1
-  echo
+  printf "\n"
 
   clear
-  echo
+  printf "\n"
   read -p "Enter target IP of gateway/router: " gw
-  echo
+  printf "\n"
 
   if [ $logchoice -eq 1 ]; then
     if [ $sslfakecert -eq 1 ]; then

@@ -17,7 +17,7 @@ f_banner(){
 f_one_or_two(){
   read -p "Choice [1 or 2]: " input
   case $input in
-    [1-2]*) echo $input ;;
+    [1-2]*) printf "$input\n" ;;
     *)
       f_one_or_two
       ;;
@@ -26,17 +26,15 @@ f_one_or_two(){
 
 f_confirm_and_do_update(){
   if [ $(f_one_or_two) -eq 1 ]; then
-    echo "Starting update..."
+    print "Starting update...\n"
     /opt/pwnix/chef/update.sh
-    echo
-    echo "[!] Congratulations, this device has been updated!"
-    echo "The current version is:"
+    printf "\n[!] Congratulations, this device has been updated!\n"
+    printf "The current version is:\n"
     grep -Ei "release (version|date)" /etc/motd
-    echo "[!] Reboot for the update to take effect!"
-    echo
+    printf "[!] Reboot for the update to take effect!\n\n"
   else
-    echo "Update cancelled."
-    echo "Exiting."
+    printf "Update cancelled.\n"
+    printf "Exiting.\n"
     exit 1
   fi
 }
