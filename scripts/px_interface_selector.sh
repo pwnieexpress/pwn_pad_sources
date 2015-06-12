@@ -56,7 +56,7 @@ f_interface(){
   fi
   clear
   printf "Select which interface to $message [1-7]:\n"
-  printf "\n"
+  printf "$naughty\n"
   printf "$(f_colorize eth0)1. eth0  (USB Ethernet adapter)$(f_isdefault eth0)\e[0m\n"
   printf "$(f_colorize wlan0)2. wlan0  (internal Wifi)$(f_isdefault wlan0)\e[0m\n"
   printf "$(f_colorize wlan1)3. wlan1  (USB TP-Link adapter)$(f_isdefault wlan1)\e[0m\n"
