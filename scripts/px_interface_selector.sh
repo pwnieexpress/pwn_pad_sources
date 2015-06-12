@@ -18,17 +18,21 @@ f_identify_device(){
       ifconfig rmnet_usb0 > /dev/zero 2>&1
       if [ "$?" = "0" ]; then
         gsm_int="rmnet_usb0"
+      else
+        gsm_int="(not present)"
       fi
     else
       # Set interface for Pwn Phone and old Pwn Pad
       ifconfig rmnet0 > /dev/zero 2>&1
       if [ "$?" = "0" ]; then
         gsm_int="rmnet0"
+      else
+        gsm_int="(not present)"
       fi
     fi
   else
     #we don't have access to /system/bin/getprop, abort
-    gsm_int=""
+    gsm_int="(not present)"
   fi
   if [ "$default_interface" = "gsm_int" ] && [ -n "$gsm_int" ]; then
     default_interface=$gsm_int
@@ -51,9 +55,8 @@ f_interface(){
     what_valid="exist"
   fi
 
-  if ( [ "$include_cell" = "1" ] || [ "$include_all" = "1" ] ) && [ -z "$gsm_int" ]; then
-    f_identify_device
-  fi
+  f_identify_device
+
   clear
   printf "Select which interface to $message [1-7]:\n"
   printf "$naughty\n"
