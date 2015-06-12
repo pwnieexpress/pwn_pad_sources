@@ -1,5 +1,6 @@
 #unified f_interface function abstract
 # variables consumed:
+#  include_wired     - enable or disable eth0  (default on)
 #  include_extwifi   - enable or disable wlan1 (default on)
 #  include_monitor   - enable or disable wlan1mon (default on)
 #  include_airbase   - enable or disable at0 (default on)
@@ -40,6 +41,7 @@ f_identify_device(){
 }
 
 f_interface(){
+  : ${include_wired:=1}
   : ${include_extwifi:=1}
   : ${include_monitor:=1}
   : ${include_airbase:=1}
@@ -103,6 +105,7 @@ f_interface(){
 f_validate_choice(){
   if [ "$include_all" != "1" ]; then
     #administratively disable interfaces
+    if [ "$include_wired" != "1" ] && [ "$1" = "eth0" ]; then return 2; fi
     if [ "$include_extwifi" != "1" ] && [ "$1" = "wlan1" ]; then return 2; fi
     if [ "$include_monitor" != "1" ] && [ "$1" = "wlan1mon" ]; then return 2; fi
     if [ "$include_airbase" != "1" ] && [ "$1" = "at0" ]; then return 2; fi

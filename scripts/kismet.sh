@@ -5,10 +5,10 @@
 trap f_cleanup INT
 trap f_cleanup KILL
 
+include_wired=0
+include_airbase=0
+include_usb=0
 . /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
-
-#drop if after apks fixed
-if f_validate_one wlan1; then
 
 # Put kismet_ui.conf into position if first run
 f_uicheck(){
@@ -27,6 +27,12 @@ f_gps_check(){
   if [ $GPS_STATUS -eq 0 ]; then
     gpsd -n -D5 tcp://localhost:4352
   fi
+}
+
+f_kismet(){
+  f_interface
+  kismet_server --silent --daemonize -c $interface
+  kismet_client
 }
 
 f_cleanup(){
@@ -104,9 +110,7 @@ fi
 f_pulse_suspend
 f_uicheck
 f_gps_check
-kismet
+f_kismet
 f_cleanup
 f_pulse_restore
 f_endmsg
-#drop if after apks fixed
-fi
