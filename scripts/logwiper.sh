@@ -2,7 +2,7 @@
 # Description: Script to remove all logs and anything potentially legally binding
 clear
 
-CAPTURE_FILES=$(find /opt/pwnix/captures -type f)
+CAPTURE_FILES="$(find /opt/pwnix/captures -type f)"
 
 f_one_or_two(){
   read -p "Choice [1-2]: " input
@@ -31,7 +31,7 @@ set_clearhistory(){
 
 clear_capture_files(){
   printf "[+] Removing logs and captures from /opt/pwnix/captures/\n"
-  for file in "${CAPTURE_FILES[@]}"; do
+  for file in $CAPTURE_FILES; do
     printf "  Removing $file\n"
     shred --remove --force --iteration=1 --verbose "$file"
   done
