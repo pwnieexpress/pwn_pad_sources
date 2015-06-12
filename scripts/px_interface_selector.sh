@@ -130,7 +130,12 @@ f_validate_one(){
       *) requirement="ensure $1 exists" ;;
     esac
     printf "Please $requirement to run $(basename ${0%.*}).\n"
-    exit 1
+    #temp work around loader apks that run ". script" instead of "script"
+    #exit 1
+    return 1
+  else
+    return 0
+    #end temp work around
   fi
 }
 

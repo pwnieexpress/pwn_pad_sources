@@ -3,7 +3,8 @@
 
 . /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 
-f_validate_one wlan1
+#drop if after apks fixed
+if $(f_validate_one wlan1); then
 
 cd /opt/pwnix/captures/wpa_handshakes/
 

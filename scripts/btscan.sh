@@ -3,7 +3,8 @@
 
 . /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 
-f_validate_one hci0
+#drop if after apks fixed
+if $(f_validate_one hci0); then
 
 hciconfig hci0 up
 cd /opt/pwnix/captures/bluetooth/
@@ -19,3 +20,5 @@ while [ 1 ]; do
   hcitool -i hci0 scan --flush --class --info
   hcitool -i hci0 scan --flush --class --info >> /opt/pwnix/captures/bluetooth/$btscanlogname
 done
+#drop if after apks fixed
+fi

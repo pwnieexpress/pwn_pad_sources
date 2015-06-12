@@ -3,7 +3,8 @@
 
 . /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 
-f_validate_one wlan1
+#drop if after apks fixed
+if $(f_validate_one wlan1); then
 
 f_run(){
 
@@ -169,3 +170,5 @@ f_cleanup(){
 
 f_run
 f_cleanup
+#drop if after apks fixed
+fi
