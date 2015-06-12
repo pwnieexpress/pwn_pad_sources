@@ -1,15 +1,16 @@
 #unified f_interface function abstract
 # variables consumed:
-#  include_wired     - enable or disable eth0  (default on)
-#  include_intwifi   - enable or disable wlan0 (default on)
-#  include_extwifi   - enable or disable wlan1 (default on)
-#  include_monitor   - enable or disable wlan1mon (default on)
-#  include_airbase   - enable or disable at0 (default on)
-#  include_cell      - enable or disable $gsm_int (default OFF)
-#  include_usb       - enable or disable rndis0 (default on)
-#  include_all       - enable everything (default OFF)
-#  require_ip        - require an ip for the interface to show as available (default OFF)#
-#  default_interface - contains default interface, if any
+ : ${include_wired:=1}     # enable or disable eth0  (default on)
+ : ${include_intwifi:=1}   # enable or disable wlan0 (default on)
+ : ${include_extwifi:=1}   # enable or disable wlan1 (default on)
+ : ${include_monitor:=1}   # enable or disable wlan1mon (default on)
+ : ${include_airbase:=1}   # enable or disable at0 (default on)
+ : ${include_cell:=0}      # enable or disable $gsm_int (default OFF)
+ : ${include_usb:=1}       # enable or disable rndis0 (default on)
+ : ${include_all:=0}       # enable everything (default OFF)
+ : ${require_ip:=0}        # require an ip for the interface to show as available (default OFF)
+ : ${message:="sniff on"}  # message for header
+#  ${default_interface}    # contains default interface, if any
 
 f_identify_device(){
 # Check device
@@ -42,17 +43,6 @@ f_identify_device(){
 }
 
 f_interface(){
-  : ${include_wired:=1}
-  : ${include_intwifi:=1}
-  : ${include_extwifi:=1}
-  : ${include_monitor:=1}
-  : ${include_airbase:=1}
-  : ${include_cell:=0}
-  : ${include_usb:=1}
-  : ${include_all:=0}
-  : ${require_ip:=0}
-  : ${message:="sniff on"}
-
   if [ "$require_ip" = "1" ]; then
     what_valid="have an IP on the target network"
   else
