@@ -1,5 +1,6 @@
 #!/bin/bash
 # Script to run Wifite
+clear
 
 . /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 

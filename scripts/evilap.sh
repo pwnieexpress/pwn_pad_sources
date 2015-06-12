@@ -1,5 +1,6 @@
 #!/bin/bash
 # Desc: EvilAP script to forcefully connect wireless clients
+clear
 
 #this block controls the features for px_interface_selector
 include_extwifi=0
@@ -51,9 +52,7 @@ f_restore_ident(){
 }
 
 f_banner(){
-  clear
-  echo "[+] Welcome to EvilAP"
-  echo
+  printf "\n[+] Welcome to EvilAP\n\n"
 }
 
 f_ssid(){

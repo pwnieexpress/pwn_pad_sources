@@ -1,21 +1,17 @@
 # /bin/bash
 #script to update mobile line using standard chef update procedure
+clear
 
 f_banner(){
-  clear
-  echo "[!] WARNING: This will overwrite any modified config files!"
-  echo
-  echo "[+] This will start the Pwnie UI and SSHD services."
-  echo "[-] Please stop those services after the update if you do not want them to be running."
-  echo
-  echo "The current version is:"
+  printf "\n[!] WARNING: This will overwrite any modified config files!\n\n"
+  printf "[+] This will start the Pwnie UI and SSHD services.\n"
+  printf "[-] Please stop those services after the update if you do not want them to be running.\n\n"
+  printf "The current version is:\n"
   grep -Ei "release (version|date)" /etc/motd
-  echo
-  echo "Do you want to continue?"
-  echo
-  echo "1. Yes"
-  echo "2. No"
-  echo
+  printf "\n"
+  printf "Do you want to continue?\n\n"
+  printf "1. Yes\n"
+  printf "2. No\n\n"
 }
 
 f_one_or_two(){

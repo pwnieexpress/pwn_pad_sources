@@ -1,5 +1,6 @@
 #!/bin/bash
 #Description: Script to watch strings go by in real time
+clear
 
 #this block controls the features for px_interface_selector
 include_cell=1
@@ -7,13 +8,9 @@ include_cell=1
 
 f_savecap(){
 
-  clear
-  echo
-  echo "Save log to /opt/pwnix/captures/stringswatch?"
-  echo
-  echo "1. Yes"
-  echo "2. No"
-  echo
+  printf "\nSave log to /opt/pwnix/captures/stringswatch?\n\n"
+  printf "1. Yes\n"
+  printf "2. No\n\n"
 
   read -p "Choice [1-2]: " saveyesno
 

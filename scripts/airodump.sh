@@ -1,5 +1,6 @@
 #!/bin/bash
 # Run airodump-ng with no flags
+clear
 
 . /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 

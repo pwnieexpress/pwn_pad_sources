@@ -1,5 +1,6 @@
 #!/bin/bash
 # Script to turn SSHD on and off
+clear
 
 f_show_ip(){
   IP_SUBNET=$(ip addr show | awk '/inet / {print $2}')
@@ -30,10 +31,7 @@ f_stop_ssh(){
   echo
 }
 
-clear
-echo
-echo "[-] This will enable/disable SSH server access on port 22"
-echo
+printf "\n[-] This will enable/disable SSH server access on port 22\n\n"
 
 
 #check running processes to see if ssh is running

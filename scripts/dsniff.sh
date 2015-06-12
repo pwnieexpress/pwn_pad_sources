@@ -1,20 +1,16 @@
 #!/bin/bash
 # Cleartext password sniffing on all available interfaces
+clear
 
 #this block controls the features for px_interface_selector
 include_all=1
 . /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 
 f_logging_setup(){
-  clear
-  echo
-  echo "Would you like to log data?"
-  echo
-  echo "Captures saved to /opt/pwnix/captures/passwords/"
-  echo
-  echo "1. Yes"
-  echo "2. No "
-  echo
+  printf "\nWould you like to log data?\n\n"
+  printf "Captures saved to /opt/pwnix/captures/passwords/\n\n"
+  printf "1. Yes\n"
+  printf "2. No\n\n"
   f_get_logchoice
 }
 

@@ -1,5 +1,6 @@
 #!/bin/bash
 # Script to scan current network
+clear
 
 #this block controls the features for px_interface_selector
 include_monitor=0

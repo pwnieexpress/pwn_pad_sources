@@ -1,5 +1,6 @@
 #!/bin/bash
 # Script to start Kismet wireless sniffer
+clear
 
 . /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 

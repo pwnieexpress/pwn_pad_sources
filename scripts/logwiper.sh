@@ -1,5 +1,6 @@
 #!/bin/bash
 # Description: Script to remove all logs and anything potentially legally binding
+clear
 
 CAPTURE_FILES=$(find /opt/pwnix/captures -type f)
 
@@ -61,7 +62,6 @@ clear_bash_history(){
 }
 
 f_initialize(){
-  clear
   set_choosewisely
   set_clearhistory
 

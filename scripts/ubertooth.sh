@@ -1,19 +1,16 @@
 #!/bin/bash
 # Desc: Ubertooth example script
+clear
 
 f_banner(){
-  clear
-  echo "Welcome to the Ubertooth Toolkit"
-  echo
-  echo "Please select which tool to run: "
-  echo
+  printf "\nWelcome to the Ubertooth Toolkit\n\n"
+  printf "Please select which tool to run:\n\n"
 }
 
 f_select(){
-  echo "1) ubertooth-lap"
-  echo "2) ubertooth-dump"
-  echo "3) ubertooth-btle"
-  echo
+  printf "1) ubertooth-lap\n"
+  printf "2) ubertooth-dump\n"
+  printf "3) ubertooth-btle\n\n"
   read -p "Choice: " selection
 
   case $selection in

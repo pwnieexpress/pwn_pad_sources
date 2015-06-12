@@ -90,7 +90,9 @@ f_interface(){
   if [ -n "$interface" ]; then
     f_validate_choice $interface
     RETVAL=$?
-    if [ $RETVAL = 1 ]; then
+    if [ $RETVAL = 0 ]; then
+      clear
+    elif [ $RETVAL = 1 ]; then
       #invalid
       naughty="Interface \e[1;31m$interface\e[0m is an \e[1;31minvalid selection\e[0m.\n"
       f_interface

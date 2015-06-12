@@ -1,5 +1,6 @@
 #!/bin/bash
 # SSL strip script for sniffing on available interfaces
+clear
 
 trap f_clean_up INT
 trap f_clean_up KILL
@@ -27,10 +28,7 @@ f_ip_tables(){
 
 f_run(){
   # Path to sslstrip definitions
-  clear
-  echo
-  echo "Logs saved to /opt/pwnix/captures/passwords/"
-  echo
+  printf "\nLogs saved to /opt/pwnix/captures/passwords/\n\n"
   sleep 2
 
   f_interface

@@ -1,5 +1,6 @@
 #!/bin/bash
 # Bluetooth scanning / logging script using hcitool
+clear
 
 . /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 

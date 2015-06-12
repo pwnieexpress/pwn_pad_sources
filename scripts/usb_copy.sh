@@ -1,19 +1,14 @@
 # /bin/bash
 # Script to copy captures folder to USB drive attached to PwnPad via OTG cable
+clear
 
 f_banner(){
-  clear
-  echo "This script will mount a USB drive attached via OTG and copy the /opt/pwnix/captures/ folder to the USB drive mounted at /usb-otg/"
-  echo
-  echo "[?] Copy captures folder to usb drive?"
-  echo
-  echo "[!] This will overwrite any pre-existing captures folder on the drive!"
-  echo
-  echo "Do you want to continue?"
-  echo
-  echo "1. Yes"
-  echo "2. No"
-  echo
+  printf "\nThis script will mount a USB drive attached via OTG and copy the /opt/pwnix/captures/ folder to the USB drive mounted at /usb-otg/\n\n"
+  printf "[?] Copy captures folder to usb drive?\n\n"
+  printf "[!] This will overwrite any pre-existing captures folder on the drive!\n\n"
+  printf "Do you want to continue?\n\n"
+  printf "1. Yes\n"
+  printf "2. No\n\n"
 
   read -p "Choice [1 or 2]: " input
   case $input in

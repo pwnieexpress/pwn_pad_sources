@@ -1,20 +1,18 @@
 #!/bin/bash
 # Ettercap ARP cache poison script
+clear
 
 #this block controls the features for px_interface_selector
 include_monitor=0
+include_airbase=0
 require_ip=1
 message="sniff/poison on"
 . /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 
 f_banner(){
-  clear
-  echo "Ettercap-NG 0.8.0 ARP Cache Poison Tool"
-  echo
-  echo "[!] Use on networks you are connected to!"
-  echo
-  echo "[!] DO NOT USE WITH EVILAP - IT WON'T WORK!"
-  echo
+  printf "\nEttercap-NG 0.8.0 ARP Cache Poison Tool\n\n"
+  printf "[!] Use on networks you are connected to!\n\n"
+  printf "[!] DO NOT USE WITH EVILAP - IT WON'T WORK!\n\n"
 }
 
 f_one_or_two(){
@@ -28,17 +26,11 @@ f_one_or_two(){
 }
 
 f_sslfake(){
-  clear
-  echo
-  echo "Would you like to use the Invalid SSL Cert option?"
-  echo
-  echo "Good for testing user policy to make sure users aren't accepting bad certs!"
-  echo
-  echo "NOTE: if using SSLstrip with Ettercap this is unnecessary"
-  echo
-  echo "1. Yes"
-  echo "2. No "
-  echo
+  printf "\nWould you like to use the Invalid SSL Cert option?\n\n"
+  printf "Good for testing user policy to make sure users aren't accepting bad certs!\n\n"
+  printf "NOTE: if using SSLstrip with Ettercap this is unnecessary\n\n"
+  printf "1. Yes\n"
+  printf "2. No\n\n"
   sslfakecert=$(f_one_or_two)
 }
 

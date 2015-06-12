@@ -1,6 +1,7 @@
 #!/bin/bash
 # /usr/bin/macchanger --help
 # Roll MAC address and hostname
+clear
 
 #this block controls the features for px_interface_selector
 message="randomly roll the MAC address of"
