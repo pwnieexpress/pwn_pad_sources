@@ -12,7 +12,6 @@ message="sniff/poison on"
 f_banner(){
   printf "\nEttercap-NG 0.8.0 ARP Cache Poison Tool\n\n"
   printf "[!] Use on networks you are connected to!\n\n"
-  printf "[!] DO NOT USE WITH EVILAP - IT WON'T WORK!\n\n"
 }
 
 f_one_or_two(){
