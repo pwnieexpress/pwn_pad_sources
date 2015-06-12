@@ -1,6 +1,10 @@
 #!/bin/bash
 # Script to run Wifite
 
+. /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
+
+f_validate_one wlan1
+
 cd /opt/pwnix/captures/wpa_handshakes/
 
 clear

@@ -100,6 +100,19 @@ f_validate_choice(){
   return $valid
 }
 
+f_validate_one(){
+  if ! $(f_validate_choice $1); then
+    case $1 in
+      wlan1) requirement="plug in a supported external wifi adapter" ;;
+      at0) requirement="start evilap" ;;
+      hci0) requirement="plug in a supported bluetooth adapter" ;;
+      *) requirement="ensure $1 exists" ;;
+    esac
+    printf "Please $requirement to run $(basename ${0%.*}).\n"
+    exit 1
+  fi
+}
+
 f_colorize(){
   f_validate_choice $1
   if [ $? = 0 ]; then

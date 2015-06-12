@@ -7,10 +7,7 @@ trap f_cleanup KILL
 
 . /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 
-if ! $(f_validate_choice wlan1); then
-  printf "Please plug in your external wifi adapter to run kismet.\n"
-  exit 1
-fi
+f_validate_one wlan1
 
 # Put kismet_ui.conf into position if first run
 f_uicheck(){

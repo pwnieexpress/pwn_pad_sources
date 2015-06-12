@@ -1,6 +1,10 @@
 #!/bin/bash
 # Run airodump-ng with no flags
 
+. /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
+
+f_validate_one wlan1
+
 f_run(){
 
   # Check for OUI

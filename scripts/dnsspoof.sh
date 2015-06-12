@@ -2,6 +2,10 @@
 # Script to use ettercap to redirect all DNS traffic back to the device
 # Use with SET (site cloner)
 
+. /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
+
+f_validate_one at0
+
 f_banner(){
   clear
   echo "EvilAP Ettercap-NG 0.8.0 DNS Spoofing Tool"
