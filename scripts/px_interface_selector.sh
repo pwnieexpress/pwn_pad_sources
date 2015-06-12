@@ -59,11 +59,11 @@ f_interface(){
   printf "\n"
   printf "$(f_colorize eth0)1. eth0  (USB Ethernet adapter)$(f_isdefault eth0)\e[0m\n"
   printf "$(f_colorize wlan0)2. wlan0  (internal Wifi)$(f_isdefault wlan0)\e[0m\n"
-  [ "$include_all" = "1" ] || [ "$include_extwifi" = "1" ] && printf "$(f_colorize wlan1)3. wlan1  (USB TP-Link adapter)$(f_isdefault wlan1)\e[0m\n"
-  [ "$include_all" = "1" ] || [ "$include_monitor" = "1" ] && printf "$(f_colorize wlan1mon)4. wlan1mon  (monitor mode interface)$(f_isdefault wlan1mon)\e[0m\n"
-  [ "$include_all" = "1" ] || [ "$include_airbase" = "1" ] && printf "$(f_colorize at0)5. at0  (Use with EvilAP)$(f_isdefault at0)\e[0m\n"
-  ( [ "$include_all" = "1" ] || [ "$include_cell" = "1" ] ) && [ -n "$gsm_int" ] && printf "$(f_colorize $gsm_int)6. $gsm_int (4G GSM connection)$(f_isdefault $gsm_int)\e[0m\n"
-  [ "$include_all" = "1" ] || [ "$include_usb" = "1" ] && printf "$(f_colorize rndis0)7. rndis0  (USB tether)$(f_isdefault rndis0)\e[0m\n"
+  printf "$(f_colorize wlan1)3. wlan1  (USB TP-Link adapter)$(f_isdefault wlan1)\e[0m\n"
+  printf "$(f_colorize wlan1mon)4. wlan1mon  (monitor mode interface)$(f_isdefault wlan1mon)\e[0m\n"
+  printf "$(f_colorize at0)5. at0  (Use with EvilAP)$(f_isdefault at0)\e[0m\n"
+  printf "$(f_colorize $gsm_int)6. $gsm_int (4G GSM connection)$(f_isdefault $gsm_int)\e[0m\n"
+  printf "$(f_colorize rndis0)7. rndis0  (USB tether)$(f_isdefault rndis0)\e[0m\n"
   printf "\n"
   printf "NOTE: If selected interface is \e[1;31minvalid\e[0m, this menu will loop.\n"
   printf "      To be \e[1;32mvalid\e[0m, this interface must $what_valid.\n"
@@ -88,6 +88,14 @@ f_interface(){
 }
 
 f_validate_choice(){
+  if [ "$include_all" != "1" ]; then
+    #administratively disable interfaces
+    if [ "$include_extwifi" != "1" ] && [ "$1" = "wlan1" ]; then return 2; fi
+    if [ "$include_monitor" != "1" ] && [ "$1" = "wlan1mon" ]; then return 2; fi
+    if [ "$include_airbase" != "1" ] && [ "$1" = "at0" ]; then return 2; fi
+    if [ "$include_cell" != "1" ] && [ "$1" = "$gsm_int" ]; then return 2; fi
+    if [ "$include_usb" != "1" ] && [ "$1" = "rndis0" ]; then return 2; fi
+  fi
   #valid actually holds 0 for good and 1 for bad, I know, I know.
   ip addr show dev $1 > /dev/zero 2>&1
   local valid=$?
@@ -118,9 +126,12 @@ f_colorize(){
   if [ $? = 0 ]; then
     #green text for valid
     printf "\e[1;32m"
-  elif  [ $? = 1 ]; then
+  elif [ $? = 1 ]; then
     #red text for invalid
     printf "\e[1;31m"
+  elif [ $? = 2 ]; then
+    #dark grey for disabled
+    printf "\e[1;90m"
   else
     #blue on unknown
     printf "\e[1;34m"
