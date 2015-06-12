@@ -48,6 +48,8 @@ f_cleanup(){
   if [ $GPS_STATUS -eq 0 ]; then
     killall -9 gpsd
   fi
+  f_pulse_restore
+  f_endmsg
 }
 
 f_pulse_suspend(){
@@ -103,6 +105,7 @@ check_port(){
 
 f_endmsg(){
   printf  "Kismet captures saved to /opt/pwnix/captures/wireless/\n"
+  cd "${LOGDIR}" &> /dev/null
 }
 
 LOGDIR="/opt/pwnix/captures/wireless/"
@@ -117,6 +120,4 @@ f_uicheck
 f_gps_check
 f_kismet
 f_cleanup
-f_pulse_restore
-f_endmsg
 fi
