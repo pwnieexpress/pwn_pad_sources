@@ -58,8 +58,8 @@ f_interface(){
   f_identify_device
 
   clear
-  printf "Select which interface to $message [1-7]:\n"
-  printf "$naughty\n"
+  printf "$naughty"
+  printf "Select which interface to $message [1-7]:\n\n"
   printf "$(f_colorize eth0)1. eth0  (USB Ethernet adapter)$(f_isdefault eth0)\e[0m\n"
   printf "$(f_colorize wlan0)2. wlan0  (internal Wifi)$(f_isdefault wlan0)\e[0m\n"
   printf "$(f_colorize wlan1)3. wlan1  (USB TP-Link adapter)$(f_isdefault wlan1)\e[0m\n"
@@ -68,8 +68,8 @@ f_interface(){
   printf "$(f_colorize $gsm_int)6. $gsm_int (4G GSM connection)$(f_isdefault $gsm_int)\e[0m\n"
   printf "$(f_colorize rndis0)7. rndis0  (USB tether)$(f_isdefault rndis0)\e[0m\n"
   printf "\n"
-  printf "NOTE: If selected interface is \e[1;31minvalid\e[0m, this menu will loop.\n"
-  printf "      To be \e[1;32mvalid\e[0m, this interface must $what_valid.\n"
+  printf "NOTE: If selected interface is \e[1;31minvalid\e[0m, or \e[1;90mdisabled\e[0m, this menu will loop.\n"
+  printf "      To be \e[1;32mvalid\e[0m, an interface must $what_valid.\n"
   read -p "Choice: " interfacechoice
 
   case $interfacechoice in
@@ -80,11 +80,21 @@ f_interface(){
     5) interface=at0 ;;
     6) interface=$gsm_int ;;
     7) interface=rndis0 ;;
-    0) include_all=1 f_interface  ;;
+    0) include_all=1 naughty="Welcome Elite User!\n" f_interface  ;;
     *) interface=${default_interface} ;;
   esac
   if [ -n "$interface" ]; then
-    f_validate_choice $interface || f_interface
+    f_validate_choice $interface
+    RETVAL=$?
+    if [ $RETVAL = 1 ]; then
+      #invalid
+      naughty="Interface \e[1;31m$interface\e[0m is an \e[1;31minvalid selection\e[0m.\n"
+      f_interface
+    elif [ $RETVAL = 2 ]; then
+      #disabled
+      naughty="Interface \e[1;90m$interface\e[0m is \e[1;90madministratively disabled\e[0m.\n"
+      f_interface
+    fi
   else
     f_interface
   fi
