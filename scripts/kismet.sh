@@ -1,10 +1,6 @@
 #!/bin/bash
 # Script to start Kismet wireless sniffer
 
-# Set CTRL-C (break) to bring down wlan1mon interface that Kismet creates
-trap f_cleanup INT
-trap f_cleanup KILL
-
 . /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 
 if f_validate_one wlan1mon; then
@@ -14,6 +10,10 @@ elif f_validate_one wlan1; then
 fi
 
 if [ -n "$interface" ]; then
+
+# Set CTRL-C (break) to bring down wlan1mon interface that Kismet creates
+trap f_cleanup INT
+trap f_cleanup KILL
 
 # Put kismet_ui.conf into position if first run
 f_uicheck(){
