@@ -9,7 +9,7 @@ trap f_cleanup KILL
 
 if f_validate_one wlan1mon; then
   interface=wlan1mon
-elif f_validate wlan1; then
+elif f_validate_one wlan1; then
   interface=wlan1
 fi
 
@@ -118,3 +118,4 @@ f_kismet
 f_cleanup
 f_pulse_restore
 f_endmsg
+fi
