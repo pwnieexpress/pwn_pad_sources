@@ -126,13 +126,14 @@ f_validate_one(){
 
 f_colorize(){
   f_validate_choice $1
-  if [ $? = 0 ]; then
+  RETVAL=$?
+  if [ $RETVAL = 0 ]; then
     #green text for valid
     printf "\e[1;32m"
-  elif [ $? = 1 ]; then
+  elif [ $RETVAL = 1 ]; then
     #red text for invalid
     printf "\e[1;31m"
-  elif [ $? = 2 ]; then
+  elif [ $RETVAL = 2 ]; then
     #dark grey for disabled
     printf "\e[1;90m"
   else
