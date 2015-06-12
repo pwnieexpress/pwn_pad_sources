@@ -5,11 +5,15 @@
 trap f_cleanup INT
 trap f_cleanup KILL
 
-include_wired=0
-include_intwifi=0
-include_airbase=0
-include_usb=0
 . /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
+
+if f_validate_one wlan1mon; then
+  interface=wlan1mon
+elif f_validate wlan1; then
+  interface=wlan1
+fi
+
+if [ -n "$interface" ]; then
 
 # Put kismet_ui.conf into position if first run
 f_uicheck(){
@@ -31,7 +35,6 @@ f_gps_check(){
 }
 
 f_kismet(){
-  f_interface
   kismet_server --silent --daemonize -c $interface
   kismet_client
 }
