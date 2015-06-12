@@ -13,8 +13,14 @@ message="be used for Internet uplink"
 . /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 
 #drop if after apks fixed
-if f_validate_one wlan1; then
+if f_validate_one wlan1mon; then
+  interface=wlan1mon
+elif f_validate_one wlan1; then
+  interface=wlan1
+fi
+clear
 
+if [ -n "$interface" ]; then
 
 trap f_endclean INT
 trap f_endclean KILL
@@ -101,7 +107,9 @@ f_preplaunch(){
 
   sleep 2
   #Put wlan1 into monitor mode and randomize mac - wlan1mon created
-  airmon-ng start wlan1
+  if [ "$interface" = "wlan1" ]; then
+    airmon-ng start wlan1
+  fi
   ifconfig wlan1mon down
   macchanger -r wlan1mon
   ifconfig wlan1mon up
