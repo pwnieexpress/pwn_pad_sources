@@ -6,7 +6,9 @@ f_show_ip(){
   if [ -n "${IP_SUBNET}" ]; then
     printf "\nIPs currently assigned to system:\n"
     for i in $IP_SUBNET; do
-      printf "${i%/*}\n"
+      if [ "${i%/*}" != "127.0.0.1" ]; then
+        printf "${i%/*}\n"
+      fi
     done
   else
     printf "No current IP found.\n"
