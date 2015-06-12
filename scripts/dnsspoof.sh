@@ -5,7 +5,7 @@
 . /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 
 #drop if after apks fixed
-if $(f_validate_one at0); then
+if f_validate_one at0; then
 
 f_banner(){
   clear

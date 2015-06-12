@@ -8,7 +8,7 @@ trap f_cleanup KILL
 . /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 
 #drop if after apks fixed
-if $(f_validate_one wlan1); then
+if f_validate_one wlan1; then
 
 # Put kismet_ui.conf into position if first run
 f_uicheck(){
