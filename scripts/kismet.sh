@@ -2,8 +2,8 @@
 # Script to start Kismet wireless sniffer
 
 # Set CTRL-C (break) to bring down wlan1mon interface that Kismet creates
-trap f_endclean INT
-trap f_endclean KILL
+trap f_cleanup INT
+trap f_cleanup KILL
 
 # Put kismet_ui.conf into position if first run
 f_uicheck(){
