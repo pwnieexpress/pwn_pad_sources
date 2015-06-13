@@ -7,10 +7,10 @@ clear
 #drop if after apks fixed
 if f_validate_one wlan1mon; then
   interface=wlan1mon
+  clear
 elif f_validate_one wlan1; then
   interface=wlan1
 fi
-clear
 
 if [ -n "$interface" ]; then
 
