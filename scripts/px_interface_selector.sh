@@ -10,6 +10,7 @@
  : ${include_all:=0}       # enable everything (default OFF)
  : ${require_ip:=0}        # require an ip for the interface to show as available (default OFF)
  : ${message:="sniff on"}  # message for header
+ : ${quiet_one:=0}         # suppress output of f_validate_one
 #  ${default_interface}    # contains default interface, if any
 
 f_identify_device(){
@@ -136,7 +137,7 @@ f_validate_one(){
       hci0) requirement="plug in a supported bluetooth adapter" ;;
       *) requirement="ensure $1 exists" ;;
     esac
-    printf "Please $requirement to run this on $1.\n"
+    [ "$quiet_one" = "0" ] && printf "Please $requirement to run this on $1.\n"
     return 1
   else
     return 0

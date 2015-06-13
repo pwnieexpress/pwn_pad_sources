@@ -12,9 +12,8 @@ default_interface=gsm_int
 message="be used for Internet uplink"
 . /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 
-if f_validate_one wlan1mon; then
+if quiet_one=1 f_validate_one wlan1mon; then
   interface=wlan1mon
-  clear
 elif f_validate_one wlan1; then
   interface=wlan1
 fi
