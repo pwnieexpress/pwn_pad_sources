@@ -12,7 +12,6 @@ default_interface=gsm_int
 message="be used for Internet uplink"
 . /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 
-#drop if after apks fixed
 if f_validate_one wlan1mon; then
   interface=wlan1mon
   clear
@@ -202,5 +201,4 @@ else
 fi
 
 f_endclean
-#drop if after apks fixed
 fi

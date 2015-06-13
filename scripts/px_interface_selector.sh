@@ -136,13 +136,10 @@ f_validate_one(){
       hci0) requirement="plug in a supported bluetooth adapter" ;;
       *) requirement="ensure $1 exists" ;;
     esac
-    printf "Please $requirement to run $(basename ${1%.*}) on using $1.\n"
-    #temp work around loader apks that run ". script" instead of "script"
-    #exit 1
+    printf "Please $requirement to run this on $1.\n"
     return 1
   else
     return 0
-    #end temp work around
   fi
 }
 
