@@ -108,6 +108,13 @@ f_validate_choice(){
     if [ "$include_usb" != "1" ] && [ "$1" = "rndis0" ]; then return 2; fi
   fi
   #valid actually holds 0 for good and 1 for bad, I know, I know.
+  if [ "$1" = "wlan0" ]; then
+    if [ -x /system/bin/getprop ]; then
+      if [ "$(/system/bin/getprop wlan.driver.status)" = "unloaded" ]; then
+        return 1
+      fi
+    fi
+  fi
   ip addr show dev $1 > /dev/zero 2>&1
   local valid=$?
   if [ "$require_ip" = "1" ] && [ "$valid" = 0 ];then
@@ -122,13 +129,14 @@ f_validate_choice(){
 f_validate_one(){
   if ! $(f_validate_choice $1); then
     case $1 in
+      wlan0) requirement="enable wireless in android"
       wlan1) requirement="plug in a supported external wifi adapter" ;;
       wlan1mon) requirement="plug in a supported external wifi adapter" ;;
       at0) requirement="start evilap" ;;
       hci0) requirement="plug in a supported bluetooth adapter" ;;
       *) requirement="ensure $1 exists" ;;
     esac
-    printf "Please $requirement to run $(basename ${0%.*}).\n"
+    printf "Please $requirement to run $(basename ${0%.*}) on using $1.\n"
     #temp work around loader apks that run ". script" instead of "script"
     #exit 1
     return 1
