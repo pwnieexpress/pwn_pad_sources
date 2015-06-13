@@ -26,6 +26,8 @@ f_get_logchoice(){
 }
 
 f_run(){
+  #ettercap fails if the interface is down
+  ip link set $interface up
   # If user chose to log, log to folder
   # else just run cmd
   if [ $logchoice -eq 1 ]; then

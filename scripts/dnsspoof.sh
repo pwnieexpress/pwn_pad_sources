@@ -19,6 +19,10 @@ f_banner(){
 
 f_run(){
   f_banner
+
+  #ettercap fails if the interface is down
+  ip link set $interface up
+
   ettercap -i at0 -T -q -P dns_spoof
 }
 

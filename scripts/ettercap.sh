@@ -62,6 +62,9 @@ f_run(){
   read -p "Enter target IP of gateway/router: " gw
   printf "\n"
 
+  #ettercap fails if the interface is down
+  ip link set $interface up
+
   if [ $logchoice -eq 1 ]; then
     if [ $sslfakecert -eq 1 ]; then
       ettercap -i $interface -T -q -l $filename -M arp:remote /$gw/ /$target1/
