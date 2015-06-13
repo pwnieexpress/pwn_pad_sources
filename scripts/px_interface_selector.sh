@@ -129,7 +129,7 @@ f_validate_choice(){
 f_validate_one(){
   if ! $(f_validate_choice $1); then
     case $1 in
-      wlan0) requirement="enable wireless in android"
+      wlan0) requirement="enable wireless in android" ;;
       wlan1) requirement="plug in a supported external wifi adapter" ;;
       wlan1mon) requirement="plug in a supported external wifi adapter" ;;
       at0) requirement="start evilap" ;;
