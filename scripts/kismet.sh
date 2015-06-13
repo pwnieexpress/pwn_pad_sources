@@ -53,6 +53,7 @@ f_cleanup(){
 }
 
 f_pulse_suspend(){
+  EXIT_NOW=0
   if [ -e /etc/init.d/pwnix_kismet_server ]; then
     service pwnix_kismet_server status &> /dev/null
     if [ $? = 0 ]; then
@@ -61,15 +62,16 @@ f_pulse_suspend(){
       service pwnix_kismet_server status &> /dev/null
       if [ $? = 0 ]; then
         printf "Failed to stop kismet, please stop it manually.\n"
-        exit 1
+        EXIT_NOW=1
+        return 1
       else
         RESTART_KISMET=1
       fi
     fi
   fi
   if [ -z "${RESTART_KISMET}" ]; then
-    find_kismet
-    check_port
+    find_kismet || EXIT_NOW=1
+    if [ "${EXIT_NOW}" = "0" ];then check_port || EXIT_NOW=1; fi
   fi
 }
 
@@ -91,7 +93,7 @@ find_kismet() {
   found_kismet=$(pgrep -x kismet_server)
   if [ -n "$found_kismet" ]; then
     printf "Kismet is already running on PID $found_kismet.\n"
-    exit 1
+    return 1
   fi
 }
 
@@ -99,7 +101,7 @@ check_port(){
   port_2501=$(lsof -Pni 4TCP:2501 | grep :2501 | awk '{print $2}')
   if [ -n "$port_2501" ]; then
     printf "Something already bound to port 2501 with PID $port_2501\n"
-    exit 1
+    return 1
   fi
 }
 
@@ -116,8 +118,10 @@ if [ $? != 0 ]; then
 fi
 
 f_pulse_suspend
-f_uicheck
-f_gps_check
-f_kismet
-f_cleanup
+if [ "${EXIT_NOW}" = 0 ]; then
+  f_uicheck
+  f_gps_check
+  f_kismet
+  f_cleanup
+fi
 fi
