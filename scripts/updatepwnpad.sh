@@ -35,7 +35,7 @@ f_confirm_and_do_update(){
   else
     printf "Update cancelled.\n"
     printf "Exiting.\n"
-    exit 1
+    return 1
   fi
 }
 

@@ -5,7 +5,7 @@ clear
 f_checkforusb(){
   if [ ! -b /dev/block/sda1 ]; then
     printf "\nPlease insert a usb stick before running this script.\n"
-    exit 1
+    return 1
   fi
 }
 
@@ -72,5 +72,7 @@ f_umount(){
 }
 
 f_checkforusb
-f_banner
-f_mount_cp
+if [ $? = 0 ]; then
+  f_banner
+  f_mount_cp
+fi
