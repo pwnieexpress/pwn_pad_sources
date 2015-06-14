@@ -32,7 +32,7 @@ f_endclean(){
 }
 
 f_clean_up(){
-  printf "[-] Killing other instances of airbase or dhcpd\n"
+  printf "[-] Killing any instances of airbase or dhcpd\n"
   killall airbase-ng &> /dev/null
   killall dhcpd &> /dev/null
   hardw=`/system/bin/getprop ro.hardware`
