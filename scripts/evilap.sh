@@ -7,7 +7,6 @@ include_extwifi=0
 include_monitor=0
 include_airbase=0
 include_cell=1
-require_ip=1
 #this interface selection is for the uplink, attack always uses wlan1
 default_interface=gsm_int
 message="be used for Internet uplink"
@@ -186,7 +185,7 @@ f_karmaornot(){
 f_identify_device
 f_clean_up
 f_banner
-f_interface
+require_ip=1 f_interface
 f_ssid
 f_channel
 f_karmaornot
