@@ -7,21 +7,11 @@ include_monitor=0
 include_airbase=0
 require_ip=1
 message="sniff/poison on"
-. /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
+. /opt/pwnix/pwnpad-scripts/px_functions.sh
 
 f_banner(){
   printf "\nEttercap-NG 0.8.0 ARP Cache Poison Tool\n\n"
   printf "[!] Use on networks you are connected to!\n\n"
-}
-
-f_one_or_two(){
-  read -p "Choice [1-2]: " input
-  case $input in
-    [1-2]*) printf "$input\n" ;;
-    *)
-      f_one_or_two
-      ;;
-  esac
 }
 
 f_sslfake(){

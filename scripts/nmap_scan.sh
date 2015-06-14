@@ -6,15 +6,7 @@ clear
 include_monitor=0
 require_ip=1
 message="scan on"
-. /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
-
-f_one_or_two(){
-  read -p "Choice [1-2]: " input
-  case $input in
-    [1-2]*) printf "$input\n" ;;
-    *) f_one_or_two ;;
-  esac
-}
+. /opt/pwnix/pwnpad-scripts/px_functions.sh
 
 f_scan(){
 

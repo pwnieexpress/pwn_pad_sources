@@ -5,7 +5,7 @@ clear
 
 #this block controls the features for px_interface_selector
 message="randomly roll the MAC address of"
-. /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
+. /opt/pwnix/pwnpad-scripts/px_functions.sh
 
 f_roll_mac(){
   printf "\n[+] Rolling MAC address to something random...\n"

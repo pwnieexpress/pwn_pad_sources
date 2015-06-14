@@ -11,7 +11,7 @@ include_usb=0 #the computer thinks we are sharing internet, not the other way
 #this interface selection is for the uplink, attack always uses wlan1
 default_interface=gsm_int
 message="be used for Internet uplink"
-. /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
+. /opt/pwnix/pwnpad-scripts/px_functions.sh
 
 if include_monitor=1 quiet_one=1 f_validate_one wlan1mon; then
   interface=wlan1mon

@@ -3,7 +3,7 @@
 # Use with SET (site cloner)
 clear
 
-. /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
+. /opt/pwnix/pwnpad-scripts/px_functions.sh
 
 if f_validate_one at0; then
 

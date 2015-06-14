@@ -4,7 +4,7 @@ clear
 
 #this block controls the features for px_interface_selector
 include_cell=1
-. /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
+. /opt/pwnix/pwnpad-scripts/px_functions.sh
 
 f_savecap(){
   printf "\nSave packet capture to /opt/pwnix/captures/tcpdump?\n\n"

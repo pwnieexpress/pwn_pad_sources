@@ -2,6 +2,8 @@
 #script to update mobile line using standard chef update procedure
 clear
 
+. /opt/pwnix/pwnpad-scripts/px_functions.sh
+
 f_banner(){
   printf "\n[!] WARNING: This will overwrite any modified config files!\n\n"
   printf "[+] This will start the Pwnie UI and SSHD services.\n"
@@ -12,16 +14,6 @@ f_banner(){
   printf "Do you want to continue?\n\n"
   printf "1. Yes\n"
   printf "2. No\n\n"
-}
-
-f_one_or_two(){
-  read -p "Choice [1 or 2]: " input
-  case $input in
-    [1-2]*) printf "$input\n" ;;
-    *)
-      f_one_or_two
-      ;;
-  esac
 }
 
 f_confirm_and_do_update(){

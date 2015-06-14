@@ -2,7 +2,7 @@
 # Script to run Wifite
 clear
 
-. /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
+. /opt/pwnix/pwnpad-scripts/px_functions.sh
 
 if quiet_one=1 f_validate_one wlan1mon; then
   interface=wlan1mon

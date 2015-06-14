@@ -4,7 +4,7 @@ clear
 
 #this block controls the features for px_interface_selector
 include_all=1
-. /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
+. /opt/pwnix/pwnpad-scripts/px_functions.sh
 
 f_logging_setup(){
   printf "\nWould you like to log data?\n\n"

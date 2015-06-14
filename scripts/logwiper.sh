@@ -2,17 +2,9 @@
 # Description: Script to remove all logs and anything potentially legally binding
 clear
 
-CAPTURE_FILES="$(find /opt/pwnix/captures -type f)"
+. /opt/pwnix/pwnpad-scripts/px_functions.sh
 
-f_one_or_two(){
-  read -p "Choice [1-2]: " input
-  case $input in
-    [1-2]*) printf "$input\n" ;;
-    *)
-      f_one_or_two
-      ;;
-  esac
-}
+CAPTURE_FILES="$(find /opt/pwnix/captures -type f)"
 
 set_choosewisely(){
   printf "\n[!] This will remove ALL LOGS and CAPTURES!\n\n"
