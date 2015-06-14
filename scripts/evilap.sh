@@ -183,7 +183,6 @@ f_karmaornot(){
 
 }
 
-f_identify_device
 f_clean_up
 f_banner
 require_ip=1 f_interface
