@@ -106,11 +106,11 @@ f_flash() {
   k=0
   while (( $k < $device_count ))
   do
-    if [ ${pwnie_product[$k] != "Pwn Pad 3" ]; then
+    if [ "${pwnie_product[$k]}" != "Pwn Pad 3" ]; then
       fastboot flash boot ${image_base[$k]}/boot.img -s ${serial_array[$k]} &
       WAITPIDS="$WAITPIDS "$!
-      (( k++ ))
     fi
+    (( k++ ))
   done
   wait $WAITPIDS
   unset WAITPIDS
@@ -231,11 +231,11 @@ f_setflashables(){
   k=0
   while (( $k < $device_count ))
   do
-    case ${pwnie_product[$k]} in
+    case "${pwnie_product[$k]}" in
       "Pwn Pad 2013") image_base[$k]="/home/zero/manuf_images/nexus_2012" recovery[$k]="twrp-2.8.6.0-grouper.img" ;;
       "Pwn Pad 2014") image_base[$k]="/home/zero/manuf_images/nexus_2013" recovery[$k]="openrecovery-twrp-2.6.3.0-deb.img" ;;
       "Pwn Phone 2014") image_base[$k]="/home/zero/manuf_images/nexus_5" recovery[$k]="recovery.img" ;;
-      "Pwn Pad 3") image_base[$k]="/home/zero/manuf_images/shield_tablet" recovery[$k]="twrp-2.8.6.0-shieldtablet.img" ;;
+      "Pwn Pad 3") image_base[$k]="/home/zero/manuf_images/shield-tablet" recovery[$k]="twrp-2.8.6.0-shieldtablet.img" ;;
       *) printf "Unknown flashables ${pwnie_product[$k]}\n"; exit 1 ;;
     esac
     (( k++ ))
@@ -298,7 +298,7 @@ f_push(){
   k=0
   while (( $k < $device_count ))
   do
-    if [ ${pwnie_product[$k] != "Pwn Pad 3" ]; then
+    if [ "${pwnie_product[$k]}" != "Pwn Pad 3" ]; then
       adb -s ${serial_array[$k]} push TWRP/sdcard/ /sdcard/ &
       WAITPIDS="$WAITPIDS "$!
     fi
@@ -309,7 +309,6 @@ f_push(){
 }
 
 f_setup(){
-
   # Create script for restore and chroot setup
   k=0
   while (( $k < $device_count ))
@@ -318,7 +317,7 @@ f_setup(){
     backup=`ls ${image_base[$k]}/TWRP/BACKUPS/* |grep Pwn`
     adb -s ${serial_array[$k]} shell "
     cat <<-EOF > /cache/recovery/openrecoveryscript
-      restore /data/media/0/TWRP/BACKUPS/$serialno/$backup
+      restore /data/media/0/TWRP/BACKUPS/${serial_array[$k]}/$backup
       print  [SETUP STARTED]
       cmd export PATH=/usr/bin:/usr/sbin:/bin:/usr/local/bin:/usr/local/sbin:$PATH
       cmd mount -o bind /dev /data/local/kali/dev
@@ -326,11 +325,9 @@ f_setup(){
       cmd mv /data/local/kali/kali.img /data/local/kali_img/;mkdir /data/local/kali_img/kali-tmp;mount -t ext4 /data/local/kali_img/kali.img /data/local/kali_img/kali-tmp/;cp -a /data/local/kali/* /data/local/kali_img/kali-tmp/;umount /data/local/kali_img/kali-tmp/;rm -r /data/local/kali_img/kali-tmp
       print  [SETUP COMPLETE]
     EOF
-    " &
-    WAITPIDS="$WAITPIDS "$!
+    "
+    (( k++ ))
   done
-  wait $WAITPIDS
-  unset WAITPIDS
 
   # Reboot into recovery to run script
   echo
