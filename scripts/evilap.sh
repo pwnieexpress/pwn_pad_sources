@@ -7,6 +7,7 @@ include_extwifi=0
 include_monitor=0
 include_airbase=0
 include_cell=1
+require_ip=1
 #this interface selection is for the uplink, attack always uses wlan1
 default_interface=gsm_int
 message="be used for Internet uplink"
