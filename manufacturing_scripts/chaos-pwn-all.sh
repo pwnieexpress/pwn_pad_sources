@@ -174,7 +174,7 @@ f_logserial(){
   k=0
   while (( $k < $device_count ))
   do
-	echo "[${pwnie_product[$k]}] ${serial_array[$k]} $(date) - $initials" | tee -a serial_datetime.txt
+	echo "[${pwnie_product[$k]} on ${product_serial[$k]}] ${serial_array[$k]} $(date) - $initials" | tee -a serial_datetime.txt
 	(( k++ ))
   done
 }
