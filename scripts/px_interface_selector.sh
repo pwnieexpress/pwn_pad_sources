@@ -11,6 +11,7 @@
  : ${require_ip:=0}        # require an ip for the interface to show as available (default OFF)
  : ${message:="sniff on"}  # message for header
  : ${quiet_one:=0}         # suppress output of f_validate_one
+ : ${bluetooth:=0}         # are we looking for a bluetooth interface or not? (default OFF)
 #  ${default_interface}    # contains default interface, if any
 
 f_identify_device(){
@@ -98,6 +99,14 @@ f_interface(){
 }
 
 f_validate_choice(){
+  if [ "$bluetooth" = "1" ]; then
+    hciconfig $1 > /dev/zero 2>&1
+    if [ $? = 0 ]; then
+      return 0
+    else
+      return 1
+    fi
+  fi
   if [ "$include_all" != "1" ]; then
     #administratively disable interfaces
     if [ "$include_wired" != "1" ] && [ "$1" = "eth0" ]; then return 2; fi

@@ -2,6 +2,7 @@
 # Bluetooth scanning / logging script using hcitool
 clear
 
+bluetooth=1
 . /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
 
 if f_validate_one hci0; then
