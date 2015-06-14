@@ -195,7 +195,7 @@ f_getserial(){
   # Print devices
   if (( $device_count > 1 ))
   then
-	echo "There are $device_count 'devices connected:"
+	echo "There are $device_count 'devices connected"
   else
 	echo "There is 1 device connected:"
   fi
