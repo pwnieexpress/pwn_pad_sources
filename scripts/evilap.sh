@@ -7,6 +7,7 @@ include_extwifi=0
 include_monitor=0
 include_airbase=0
 include_cell=1
+include_usb=0 #the computer thinks we are sharing internet, not the other way
 #this interface selection is for the uplink, attack always uses wlan1
 default_interface=gsm_int
 message="be used for Internet uplink"
