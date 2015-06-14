@@ -79,9 +79,11 @@ f_flash() {
   while (( $k < $device_count ))
   do
     fastboot oem unlock -s ${serial_array[$k]} &
-	(( k++ ))
+    WAITPIDS="$WAITPIDS "$!
+    (( k++ ))
   done
-  wait
+  wait $WAITPIDS
+  unset WAITPIDS
   echo
   echo '...device(s) have been unlocked.'
 
@@ -91,10 +93,12 @@ f_flash() {
   k=0
   while (( $k < $device_count ))
   do
-	fastboot erase boot -s ${serial_array[$k]} &
-	(( k++ ))
+    fastboot erase boot -s ${serial_array[$k]} &
+    WAITPIDS="$WAITPIDS "$!
+    (( k++ ))
   done
-  wait
+  wait $WAITPIDS
+  unset WAITPIDS
 
   # Flash boot
   echo
@@ -103,11 +107,13 @@ f_flash() {
   while (( $k < $device_count ))
   do
     if [ ${pwnie_product[$k] != "Pwn Pad 3" ]; then
-	fastboot flash boot ${image_base[$k]}/boot.img -s ${serial_array[$k]} &
-	(( k++ ))
+      fastboot flash boot ${image_base[$k]}/boot.img -s ${serial_array[$k]} &
+      WAITPIDS="$WAITPIDS "$!
+      (( k++ ))
     fi
   done
-  wait
+  wait $WAITPIDS
+  unset WAITPIDS
 
   # Flash recovery
   echo
@@ -115,10 +121,12 @@ f_flash() {
   k=0
   while (( $k < $device_count ))
   do
-	fastboot flash recovery ${image_base[$k]}/${recovery[$k]} -s ${serial_array[$k]} &
-	(( k++ ))
+    fastboot flash recovery ${image_base[$k]}/${recovery[$k]} -s ${serial_array[$k]} &
+    WAITPIDS="$WAITPIDS "$!
+    (( k++ ))
   done
-  wait
+  wait $WAITPIDS
+  unset WAITPIDS
 
   # Format system
   echo
@@ -126,10 +134,12 @@ f_flash() {
   k=0
   while (( $k < $device_count ))
   do
-	fastboot format system -s ${serial_array[$k]} &
-	(( k++ ))
+    fastboot format system -s ${serial_array[$k]} &
+    WAITPIDS="$WAITPIDS "$!
+    (( k++ ))
   done
-  wait
+  wait $WAITPIDS
+  unset WAITPIDS
 
   # Format userdata
   echo
@@ -137,10 +147,12 @@ f_flash() {
   k=0
   while (( $k < $device_count ))
   do
-	fastboot format userdata -s ${serial_array[$k]} &
-	(( k++ ))
+    fastboot format userdata -s ${serial_array[$k]} &
+    WAITPIDS="$WAITPIDS "$!
+    (( k++ ))
   done
-  wait
+  wait $WAITPIDS
+  unset WAITPIDS
 
   # Format cache
   echo
@@ -148,10 +160,12 @@ f_flash() {
   k=0
   while (( $k < $device_count ))
   do
-	fastboot format cache -s ${serial_array[$k]} &
-	(( k++ ))
+    fastboot format cache -s ${serial_array[$k]} &
+    WAITPIDS="$WAITPIDS "$!
+    (( k++ ))
   done
-  wait
+  wait $WAITPIDS
+  unset WAITPIDS
 }
 
 f_logserial(){
@@ -236,10 +250,12 @@ f_push(){
   k=0
   while (( $k < $device_count ))
   do
-	fastboot boot ${image_base[$k]}/${recovery[$k]} -s ${serial_array[$k]} &
-	(( k++ ))
+    fastboot boot ${image_base[$k]}/${recovery[$k]} -s ${serial_array[$k]} &
+    WAITPIDS="$WAITPIDS "$!
+    (( k++ ))
   done
-  wait
+  wait $WAITPIDS
+  unset WAITPIDS
   sleep 20
 
   # Reboot into recovery to mitigate boot chain error
@@ -259,20 +275,24 @@ f_push(){
   k=0
   while (( $k < $device_count ))
   do
-	adb -s ${serial_array[$k]} push ${image_base[$k]}/TWRP/ /data/media/0/TWRP/ &
-	(( k++ ))
+    adb -s ${serial_array[$k]} push ${image_base[$k]}/TWRP/ /data/media/0/TWRP/ &
+    WAITPIDS="$WAITPIDS "$!
+    (( k++ ))
   done
-  wait
+  wait $WAITPIDS
+  unset WAITPIDS
   sleep 2
 
   # Write serial number to backup directory
   k=0
   while (( $k < $device_count ))
   do
-	adb -s ${serial_array[$k]} shell "mv /data/media/0/TWRP/BACKUPS/serial/ /data/media/0/TWRP/BACKUPS/${serial_array[$k]}" &
-	(( k++ ))
+    adb -s ${serial_array[$k]} shell "mv /data/media/0/TWRP/BACKUPS/serial/ /data/media/0/TWRP/BACKUPS/${serial_array[$k]}" &
+    WAITPIDS="$WAITPIDS "$!
+    (( k++ ))
   done
-  wait
+  wait $WAITPIDS
+  unset WAITPIDS
 
   # Push backgrounds
   k=0
@@ -280,10 +300,12 @@ f_push(){
   do
     if [ ${pwnie_product[$k] != "Pwn Pad 3" ]; then
       adb -s ${serial_array[$k]} push TWRP/sdcard/ /sdcard/ &
+      WAITPIDS="$WAITPIDS "$!
     fi
     (( k++ ))
   done
-  wait
+  wait $WAITPIDS
+  unset WAITPIDS
 }
 
 f_setup(){
@@ -304,9 +326,11 @@ f_setup(){
       cmd mv /data/local/kali/kali.img /data/local/kali_img/;mkdir /data/local/kali_img/kali-tmp;mount -t ext4 /data/local/kali_img/kali.img /data/local/kali_img/kali-tmp/;cp -a /data/local/kali/* /data/local/kali_img/kali-tmp/;umount /data/local/kali_img/kali-tmp/;rm -r /data/local/kali_img/kali-tmp
       print  [SETUP COMPLETE]
     EOF
-    "
+    " &
+    WAITPIDS="$WAITPIDS "$!
   done
-  wait
+  wait $WAITPIDS
+  unset WAITPIDS
 
   # Reboot into recovery to run script
   echo
@@ -323,10 +347,13 @@ f_setup(){
   k=0
   while (( $k < $device_count ))
   do
-	adb -s ${serial_array[$k]} reboot recovery &
-	(( k++ ))
+    adb -s ${serial_array[$k]} reboot recovery &
+    WAITPIDS="$WAITPIDS "$!
+    (( k++ ))
   done
-  wait
+  wait $WAITPIDS
+  unset WAITPIDS
+
 }
 
 f_run
