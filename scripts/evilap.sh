@@ -106,9 +106,7 @@ f_preplaunch(){
 
   sleep 2
   #Put wlan1 into monitor mode and randomize mac - wlan1mon created
-  if [ "$interface" = "wlan1" ]; then
-    airmon-ng start wlan1
-  fi
+  airmon-ng start wlan1
   ifconfig wlan1mon down
   macchanger -r wlan1mon
   ifconfig wlan1mon up
