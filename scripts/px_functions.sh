@@ -176,3 +176,14 @@ f_isdefault(){
     printf " (default)"
   fi
 }
+
+## Extra functions we can safely abstract
+f_one_or_two(){
+  read -p "Choice [1-2]: " input
+  case $input in
+    [1-2]*) printf "$input\n" ;;
+    *)
+      f_one_or_two
+      ;;
+  esac
+}
