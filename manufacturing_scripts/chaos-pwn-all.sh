@@ -316,15 +316,15 @@ f_setup(){
 # Construct cmd for script
     backup=`ls ${image_base[$k]}/TWRP/BACKUPS/* |grep -i pwn`
     adb -s ${serial_array[$k]} shell "
-    cat <<-EOF > /cache/recovery/openrecoveryscript
-      restore /data/media/0/TWRP/BACKUPS/${serial_array[$k]}/$backup
-      print  [SETUP STARTED]
-      cmd export PATH=/usr/bin:/usr/sbin:/bin:/usr/local/bin:/usr/local/sbin:$PATH
-      cmd mount -o bind /dev /data/local/kali/dev
-      cmd chroot /data/local/kali/ /bin/dd if=/dev/zero of=/kali.img bs=1 count=0 seek=4G;chroot /data/local/kali/ /sbin/mkfs.ext4 -F /kali.img
-      cmd mv /data/local/kali/kali.img /data/local/kali_img/;mkdir /data/local/kali_img/kali-tmp;mount -t ext4 /data/local/kali_img/kali.img /data/local/kali_img/kali-tmp/;cp -a /data/local/kali/* /data/local/kali_img/kali-tmp/;umount /data/local/kali_img/kali-tmp/;rm -r /data/local/kali_img/kali-tmp
-      print  [SETUP COMPLETE]
-    EOF
+    cat << EOF > /cache/recovery/openrecoveryscript
+restore /data/media/0/TWRP/BACKUPS/${serial_array[$k]}/$backup
+print  [SETUP STARTED]
+cmd export PATH=/usr/bin:/usr/sbin:/bin:/usr/local/bin:/usr/local/sbin:$PATH
+cmd mount -o bind /dev /data/local/kali/dev
+cmd chroot /data/local/kali/ /bin/dd if=/dev/zero of=/kali.img bs=1 count=0 seek=4G;chroot /data/local/kali/ /sbin/mkfs.ext4 -F /kali.img
+cmd mv /data/local/kali/kali.img /data/local/kali_img/;mkdir /data/local/kali_img/kali-tmp;mount -t ext4 /data/local/kali_img/kali.img /data/local/kali_img/kali-tmp/;cp -a /data/local/kali/* /data/local/kali_img/kali-tmp/;umount /data/local/kali_img/kali-tmp/;rm -r /data/local/kali_img/kali-tmp
+print  [SETUP COMPLETE]
+EOF
     "
     (( k++ ))
   done
