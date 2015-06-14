@@ -314,7 +314,7 @@ f_setup(){
   while (( $k < $device_count ))
   do
 # Construct cmd for script
-    backup=`ls ${image_base[$k]}/TWRP/BACKUPS/* |grep Pwn`
+    backup=`ls ${image_base[$k]}/TWRP/BACKUPS/* |grep -i pwn`
     adb -s ${serial_array[$k]} shell "
     cat <<-EOF > /cache/recovery/openrecoveryscript
       restore /data/media/0/TWRP/BACKUPS/${serial_array[$k]}/$backup
