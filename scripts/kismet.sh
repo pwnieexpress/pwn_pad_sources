@@ -93,7 +93,17 @@ find_kismet() {
   found_kismet=$(pgrep -x kismet_server)
   if [ -n "$found_kismet" ]; then
     printf "Kismet is already running on PID $found_kismet.\n"
-    return 1
+    printf "Would you like to cleanly restart kismet?\n"
+    printf "1. Yes\n"
+    printf "2. No\n\n"
+    if [ "$(f_one_or_two)" = "1" ]; then
+      kill -TERM $found_kismet
+      sleep 2
+      return 0
+    else
+      printf "Cannot start kismet, already running on PID $found_kismet and user let it live.\n"
+      return 1
+    fi
   fi
 }
 
@@ -101,7 +111,17 @@ check_port(){
   port_2501=$(lsof -Pni 4TCP:2501 | grep :2501 | awk '{print $2}')
   if [ -n "$port_2501" ]; then
     printf "Something already bound to port 2501 with PID $port_2501\n"
-    return 1
+    printf "Would you like kill the interferring process \"$(ps -o comm= $port_2501)\"?\n"
+    printf "1. Yes\n"
+    printf "2. No\n\n"
+    if [ "$(f_one_or_two)" = "1" ]; then
+      kill -TERM $port_2501
+      sleep 2
+      return 0
+    else
+      printf "Cannot start kismet, something is already bound to port 2501 on PID $found_kismet and user let it live.\n"
+      return 1
+    fi
   fi
 }
 
