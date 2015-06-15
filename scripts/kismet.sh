@@ -23,11 +23,6 @@ f_gps_check(){
   fi
 }
 
-f_kismet(){
-  kismet_server --silent --daemonize -c $wlan1mon
-  kismet_client
-}
-
 f_cleanup(){
   f_mon_disable
 
@@ -133,7 +128,7 @@ if [ "$?" = "0" ]; then
   if [ "${EXIT_NOW}" = 0 ]; then
     f_uicheck
     f_gps_check
-    f_kismet
+    kismet
     f_cleanup
   fi
 fi

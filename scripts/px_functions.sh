@@ -204,7 +204,7 @@ f_mon_enable(){
       fi
     fi
     return 0
-  elif f_validate_one wlan1; then
+  elif loud_one=1 f_validate_one wlan1; then
     printf "Attempting to put wlan1 into monitor mode..."
     airmon-ng start wlan1 &> /dev/null
     if f_validate_one wlan1mon; then

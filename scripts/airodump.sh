@@ -91,9 +91,7 @@ f_gps_toggle(){
 }
 
 f_cleanup(){
-
-  # Prompt user for monitor mode
-  f_mon disable
+  f_mon_disable
 
   if [ $GPS_STATUS -eq 0 ]; then
     f_gps_toggle
