@@ -217,7 +217,7 @@ f_mon_enable(){
   else
     printf "Unable to find a usable interface to put in monitor mode.\n"
     return 1
-  }
+  fi
 }
 
 #safe to call with or without a monitor interface, returns 1 on failure and 0 when wlan1 is in station mode
