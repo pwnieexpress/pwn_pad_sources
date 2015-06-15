@@ -6,6 +6,8 @@
 # Author: Zero_Chaos zero@pwnieexpress.com
 # Company: Pwnie Express
 
+VERIFY=1
+
 f_pause(){
   read -p "$*"
 }
@@ -52,6 +54,8 @@ f_run(){
   # Start server
   adb start-server
   echo
+
+  f_verify_flashables
 
   # Snag serials
   f_getserial
@@ -193,9 +197,8 @@ f_getserial(){
   done < <(fastboot devices | awk '{print $1}')
 
   # Print devices
-  if (( $device_count > 1 ))
-  then
-	echo "There are $device_count 'devices connected"
+  if [ "$device_count" != "1" ]; then
+	echo "There are $device_count devices connected"
   else
 	echo "There is 1 device connected:"
   fi
@@ -231,15 +234,33 @@ f_setflashables(){
   k=0
   while (( $k < $device_count ))
   do
+    #this is where we set the file locations
     case "${pwnie_product[$k]}" in
-      "Pwn Pad 2013") image_base[$k]="/home/zero/manuf_images/nexus_2012" recovery[$k]="twrp-2.8.6.0-grouper.img" ;;
-      "Pwn Pad 2014") image_base[$k]="/home/zero/manuf_images/nexus_2013" recovery[$k]="openrecovery-twrp-2.6.3.0-deb.img" ;;
-      "Pwn Phone 2014") image_base[$k]="/home/zero/manuf_images/nexus_5" recovery[$k]="recovery.img" ;;
-      "Pwn Pad 3") image_base[$k]="/home/zero/manuf_images/shield-tablet" recovery[$k]="twrp-2.8.6.0-shieldtablet.img" ;;
+      "Pwn Pad 2013") image_base[$k]="$(pwd)/nexus_2012" recovery[$k]="twrp-2.8.6.0-grouper.img" ;;
+      "Pwn Pad 2014") image_base[$k]="$(pwd)/nexus_2013" recovery[$k]="openrecovery-twrp-2.6.3.0-deb.img" ;;
+      "Pwn Phone 2014") image_base[$k]="$(pwd)/nexus_5" recovery[$k]="recovery.img" ;;
+      "Pwn Pad 3") image_base[$k]="$(pwd)/shield-tablet" recovery[$k]="twrp-2.8.6.0-shieldtablet.img" ;;
       *) printf "Unknown flashables ${pwnie_product[$k]}\n"; exit 1 ;;
     esac
     (( k++ ))
   done
+}
+
+f_verify_flashables(){
+  if [ "$VERIFY" = "1" ]; then
+    printf "Checking files, please stand by...\n\n"
+    for i in "$(pwd)/nexus_2012" "$(pwd)/nexus_2013"  "$(pwd)/nexus_5" "$(pwd)/shield-tablet"; do
+      pushd "$i" &> /dev/null
+      sha512sum --status -c checksums.sha512
+      if [ $? = 0 ]; then
+        printf "Files in $i are good to go, ready to flash.\n"
+      else
+        printf "Files in $i are corrupt, unable to flash.\n"
+        f_pause "Press enter if you are *sure* you won't be needing the missing/corrupt files or ^C to quit and fix your files"
+      fi
+      popd &> /dev/null
+    done
+  fi
 }
 
 f_push(){
