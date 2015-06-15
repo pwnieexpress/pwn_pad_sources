@@ -56,11 +56,12 @@ f_pulse_suspend(){
   EXIT_NOW=0
   if [ -e /etc/init.d/pwnix_kismet_server ]; then
     service pwnix_kismet_server status &> /dev/null
-    if [ $? = 0 ]; then
+    PWNIX=$?
+    if [ $PWNIX = 0 ]; then
       printf "Stopping Pwn Pulse kismet service...\n"
       service pwnix_kismet_server stop
       service pwnix_kismet_server status &> /dev/null
-      if [ $? = 0 ]; then
+      if [ $PWNIX = 0 ]; then
         printf "Failed to stop kismet, please stop it manually.\n"
         EXIT_NOW=1
         return 1
