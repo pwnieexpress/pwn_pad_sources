@@ -1,51 +1,38 @@
 #!/bin/bash
 # Description: Script to remove all logs and anything potentially legally binding
+clear
 
-CAPTURE_FILES=$(find /opt/pwnix/captures -type f)
+. /opt/pwnix/pwnpad-scripts/px_functions.sh
 
-f_one_or_two(){
-  read -p "Choice [1-2]: " input
-  case $input in
-    [1-2]*) echo $input ;;
-    *)
-      f_one_or_two
-      ;;
-  esac
-}
+CAPTURE_FILES="$(find /opt/pwnix/captures -type f)"
 
 set_choosewisely(){
-  echo
-  echo "[!] This will remove ALL LOGS and CAPTURES!"
-  echo
-  echo "[?] Are you sure you want to continue?"
-  echo
-  echo " 1. Yes"
-  echo " 2. No"
-  echo
+  printf "\n[!] This will remove ALL LOGS and CAPTURES!\n\n"
+  printf "[?] Are you sure you want to continue?\n\n"
+  printf " 1. Yes\n"
+  printf " 2. No\n\n"
   choosewisely=$(f_one_or_two)
 }
 
 set_clearhistory(){
-  echo
-  echo "[?] Would you like to remove Bash history as well?"
-  echo
-  echo " 1. Yes"
-  echo " 2. No"
-  echo
+  printf "\n[?] Would you like to remove Bash history as well?\n\n"
+  printf " 1. Yes\n"
+  printf " 2. No\n\n"
   clearhistory=$(f_one_or_two)
 }
 
 clear_capture_files(){
-  echo "[+] Removing logs and captures from /opt/pwnix/captures/"
-  for file in "${CAPTURE_FILES[@]}"; do
-    echo "  Removing $file"
-    wipe -f -i -r $file
+  printf "[+] Removing logs and captures from /opt/pwnix/captures/\n"
+  for file in $CAPTURE_FILES; do
+    printf "  Removing $file\n"
+    shred --remove --force --iteration=1 --verbose "$file"
   done
 }
 
 clear_tmp_files(){
-  echo '[+] Removing all files from /tmp/'
-  wipe -f -i -r /tmp/*
+  printf '[+] Removing all files from /tmp/\n'
+  find /tmp -type f -exec shred --remove --force --iteration=1 --verbose {} \;
+  rm -rf /tmp/*
 }
 
 clear_all_files(){
@@ -54,14 +41,13 @@ clear_all_files(){
 }
 
 clear_bash_history(){
-  echo '[+] Clearing bash history...'
+  printf '[+] Clearing bash history...\n'
   rm -r /root/.bash_history
   rm -r /home/pwnie/.bash_history
   history -c
 }
 
 f_initialize(){
-  clear
   set_choosewisely
   set_clearhistory
 
@@ -72,32 +58,26 @@ f_initialize(){
     if [ $clearhistory -eq 1 ]; then
       clear_bash_history
       clear
-      echo
-      echo "[!] All logs, captures, and bash history have been cleared!"
-      echo "[-] Unless of course you hid something..."
+      printf "\n[!] All logs, captures, and bash history have been cleared!\n"
+      printf "[-] Unless of course you hid something...\n"
     else
       clear
-      echo
-      echo "[-] Skipping bash history clear"
-      echo "[!] All logs and captures have been cleared!"
-      echo "[-] Unless of course you hid something..."
+      printf "\n[-] Skipping bash history clear\n"
+      printf "[!] All logs and captures have been cleared!\n"
+      printf "[-] Unless of course you hid something...\n"
     fi
   else
 
     clear
     if [ $clearhistory -eq 1 ]; then
-      echo
-      echo "[+] Bash history has been cleared!"
-      echo
-      echo "[+] Logs and captures have been left alone"
-      echo "[!] Pwnies run wild!"
+      printf "\n[+] Bash history has been cleared!\n\n"
+      printf "[+] Logs and captures have been left alone\n"
+      printf "[!] Pwnies run wild!\n\n"
     else
-      echo
-      echo "[+] All logs, captures, and bash history have been left alone"
-      echo "[!] Have a nice day! ^_^"
+      printf "\n[+] All logs, captures, and bash history have been left alone\n"
+      printf "[!] Have a nice day! ^_^\n\n"
     fi
   fi
-  echo
 }
 
 f_initialize

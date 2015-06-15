@@ -1,19 +1,21 @@
 # /bin/bash
 # Script to copy captures folder to USB drive attached to PwnPad via OTG cable
+clear
+
+f_checkforusb(){
+  if [ ! -b /dev/block/sda1 ]; then
+    printf "\nPlease insert a usb stick before running this script.\n"
+    return 1
+  fi
+}
 
 f_banner(){
-  clear
-  echo "This script will mount a USB drive attached via OTG and copy the /opt/pwnix/captures/ folder to the USB drive mounted at /usb-otg/"
-  echo
-  echo "[?] Copy captures folder to usb drive?"
-  echo
-  echo "[!] This will overwrite any pre-existing captures folder on the drive!"
-  echo
-  echo "Do you want to continue?"
-  echo
-  echo "1. Yes"
-  echo "2. No"
-  echo
+  printf "\nThis script will mount a USB drive attached via OTG and copy the /opt/pwnix/captures/ folder to the USB drive mounted at /usb-otg/\n\n"
+  printf "[?] Copy captures folder to usb drive?\n\n"
+  printf "[!] This will overwrite any pre-existing captures folder on the drive!\n\n"
+  printf "Do you want to continue?\n\n"
+  printf "1. Yes\n"
+  printf "2. No\n\n"
 
   read -p "Choice [1 or 2]: " input
   case $input in
@@ -27,39 +29,29 @@ f_banner(){
 f_mount_cp(){
   if [ $proceed -eq 1 ]; then
     if [ -x /usb-otg ]; then
-      echo
+      printf "\n"
     else
       mkdir /usb-otg
     fi
-    echo
-    echo "[+] Mounting USB drive to /usb-otg/.."
+    printf "\n[+] Mounting USB drive to /usb-otg/..\n"
     mount /dev/block/sda1 /usb-otg/
-    echo
-    echo "[!] ..Done"
-    echo
-    echo "[+] Copying captures directory..."
-    echo
+    printf "\n[!] ..Done\n\n"
+    printf "[+] Copying captures directory...\n\n"
     cp -a /opt/pwnix/captures/ /usb-otg/
-    echo
-    echo "[!] ..Done"
-    echo
+    printf "\n[!] ..Done\n\n"
     f_umount
   else
-    echo "[-] Not mounting or copying captures folder"
-    echo "[-] Exiting"
+    printf "[-] Not mounting or copying captures folder\n"
+    printf "[-] Exiting\n"
   fi
 }
 
 # Umount USB drive
 f_umount(){
 
-  echo
-  echo
-  echo "Do you want to un-mount attached USB drive?"
-  echo
-  echo "1. Yes"
-  echo "2. No"
-  echo
+  printf "\n\nDo you want to un-mount attached USB drive?\n\n"
+  printf "1. Yes\n"
+  printf "2. No\n\n"
   read -p "Choice [1 or 2]: " input2
   case $input2 in
     1) unmount=1 ;;
@@ -70,15 +62,17 @@ f_umount(){
   if [ $unmount -eq 1 ]; then
     umount /usb-otg/
     rm -r /usb-otg/
-    echo
-    echo "[-] USB Drive has been un-mounted and is safe to remove"
-    echo "[-] Exiting"
+    printf "\n[-] USB Drive has been un-mounted and is safe to remove\n"
+    printf "[-] Exiting\n"
   else
-    echo "[!] USB drive still mounted to /usb-otg/"
-    echo "[!] Unmount manually with: umount /usb-otg"
-    echo "[-] Exiting"
+    printf "[!] USB drive still mounted to /usb-otg/\n"
+    printf "[!] Unmount manually with: umount /usb-otg\n"
+    printf "[-] Exiting\n"
   fi
 }
 
-f_banner
-f_mount_cp
+f_checkforusb
+if [ $? = 0 ]; then
+  f_banner
+  f_mount_cp
+fi

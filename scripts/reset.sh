@@ -1,13 +1,11 @@
 #!/system/bin/sh
 # Description: Factory resets Pwn Pad 2013/2014 and Pwn Phone 2014
 # Result: Stock Pwn Pad 2013/2014 or Pwn Phone 2014
+clear
 
 f_run(){
 
-  clear
-  echo
-  echo '[!] FACTORY RESET in progress. All changes will be lost.'
-  echo
+  printf '\n[!] FACTORY RESET in progress. All changes will be lost.\n\n'
 
   f_reset
 }

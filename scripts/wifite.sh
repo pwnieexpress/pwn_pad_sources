@@ -1,5 +1,16 @@
 #!/bin/bash
 # Script to run Wifite
+clear
+
+. /opt/pwnix/pwnpad-scripts/px_functions.sh
+
+if quiet_one=1 f_validate_one wlan1mon; then
+  interface=wlan1mon
+elif f_validate_one wlan1; then
+  interface=wlan1
+fi
+
+if [ -n "$interface" ]; then
 
 cd /opt/pwnix/captures/wpa_handshakes/
 
@@ -7,7 +18,9 @@ clear
 #wifite currently cannot put a device in monitor mode,
 #however, it seems to cleanly handle if a device is already
 #new airmon-ng won't make duplicate interfaces, so run it just to make sure we have a monitor
-airmon-ng start wlan1 &> /dev/null
+if [ "$interface" = "wlan1" ]; then
+  airmon-ng start wlan1 &> /dev/null
+fi
 wifite
 
 if [ -d hs ]; then
@@ -30,3 +43,4 @@ else
 fi
 ifconfig wlan1 down &> /dev/null
 
+fi

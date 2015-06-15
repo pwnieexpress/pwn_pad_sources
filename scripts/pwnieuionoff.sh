@@ -1,24 +1,21 @@
 #!/bin/bash
 # Script to turn Pwnie UI off/on (ON by default)
-
 clear
-echo "This will enable/disable the Pwnie UI at https://localhost:1443"
-echo
+
+printf "\nThis will enable/disable the Pwnie UI at https://localhost:1443\n\n"
 
 # Check running processes to see if nginx is running
 service nginx status &> /dev/null
 NGINX_STATUS=$?
 
 if [ $NGINX_STATUS -eq 0 ]; then
-  echo "[-] Stopping Pwnie user interface..."
+  printf "[-] Stopping Pwnie user interface...\n"
   service nginx stop
   killall nginx
-  echo "[!] Done"
-  echo
+  printf "[!] Done\n\n"
 else
-  echo "[+] Starting Pwnie user interface..."
+  printf "[+] Starting Pwnie user interface...\n"
   service nginx start
-  echo "[!] Done"
-  echo
+  printf "[!] Done\n\n"
 fi
 

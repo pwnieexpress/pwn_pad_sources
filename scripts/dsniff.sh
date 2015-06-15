@@ -1,20 +1,16 @@
 #!/bin/bash
 # Cleartext password sniffing on all available interfaces
+clear
 
 #this block controls the features for px_interface_selector
 include_all=1
-. /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
+. /opt/pwnix/pwnpad-scripts/px_functions.sh
 
 f_logging_setup(){
-  clear
-  echo
-  echo "Would you like to log data?"
-  echo
-  echo "Captures saved to /opt/pwnix/captures/passwords/"
-  echo
-  echo "1. Yes"
-  echo "2. No "
-  echo
+  printf "\nWould you like to log data?\n\n"
+  printf "Captures saved to /opt/pwnix/captures/passwords/\n\n"
+  printf "1. Yes\n"
+  printf "2. No\n\n"
   f_get_logchoice
 }
 
@@ -23,13 +19,15 @@ f_get_logchoice(){
   case $logchoice in
     [1-2]*) ;;
     *)
-      echo 'Please enter 1 for YES or 2 for NO.'
+      printf 'Please enter 1 for YES or 2 for NO.\n'
       f_get_logchoice
       ;;
   esac
 }
 
 f_run(){
+  #ettercap fails if the interface is down
+  ip link set $interface up
   # If user chose to log, log to folder
   # else just run cmd
   if [ $logchoice -eq 1 ]; then

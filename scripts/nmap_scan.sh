@@ -1,19 +1,12 @@
 #!/bin/bash
 # Script to scan current network
+clear
 
 #this block controls the features for px_interface_selector
 include_monitor=0
 require_ip=1
 message="scan on"
-. /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
-
-f_one_or_two(){
-  read -p "Choice [1-2]: " input
-  case $input in
-    [1-2]*) echo $input ;;
-    *) f_one_or_two ;;
-  esac
-}
+. /opt/pwnix/pwnpad-scripts/px_functions.sh
 
 f_scan(){
 
@@ -24,24 +17,17 @@ f_scan(){
   filename2="/opt/pwnix/captures/nmap_scans/service_scan_$(date +%F-%H%M).txt"
 
   nmap -sP $network* |tee $filename1
-  echo
-  echo "Hostscan saved to $filename1"
-  echo
+  printf "\nHostscan saved to $filename1\n\n"
 
-  echo "[?] Run a service scan against the discovered?"
-  echo
-  echo "1. Yes"
-  echo "2. No"
-  echo
+  printf "[?] Run a service scan against the discovered?\n\n"
+  printf "1. Yes\n"
+  printf "2. No\n\n"
 
   scanagain=$(f_one_or_two)
 
   if [ $scanagain -eq 1 ]; then
     nmap -sV $network* |tee $filename2
-    echo
-    echo "Hostscan saved to $filename2"
-    echo
-    echo
+    printf "\nHostscan saved to $filename2\n\n"
   fi
 }
 

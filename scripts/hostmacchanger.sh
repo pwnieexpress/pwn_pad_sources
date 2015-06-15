@@ -1,30 +1,28 @@
 #!/bin/bash
 # /usr/bin/macchanger --help
 # Roll MAC address and hostname
+clear
 
 #this block controls the features for px_interface_selector
 message="randomly roll the MAC address of"
-. /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
+. /opt/pwnix/pwnpad-scripts/px_functions.sh
 
 f_roll_mac(){
-  echo
-  echo "[+] Rolling MAC address to something random..."
-  echo "[-] To specify MAC to spoof run sudo macchanger -m xx:xx:xx:xx:xx:xx"
+  printf "\n[+] Rolling MAC address to something random...\n"
+  printf "[-] To specify MAC to spoof run macchanger -m xx:xx:xx:xx:xx:xx\n"
 
   macchanger -r $interface
   sleep 1
-  echo
-  echo "[!] MAC address has been rolled!"
+  printf "\n[!] MAC address has been rolled!\n"
 }
 
 f_roll_hostname(){
-  echo "[+] Rolling hostname for further obfuscation..."
+  printf "[+] Rolling hostname for further obfuscation...\n"
   mac=$(ifconfig $interface |grep HWaddr |awk '{print$5}' |awk -F":" '{print$1$2$3$4$5$6}')
   hn=$mac
   sudo hostname $hn
-  echo "[!] Hostname has been changed!"
-  echo "[+] New hostname: $hn"
-  echo
+  printf "[!] Hostname has been changed!\n"
+  printf "[+] New hostname: $hn\n\n"
 }
 
 f_interface

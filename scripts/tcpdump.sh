@@ -1,18 +1,15 @@
 #!/bin/bash
 # Tcpdump script for sniffing on available interfaces
+clear
 
 #this block controls the features for px_interface_selector
 include_cell=1
-. /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
+. /opt/pwnix/pwnpad-scripts/px_functions.sh
 
 f_savecap(){
-  clear
-  echo
-  echo "Save packet capture to /opt/pwnix/captures/tcpdump?"
-  echo
-  echo "1. Yes"
-  echo "2. No"
-  echo
+  printf "\nSave packet capture to /opt/pwnix/captures/tcpdump?\n\n"
+  printf "1. Yes\n"
+  printf "2. No\n\n"
   read -p "Choice [1-2]: " saveyesno
 
   case $saveyesno in

