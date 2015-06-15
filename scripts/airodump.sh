@@ -12,6 +12,10 @@ fi
 
 if [ -n "$interface" ]; then
 
+# Set CTRL-C (break) to bring down wlan1mon interface that Kismet creates
+trap f_cleanup INT
+trap f_cleanup KILL
+
 f_run(){
 
   # Check for OUI
