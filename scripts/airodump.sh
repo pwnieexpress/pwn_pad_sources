@@ -4,26 +4,12 @@ clear
 
 . /opt/pwnix/pwnpad-scripts/px_functions.sh
 
-if f_validate_one wlan1mon; then
-  interface=wlan1mon
-elif loud_one=1 f_validate_one wlan1; then
-  interface=wlan1
-fi
-
-if [ -n "$interface" ]; then
-
-# Set CTRL-C (break) to bring down wlan1mon interface that Kismet creates
-trap f_cleanup INT
-trap f_cleanup KILL
-
 f_run(){
 
   # Check for OUI
   f_oui
   # Check to log
   f_log
-  # Enable monitor mode
-  f_mon enable
   # Check for GPS
   f_gps
 
@@ -112,10 +98,14 @@ f_cleanup(){
   if [ $GPS_STATUS -eq 0 ]; then
     f_gps_toggle
   fi
-  # Bring wlan1 down
-  ifconfig wlan1 down &> /dev/null
 }
 
-f_run
-f_cleanup
+f_mon_enable
+if [ "$?" = "0" ]; then
+  #we have a monitor interface now, so set traps to cleanup
+  trap f_cleanup INT
+  trap f_cleanup KILL
+
+  f_run
+  f_cleanup
 fi

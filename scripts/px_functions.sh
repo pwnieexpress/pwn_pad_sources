@@ -188,6 +188,7 @@ f_one_or_two(){
   esac
 }
 
+#safe to call with or without monitor interface, returns 1 on fail and 0 if wlan1mon is available
 f_mon_enable(){
   if f_validate_one wlan1mon; then
     printf "Already have monitor mode interface wlan1mon available.\n"
@@ -201,6 +202,7 @@ f_mon_enable(){
       else
         printf "Failure.\n"
       fi
+    fi
     return 0
   elif f_validate_one wlan1; then
     printf "Attempting to put wlan1 into monitor mode..."
@@ -218,6 +220,7 @@ f_mon_enable(){
   }
 }
 
+#safe to call with or without a monitor interface, returns 1 on failure and 0 when wlan1 is in station mode
 f_mon_disable(){
   printf "\n[?] Stay in monitor mode (wlan1mon)?\n\n"
   printf "1. Yes\n"

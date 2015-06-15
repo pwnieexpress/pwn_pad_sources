@@ -4,18 +4,6 @@ clear
 
 . /opt/pwnix/pwnpad-scripts/px_functions.sh
 
-if f_validate_one wlan1mon; then
-  interface=wlan1mon
-elif loud_one=1 f_validate_one wlan1; then
-  interface=wlan1
-fi
-
-if [ -n "$interface" ]; then
-
-# Set CTRL-C (break) to bring down wlan1mon interface that Kismet creates
-trap f_cleanup INT
-trap f_cleanup KILL
-
 # Put kismet_ui.conf into position if first run
 f_uicheck(){
   if [ ! -f /root/.kismet/kismet_ui.conf ]; then
@@ -36,7 +24,7 @@ f_gps_check(){
 }
 
 f_kismet(){
-  kismet_server --silent --daemonize -c $interface
+  kismet_server --silent --daemonize -c $wlan1mon
   kismet_client
 }
 
@@ -129,18 +117,23 @@ f_endmsg(){
   cd "${LOGDIR}" &> /dev/null
 }
 
-LOGDIR="/opt/pwnix/captures/wireless/"
-cd "$LOGDIR" &> /dev/null
-if [ $? != 0 ]; then
-  printf "Failed to cd into /opt/pwnix/captures/wireless, storing logs in $(pwd)\n"
-  LOGDIR="$(pwd)"
-fi
+f_mon_enable
+if [ "$?" = "0" ]; then
+  trap f_cleanup INT
+  trap f_cleanup KILL
 
-f_pulse_suspend
-if [ "${EXIT_NOW}" = 0 ]; then
-  f_uicheck
-  f_gps_check
-  f_kismet
-  f_cleanup
-fi
+  LOGDIR="/opt/pwnix/captures/wireless/"
+  cd "$LOGDIR" &> /dev/null
+  if [ $? != 0 ]; then
+    printf "Failed to cd into /opt/pwnix/captures/wireless, storing logs in $(pwd)\n"
+    LOGDIR="$(pwd)"
+  fi
+
+  f_pulse_suspend
+  if [ "${EXIT_NOW}" = 0 ]; then
+    f_uicheck
+    f_gps_check
+    f_kismet
+    f_cleanup
+  fi
 fi

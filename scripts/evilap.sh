@@ -13,17 +13,6 @@ default_interface=gsm_int
 message="be used for Internet uplink"
 . /opt/pwnix/pwnpad-scripts/px_functions.sh
 
-if include_monitor=1 f_validate_one wlan1mon; then
-  interface=wlan1mon
-elif include_extwifi=1 loud_one=1 f_validate_one wlan1; then
-  interface=wlan1
-fi
-
-if [ -n "$interface" ]; then
-
-trap f_endclean INT
-trap f_endclean KILL
-
 f_endclean(){
   printf "\n[-] Exiting...\n"
   f_restore_ident
@@ -35,14 +24,7 @@ f_clean_up(){
   printf "[-] Killing any instances of airbase or dhcpd\n"
   killall airbase-ng &> /dev/null
   killall dhcpd &> /dev/null
-  hardw=`/system/bin/getprop ro.hardware`
-  if [[ "$hardw" == "deb" || "$hardw" == "flo" ]]; then
-    PHY=$(cat /sys/class/net/wlan1mon/phy80211/name)
-    iw dev wlan1mon del
-    iw phy $PHY interface add wlan1 type station
-  else
-    airmon-ng stop wlan1mon &> /dev/null
-  fi
+  f_mon_disable
   iptables --flush
   iptables --table nat --flush
 }
@@ -113,6 +95,10 @@ f_preplaunch(){
 
   mkdir /dev/net/ &> /dev/null
   ln -s /dev/tun /dev/net/tun &> /dev/null
+  killall airbase-ng &> /dev/null
+  killall dhcpd &> /dev/null
+  iptables --flush
+  iptables --table nat --flush
 }
 
 f_logname(){
@@ -181,21 +167,25 @@ f_karmaornot(){
 
 }
 
-f_clean_up
-f_banner
-require_ip=1 f_interface
-f_ssid
-f_channel
-f_karmaornot
-f_preplaunch
+f_mon_enable
+if [ "$?" = "0" ]; then
+  trap f_endclean INT
+  trap f_endclean KILL
 
-if [ $karma -eq 1 ]; then
-  printf "[+] Starting EvilAP with forced connection attack\n"
-  f_evilap
-else
-  printf "[+] Starting EvilAP without forced connection attack\n"
-  f_niceap
-fi
+  f_banner
+  require_ip=1 f_interface
+  f_ssid
+  f_channel
+  f_karmaornot
+  f_preplaunch
 
-f_endclean
+  if [ $karma -eq 1 ]; then
+    printf "[+] Starting EvilAP with forced connection attack\n"
+    f_evilap
+  else
+    printf "[+] Starting EvilAP without forced connection attack\n"
+    f_niceap
+  fi
+
+  f_endclean
 fi
