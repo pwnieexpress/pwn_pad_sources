@@ -378,3 +378,33 @@ f_run
 f_flash
 f_push
 f_setup
+
+
+##Continuous rewrite structure
+#drop all output, create desired output
+#trap all exit codes, ensure success before moving on
+#report failure
+#log after SUCCESSFUL flash only
+
+#psuedo code
+#setup stuff
+#f_run
+#prompt to run f_verify_flashables
+#  welcome, ask for initials, crap work
+
+#main runners
+#f_feedme
+  #this is the main look, so likely read some global variable for status
+  #simple like "$serial - $currentstate"
+#f_getserial
+#  this constantly looks for new devices, adds their serial to the queue
+# do basic information gathering on the device before flash begins
+#f_getproduct
+#f_setpwnieproduct
+#f_setflashables
+
+#now we have enough info, pop off the queue and burn it
+#spin it off into the background let it go
+#f_flash
+#f_push
+#f_setup
