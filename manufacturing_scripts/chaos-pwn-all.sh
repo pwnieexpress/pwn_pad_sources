@@ -6,10 +6,8 @@
 # Author: Zero_Chaos zero@pwnieexpress.com
 # Company: Pwnie Express
 
-VERIFY=1
-
 f_pause(){
-  read -p "$*"
+  read -p "$@"
 }
 
 f_run(){
@@ -42,11 +40,11 @@ f_run(){
 
 # Check for root
   if [[ $EUID -ne 0 ]]; then
-    echo
-    echo ' [!] This tool must be run as root [!]'
-    echo
+    printf '\n [!] This tool must be run as root [!]\n\n'
   #exit 1
   fi
+
+  f_verify_flashables
 
   # Kill running server
   killall adb &> /dev/null
@@ -55,7 +53,6 @@ f_run(){
   adb start-server
   echo
 
-  f_verify_flashables
 
   # Snag serials
   f_getserial
@@ -246,7 +243,21 @@ f_setflashables(){
   done
 }
 
+f_one_or_two(){
+  printf "1.) Yes\n2.) No\n\n"
+  read -p "Choice [1-2]: " input
+  case $input in
+    [1-2]*) return $input ;;
+    *)
+      f_one_or_two
+      ;;
+  esac
+}
+
 f_verify_flashables(){
+  printf "Would you like to verify available images?\n\n"
+  f_one_or_two
+  VERIFY="$?"
   if [ "$VERIFY" = "1" ]; then
     printf "Checking files, please stand by...\n\n"
     for i in "$(pwd)/nexus_2012" "$(pwd)/nexus_2013"  "$(pwd)/nexus_5" "$(pwd)/shield-tablet"; do
