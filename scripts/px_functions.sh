@@ -1,4 +1,4 @@
-#unified f_interface function abstract
+#unified f_interface function abstract, plus some other misc functions
 # variables consumed:
  : ${include_wired:=1}     # enable or disable eth0  (default on)
  : ${include_intwifi:=1}   # enable or disable wlan0 (default on)
@@ -10,7 +10,7 @@
  : ${include_all:=0}       # enable everything (default OFF)
  : ${require_ip:=0}        # require an ip for the interface to show as available (default OFF)
  : ${message:="sniff on"}  # message for header
- : ${quiet_one:=0}         # suppress output of f_validate_one
+ : ${loud_one:=0}          # include warning output of f_validate_one
  : ${bluetooth:=0}         # are we looking for a bluetooth interface or not? (default OFF)
 #  ${default_interface}    # contains default interface, if any
 
@@ -146,7 +146,7 @@ f_validate_one(){
       hci0) requirement="plug in a supported bluetooth adapter" ;;
       *) requirement="ensure $1 exists" ;;
     esac
-    [ "$quiet_one" = "0" ] && printf "Please $requirement to run this on $1.\n"
+    [ "$loud_one" = "1" ] && printf "Please $requirement to run this on $1.\n"
     return 1
   else
     return 0
@@ -185,5 +185,74 @@ f_one_or_two(){
     *)
       f_one_or_two
       ;;
+  esac
+}
+
+f_mon_enable(){
+  if f_validate_one wlan1mon; then
+    printf "Already have monitor mode interface wlan1mon available.\n"
+    if f_validate_one wlan1; then
+      printf "Attempting to remove unneeded wlan1 interface..."
+      #set to down first or deb and flo crash
+      ip link set wlan1 down
+      iw dev wlan1 del &> /dev/null
+      if [ $? = 0 ]; then
+        printf "Success.\n"
+      else
+        printf "Failure.\n"
+      fi
+    return 0
+  elif f_validate_one wlan1; then
+    printf "Attempting to put wlan1 into monitor mode..."
+    airmon-ng start wlan1 &> /dev/null
+    if f_validate_one wlan1mon; then
+      printf "Success, wlan1mon created.\n"
+      return 0
+    else
+      printf "Failed to create wlan1mon.\n"
+      return 1
+    fi
+  else
+    printf "Unable to find a usable interface to put in monitor mode.\n"
+    return 1
+  }
+}
+
+f_mon_disable(){
+  printf "\n[?] Stay in monitor mode (wlan1mon)?\n\n"
+  printf "1. Yes\n"
+  printf "2. No\n\n"
+  read -p "Choice [1 or 2]: " opt_mon
+  case $opt_mon in
+    1)
+      printf "\n[!] wlan1mon is still up\n\n"
+      ;;
+    2)
+      printf "\n[+] Taking wlan1mon out of monitor mode..."
+      #this is to work around the fact that airodump-ng assumes you are allowed to
+      #have two interfaces and deb/flo does not support that
+      hardw=`/system/bin/getprop ro.hardware`
+      if [[ "$hardw" == "deb" || "$hardw" == "flo" ]]; then
+        PHY=$(cat /sys/class/net/wlan1mon/phy80211/name)
+        iw dev wlan1mon del &> /dev/null
+        f_validate_one wlan1 || iw phy $PHY interface add wlan1 type station &> /dev/null
+      else
+        airmon-ng stop wlan1mon &> /dev/null
+      fi
+      if f_validate_one wlan1mon; then
+        printf "Failed, wlan1mon is still in monitor mode.\n"
+      else
+        printf "Success.\n"
+      fi
+      if f_validate_one wlan1; then
+        ip link set wlan1 down &> /dev/null
+        printf "Interface wlan1 is available in station mode.\n"
+        return 0
+      else
+        printf "Failed to create wlan1 in station mode, you may have to remove and reinsert your wifi card.\n"
+        return 1
+      fi
+      ;;
+    *)f_mon_disable ;;
   esac
 }

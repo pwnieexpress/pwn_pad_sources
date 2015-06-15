@@ -4,9 +4,9 @@ clear
 
 . /opt/pwnix/pwnpad-scripts/px_functions.sh
 
-if quiet_one=1 f_validate_one wlan1mon; then
+if f_validate_one wlan1mon; then
   interface=wlan1mon
-elif f_validate_one wlan1; then
+elif loud_one=1 f_validate_one wlan1; then
   interface=wlan1
 fi
 
