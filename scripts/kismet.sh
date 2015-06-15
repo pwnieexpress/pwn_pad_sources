@@ -43,7 +43,22 @@ f_kismet(){
 f_cleanup(){
   ifconfig wlan1mon down &> /dev/null
   ifconfig wlan1 down &> /dev/null
-  iw dev wlan1mon del &> /dev/null
+  hardw=`/system/bin/getprop ro.hardware`
+  if [ "$interface" = "wlan0mon" ]; then
+    if [[ "$hardw" == "deb" || "$hardw" == "flo" ]]; then
+      PHY=$(cat /sys/class/net/wlan1mon/phy80211/name)
+      iw dev wlan1mon del &> /dev/null
+      quiet_one=1 f_validate_one wlan1 || iw phy $PHY interface add wlan1 type station
+    else
+      quiet_one=1 f_validate_one wlan1
+      RETVAL=$?
+      if [ "$RETVAL" = "1" ]; then
+        airmon-ng stop wlan1mon &> /dev/null
+      else
+        iw dev wlan1mon del &> /dev/null
+      fi
+    fi
+  fi
 
   if [ $GPS_STATUS -eq 0 ]; then
     killall -9 gpsd
@@ -127,7 +142,7 @@ check_port(){
 }
 
 f_endmsg(){
-  printf  "Kismet captures saved to /opt/pwnix/captures/wireless/\n"
+  printf  "Kismet captures saved to ${LOGDIR}\n"
   cd "${LOGDIR}" &> /dev/null
 }
 
