@@ -4,18 +4,6 @@ clear
 
 . /opt/pwnix/pwnpad-scripts/px_functions.sh
 
-if quiet_one=1 f_validate_one wlan1mon; then
-  interface=wlan1mon
-elif f_validate_one wlan1; then
-  interface=wlan1
-fi
-
-if [ -n "$interface" ]; then
-
-# Set CTRL-C (break) to bring down wlan1mon interface that Kismet creates
-trap f_cleanup INT
-trap f_cleanup KILL
-
 # Put kismet_ui.conf into position if first run
 f_uicheck(){
   if [ ! -f /root/.kismet/kismet_ui.conf ]; then
@@ -35,15 +23,8 @@ f_gps_check(){
   fi
 }
 
-f_kismet(){
-  kismet_server --silent --daemonize -c $interface
-  kismet_client
-}
-
 f_cleanup(){
-  ifconfig wlan1mon down &> /dev/null
-  ifconfig wlan1 down &> /dev/null
-  iw dev wlan1mon del &> /dev/null
+  f_mon_disable
 
   if [ $GPS_STATUS -eq 0 ]; then
     killall -9 gpsd
@@ -127,22 +108,28 @@ check_port(){
 }
 
 f_endmsg(){
-  printf  "Kismet captures saved to /opt/pwnix/captures/wireless/\n"
+  printf  "Kismet captures saved to ${LOGDIR}\n"
   cd "${LOGDIR}" &> /dev/null
 }
 
-LOGDIR="/opt/pwnix/captures/wireless/"
-cd "$LOGDIR" &> /dev/null
-if [ $? != 0 ]; then
-  printf "Failed to cd into /opt/pwnix/captures/wireless, storing logs in $(pwd)\n"
-  LOGDIR="$(pwd)"
-fi
+f_mon_enable
+if [ "$?" = "0" ]; then
+  #this seems to cause f_cleanup to run twice, not really sure why
+  #trap f_cleanup INT
+  #trap f_cleanup KILL
 
-f_pulse_suspend
-if [ "${EXIT_NOW}" = 0 ]; then
-  f_uicheck
-  f_gps_check
-  f_kismet
-  f_cleanup
-fi
+  LOGDIR="/opt/pwnix/captures/wireless/"
+  cd "$LOGDIR" &> /dev/null
+  if [ $? != 0 ]; then
+    printf "Failed to cd into /opt/pwnix/captures/wireless, storing logs in $(pwd)\n"
+    LOGDIR="$(pwd)"
+  fi
+
+  f_pulse_suspend
+  if [ "${EXIT_NOW}" = 0 ]; then
+    f_uicheck
+    f_gps_check
+    kismet
+    f_cleanup
+  fi
 fi

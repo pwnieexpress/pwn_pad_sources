@@ -13,36 +13,18 @@ default_interface=gsm_int
 message="be used for Internet uplink"
 . /opt/pwnix/pwnpad-scripts/px_functions.sh
 
-if include_monitor=1 quiet_one=1 f_validate_one wlan1mon; then
-  interface=wlan1mon
-elif include_extwifi=1 f_validate_one wlan1; then
-  interface=wlan1
-fi
-
-if [ -n "$interface" ]; then
-
-trap f_endclean INT
-trap f_endclean KILL
-
 f_endclean(){
   printf "\n[-] Exiting...\n"
-  f_restore_ident
   f_clean_up
-  ifconfig wlan1 down &> /dev/null
+  f_restore_ident
+  EXIT_NOW=1
 }
 
 f_clean_up(){
   printf "[-] Killing any instances of airbase or dhcpd\n"
   killall airbase-ng &> /dev/null
   killall dhcpd &> /dev/null
-  hardw=`/system/bin/getprop ro.hardware`
-  if [[ "$hardw" == "deb" || "$hardw" == "flo" ]]; then
-    PHY=$(cat /sys/class/net/wlan1mon/phy80211/name)
-    iw dev wlan1mon del
-    iw phy $PHY interface add wlan1 type station
-  else
-    airmon-ng stop wlan1mon &> /dev/null
-  fi
+  f_mon_disable
   iptables --flush
   iptables --table nat --flush
 }
@@ -105,14 +87,17 @@ f_preplaunch(){
   printf "[+] New hostname set: $hn\n"
 
   sleep 2
-  #Put wlan1 into monitor mode and randomize mac - wlan1mon created
-  airmon-ng start wlan1
+  #interface is already in monitor mode
   ifconfig wlan1mon down
   macchanger -r wlan1mon
   ifconfig wlan1mon up
 
   mkdir /dev/net/ &> /dev/null
   ln -s /dev/tun /dev/net/tun &> /dev/null
+  killall airbase-ng &> /dev/null
+  killall dhcpd &> /dev/null
+  iptables --flush
+  iptables --table nat --flush
 }
 
 f_logname(){
@@ -171,31 +156,31 @@ f_karmaornot(){
   printf "2. No\n\n"
   read -p "Choice [1-2]: " karma
   case $karma in
-    [1-2]*) ;;
+    1)
+      printf "[+] Starting EvilAP with forced connection attack\n"
+      f_beacon_rate
+      f_preplaunch
+      f_evilap
+      ;;
+    2)
+      printf "[+] Starting EvilAP without forced connection attack\n"
+      f_preplaunch
+      f_niceap
+      ;;
     *) f_karmaornot ;;
   esac
-
-  if [ $karma -eq 1 ]; then
-    f_beacon_rate
-  fi
-
 }
 
-f_clean_up
-f_banner
-require_ip=1 f_interface
-f_ssid
-f_channel
-f_karmaornot
-f_preplaunch
+f_mon_enable
+if [ "$?" = "0" ]; then
+  EXIT_NOW=0
+  trap f_endclean INT
+  trap f_endclean KILL
 
-if [ $karma -eq 1 ]; then
-  printf "[+] Starting EvilAP with forced connection attack\n"
-  f_evilap
-else
-  printf "[+] Starting EvilAP without forced connection attack\n"
-  f_niceap
-fi
-
-f_endclean
+  [ "$EXIT_NOW" = 0 ] && f_banner
+  [ "$EXIT_NOW" = 0 ] && require_ip=1 f_interface
+  [ "$EXIT_NOW" = 0 ] && f_ssid
+  [ "$EXIT_NOW" = 0 ] && f_channel
+  [ "$EXIT_NOW" = 0 ] && f_karmaornot
+  [ "$EXIT_NOW" = 0 ] && f_endclean
 fi

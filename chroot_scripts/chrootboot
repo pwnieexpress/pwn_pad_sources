@@ -1,11 +1,10 @@
-# /system/bin/chrootboot
+# /system/bin/sh
 # Start chroot environment and services at system startup
 
 # Set SELinux to permissive
 # su 0 setenforce 0
 
 # Use the fourth loopback device to leave the first couple open
-export LOOP_BACK=/dev/block/loop4
 export SOURCE_IMG=/data/local/kali_img/kali.img
 export NEW_ROOT=/data/local/kali
 
@@ -21,10 +20,8 @@ mount -o loop -t ext4 $SOURCE_IMG $NEW_ROOT
 /system/xbin/busybox mount --rbind /data/media/0 $NEW_ROOT/sdcard
 /system/xbin/busybox mount --rbind /system $NEW_ROOT/system
 
-sysctl -w net.ipv4.ip_forward=1 &> /dev/null
-
 # Run script to assign interfaces at system startup (wlan0 internal, wlan1 TP-Link)
-/system/bin/wlan_interface_assigner.sh &
+/system/bin/wia-ng.sh
 
 # Setup environment variables for shell environment.
 export HOME=/root

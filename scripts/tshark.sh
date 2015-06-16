@@ -31,4 +31,5 @@ f_no(){
 }
 
 f_interface
+ip link set $interface up
 f_savecap
