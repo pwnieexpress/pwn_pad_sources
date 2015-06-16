@@ -167,7 +167,7 @@ f_karmaornot(){
 
 }
 
-f_mon_enable
+include_extwifi=1 include_monitor=1 f_mon_enable
 if [ "$?" = "0" ]; then
   trap f_endclean INT
   trap f_endclean KILL
