@@ -51,6 +51,10 @@ if [ "$WLAN_SWITCHAROO" = "1" ]; then
     REENABLE_WIFI=1
   fi
 
+  #down interfaces
+  /system/xbin/busybox ifconfig wlan0 down
+  /system/xbin/busybox ifconfig wlan1 down
+
   # Set temporary interface name for internal wlan
   /system/xbin/busybox nameif temp_onboard "${onboard_wlan_mac}"
 
