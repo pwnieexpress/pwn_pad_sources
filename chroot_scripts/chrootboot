@@ -24,7 +24,7 @@ mount -o loop -t ext4 $SOURCE_IMG $NEW_ROOT
 sysctl -w net.ipv4.ip_forward=1 &> /dev/null
 
 # Run script to assign interfaces at system startup (wlan0 internal, wlan1 TP-Link)
-/system/bin/wlan_interface_assigner.sh
+/system/bin/wia-ng.sh
 
 # Setup environment variables for shell environment.
 export HOME=/root
