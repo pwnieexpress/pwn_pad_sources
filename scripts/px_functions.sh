@@ -190,6 +190,7 @@ f_one_or_two(){
 
 #safe to call with or without monitor interface, returns 1 on fail and 0 if wlan1mon is available
 f_mon_enable(){
+  include_extwifi=1 include_monitor=1 require_ip=0
   if f_validate_one wlan1mon; then
     printf "Already have monitor mode interface wlan1mon available.\n"
     if f_validate_one wlan1; then
@@ -226,6 +227,7 @@ f_mon_enable(){
 
 #safe to call with or without a monitor interface, returns 1 on failure and 0 when wlan1 is in station mode
 f_mon_disable(){
+  include_extwifi=1 include_monitor=1 require_ip=0
   if f_validate_one wlan1mon; then
     printf "\n[?] Stay in monitor mode (wlan1mon)?\n\n"
     printf "1. Yes\n"

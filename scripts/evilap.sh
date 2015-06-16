@@ -24,7 +24,7 @@ f_clean_up(){
   printf "[-] Killing any instances of airbase or dhcpd\n"
   killall airbase-ng &> /dev/null
   killall dhcpd &> /dev/null
-  include_extwifi=1 include_monitor=1 f_mon_disable
+  f_mon_disable
   iptables --flush
   iptables --table nat --flush
 }
@@ -167,7 +167,7 @@ f_karmaornot(){
 
 }
 
-include_extwifi=1 include_monitor=1 f_mon_enable
+f_mon_enable
 if [ "$?" = "0" ]; then
   trap f_endclean INT
   trap f_endclean KILL
