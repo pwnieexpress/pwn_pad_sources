@@ -11,7 +11,7 @@ sleep 5
 
 # Check device
 hardw=`getprop ro.hardware`
-if [[ "$hardw" == "deb" || "$hardw" == "flo" ]]; then
+if [ "$hardw" = "deb" ] || [ "$hardw" = "flo" ]; then
   # Fix for new Pwn Pad
   # Get MAC address of internal wlan and save as variable
   onboard_wlan_mac=`grep "^Intf0MacAddress=" /data/misc/wifi/WCNSS_qcom_cfg.ini | awk -F"=" '{print$2}' | sed -e 's/\([0-9A-Fa-f]\{2\}\)/\1:/g' -e 's/\(.*\):$/\1/'`
