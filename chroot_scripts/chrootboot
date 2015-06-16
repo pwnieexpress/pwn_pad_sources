@@ -1,4 +1,4 @@
-# /system/bin/chrootboot
+# /system/bin/sh
 # Start chroot environment and services at system startup
 
 # Set SELinux to permissive

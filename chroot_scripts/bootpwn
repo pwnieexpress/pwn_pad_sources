@@ -1,4 +1,4 @@
-# /system/bin/bootpwn
+# /system/bin/sh
 # Boot into chroot environment
 
 # Export chroot directory into variable
