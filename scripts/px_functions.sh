@@ -203,19 +203,23 @@ f_mon_enable(){
         printf "Failure.\n"
       fi
     fi
+    unset ${interface}
     return 0
   elif loud_one=1 f_validate_one wlan1; then
     printf "Attempting to put wlan1 into monitor mode..."
     airmon-ng start wlan1 &> /dev/null
     if f_validate_one wlan1mon; then
       printf "Success, wlan1mon created.\n"
+      unset ${interface}
       return 0
     else
       printf "Failed to create wlan1mon.\n"
+      unset ${interface}
       return 1
     fi
   else
     printf "Unable to find a usable interface to put in monitor mode.\n"
+    unset ${interface}
     return 1
   fi
 }
