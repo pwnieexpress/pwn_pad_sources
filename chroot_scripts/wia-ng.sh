@@ -41,8 +41,8 @@ else
 fi
 
 if [ "$WLAN_SWITCHAROO" = "1" ]; then
-  onboard_wlan_mac=$(/system/bin/busybox ifconfig -a | grep "^wlan1" | awk '{print $5}')
-  external_wlan_mac=$(/system/bin/busybox ifconfig -a | grep "^wlan0" | awk '{print $5}')
+  onboard_wlan_mac=$(/system/xbin/busybox ifconfig -a | grep "^wlan1" | awk '{print $5}')
+  external_wlan_mac=$(/system/xbin/busybox ifconfig -a | grep "^wlan0" | awk '{print $5}')
 
   if [ "$(/system/bin/getprop wlan.driver.status)" != "unloaded" ]; then
     # Disable Android wifi manager
@@ -52,16 +52,16 @@ if [ "$WLAN_SWITCHAROO" = "1" ]; then
   fi
 
   # Set temporary interface name for internal wlan
-  /system/bin/busybox nameif temp_onboard "${onboard_wlan_mac}"
+  /system/xbin/busybox nameif temp_onboard "${onboard_wlan_mac}"
 
   # Set temporary interface name for external wlan
-  /system/bin/busybox nameif temp_external "${external_wlan_mac}"
+  /system/xbin/busybox nameif temp_external "${external_wlan_mac}"
 
   # Set internal wlan to wlan0
-  /system/bin/busybox nameif wlan0 "${onboard_wlan_mac}"
+  /system/xbin/busybox nameif wlan0 "${onboard_wlan_mac}"
 
   # Set external wlan to wlan1
-  /system/bin/busybox nameif wlan1 "${external_wlan_mac}"
+  /system/xbin/busybox nameif wlan1 "${external_wlan_mac}"
 
   if [ "$REENABLE_WIFI" = "1" ]; then
     # Re-enable Android wifi manager
