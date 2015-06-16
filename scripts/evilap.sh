@@ -17,7 +17,6 @@ f_endclean(){
   printf "\n[-] Exiting...\n"
   f_restore_ident
   f_clean_up
-  return 0
 }
 
 f_clean_up(){
@@ -156,14 +155,19 @@ f_karmaornot(){
   printf "2. No\n\n"
   read -p "Choice [1-2]: " karma
   case $karma in
-    [1-2]*) ;;
+    1)
+      printf "[+] Starting EvilAP with forced connection attack\n"
+      f_beacon_rate
+      f_preplaunch
+      f_evilap
+      ;;
+    2)
+      printf "[+] Starting EvilAP without forced connection attack\n"
+      f_preplaunch
+      f_niceap
+      ;;
     *) f_karmaornot ;;
   esac
-
-  if [ $karma -eq 1 ]; then
-    f_beacon_rate
-  fi
-
 }
 
 f_mon_enable
@@ -176,15 +180,5 @@ if [ "$?" = "0" ]; then
   f_ssid
   f_channel
   f_karmaornot
-  f_preplaunch
-
-  if [ $karma -eq 1 ]; then
-    printf "[+] Starting EvilAP with forced connection attack\n"
-    f_evilap
-  else
-    printf "[+] Starting EvilAP without forced connection attack\n"
-    f_niceap
-  fi
-
   f_endclean
 fi
