@@ -15,6 +15,7 @@ if [ -f /sys/class/net/wlan0/device/modalias ];then
       #check if wlan1 is usb
       WLAN1_BUS=$(awk -F: '{print $1}' /sys/class/net/wlan1/device/modalias)
       if [ "$WLAN1_BUS" = "sdio" ]; then
+        printf "Interface wlan1 is sdio.\n"
         WLAN_SWITCHAROO=1
       elif [ "$WLAN1_BUS" = "usb" ]; then
         printf "Interface wlan1 is also usb, dazed and confused, failure.\n"
@@ -27,7 +28,7 @@ if [ -f /sys/class/net/wlan0/device/modalias ];then
       printf "Interface wlan1 does not seem to exist, nothing to do.\n"
       return 0
     fi
-  elif [ "$BUS" = "sdio" ]; then
+  elif [ "$WLAN0_BUS" = "sdio" ]; then
     printf "Interface wlan0 is already the internal sdio wifi nic.\n"
     return 0
   else
@@ -41,6 +42,7 @@ else
 fi
 
 if [ "$WLAN_SWITCHAROO" = "1" ]; then
+  printf "Switching wlan0 and wlan1..."
   onboard_wlan_mac=$(/system/xbin/busybox ifconfig -a | grep "^wlan1" | awk '{print $5}')
   external_wlan_mac=$(/system/xbin/busybox ifconfig -a | grep "^wlan0" | awk '{print $5}')
 
@@ -71,4 +73,5 @@ if [ "$WLAN_SWITCHAROO" = "1" ]; then
     # Re-enable Android wifi manager
     /system/bin/svc wifi enable
   fi
+  printf "Complete.\n"
 fi
