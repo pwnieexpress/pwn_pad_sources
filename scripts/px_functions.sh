@@ -222,40 +222,48 @@ f_mon_enable(){
 
 #safe to call with or without a monitor interface, returns 1 on failure and 0 when wlan1 is in station mode
 f_mon_disable(){
-  printf "\n[?] Stay in monitor mode (wlan1mon)?\n\n"
-  printf "1. Yes\n"
-  printf "2. No\n\n"
-  read -p "Choice [1 or 2]: " opt_mon
-  case $opt_mon in
-    1)
-      printf "\n[!] wlan1mon is still up\n\n"
-      ;;
-    2)
-      printf "\n[+] Taking wlan1mon out of monitor mode..."
-      #this is to work around the fact that airodump-ng assumes you are allowed to
-      #have two interfaces and deb/flo does not support that
-      hardw=`/system/bin/getprop ro.hardware`
-      if [[ "$hardw" == "deb" || "$hardw" == "flo" ]]; then
-        PHY=$(cat /sys/class/net/wlan1mon/phy80211/name)
-        iw dev wlan1mon del &> /dev/null
-        f_validate_one wlan1 || iw phy $PHY interface add wlan1 type station &> /dev/null
-      else
-        airmon-ng stop wlan1mon &> /dev/null
-      fi
-      if f_validate_one wlan1mon; then
-        printf "Failed, wlan1mon is still in monitor mode.\n"
-      else
-        printf "Success.\n"
-      fi
-      if f_validate_one wlan1; then
-        ip link set wlan1 down &> /dev/null
-        printf "Interface wlan1 is available in station mode.\n"
-        return 0
-      else
-        printf "Failed to create wlan1 in station mode, you may have to remove and reinsert your wifi card.\n"
-        return 1
-      fi
-      ;;
-    *)f_mon_disable ;;
-  esac
+  if f_validate_one wlan1mon; then
+    printf "\n[?] Stay in monitor mode (wlan1mon)?\n\n"
+    printf "1. Yes\n"
+    printf "2. No\n\n"
+    read -p "Choice [1 or 2]: " opt_mon
+    case $opt_mon in
+      1)
+        printf "\n[!] wlan1mon is still up\n\n"
+        ;;
+      2)
+        printf "\n[+] Taking wlan1mon out of monitor mode..."
+        #this is to work around the fact that airodump-ng assumes you are allowed to
+        #have two interfaces and deb/flo does not support that
+        hardw=`/system/bin/getprop ro.hardware`
+        if [[ "$hardw" == "deb" || "$hardw" == "flo" ]]; then
+          PHY=$(cat /sys/class/net/wlan1mon/phy80211/name)
+          iw dev wlan1mon del &> /dev/null
+          f_validate_one wlan1 || iw phy $PHY interface add wlan1 type station &> /dev/null
+        else
+          airmon-ng stop wlan1mon &> /dev/null
+        fi
+        if f_validate_one wlan1mon; then
+          printf "Failed, wlan1mon is still in monitor mode.\n"
+        else
+          printf "Success.\n"
+        fi
+        if f_validate_one wlan1; then
+          ip link set wlan1 down &> /dev/null
+          printf "Interface wlan1 is available in station mode.\n"
+          return 0
+        else
+          printf "Failed to create wlan1 in station mode, you may have to remove and reinsert your wifi card.\n"
+          return 1
+        fi
+        ;;
+      *)f_mon_disable ;;
+    esac
+  else
+    if f_validate_one wlan1; then
+      printf "Interface wlan1 is already available in station mode.\n"
+    else
+      printf "All external wifi interfaces have disappeared, please remove and reattach your external wifi adapter.\n"
+    fi
+  fi
 }
