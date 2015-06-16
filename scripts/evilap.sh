@@ -24,7 +24,7 @@ f_clean_up(){
   printf "[-] Killing any instances of airbase or dhcpd\n"
   killall airbase-ng &> /dev/null
   killall dhcpd &> /dev/null
-  f_mon_disable
+  include_extwifi=1 include_monitor=1 f_mon_disable
   iptables --flush
   iptables --table nat --flush
 }
