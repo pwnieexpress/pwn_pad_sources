@@ -17,7 +17,7 @@ f_endclean(){
   printf "\n[-] Exiting...\n"
   f_restore_ident
   f_clean_up
-  ifconfig wlan1 down &> /dev/null
+  return 0
 }
 
 f_clean_up(){
@@ -87,8 +87,7 @@ f_preplaunch(){
   printf "[+] New hostname set: $hn\n"
 
   sleep 2
-  #Put wlan1 into monitor mode and randomize mac - wlan1mon created
-  airmon-ng start wlan1
+  #interface is already in monitor mode
   ifconfig wlan1mon down
   macchanger -r wlan1mon
   ifconfig wlan1mon up
