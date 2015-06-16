@@ -17,6 +17,7 @@ f_endclean(){
   printf "\n[-] Exiting...\n"
   f_restore_ident
   f_clean_up
+  EXIT_NOW=1
 }
 
 f_clean_up(){
@@ -172,13 +173,14 @@ f_karmaornot(){
 
 f_mon_enable
 if [ "$?" = "0" ]; then
+  EXIT_NOW=0
   trap f_endclean INT
   trap f_endclean KILL
 
-  f_banner
-  require_ip=1 f_interface
-  f_ssid
-  f_channel
-  f_karmaornot
-  f_endclean
+  [ "$EXIT_NOW" = 0 ] && f_banner
+  [ "$EXIT_NOW" = 0 ] && require_ip=1 f_interface
+  [ "$EXIT_NOW" = 0 ] && f_ssid
+  [ "$EXIT_NOW" = 0 ] && f_channel
+  [ "$EXIT_NOW" = 0 ] && f_karmaornot
+  [ "$EXIT_NOW" = 0 ] && f_endclean
 fi
