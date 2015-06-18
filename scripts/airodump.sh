@@ -1,5 +1,7 @@
 #!/bin/bash
 # Run airodump-ng with no flags
+#set the prompt to the name of the script
+PS1=${PS1//@\\h/@airodump}
 clear
 
 . /opt/pwnix/pwnpad-scripts/px_functions.sh

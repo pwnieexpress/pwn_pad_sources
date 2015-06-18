@@ -1,5 +1,7 @@
 #!/bin/bash
 # Description: Script to remove all logs and anything potentially legally binding
+#set the prompt to the name of the script
+PS1=${PS1//@\\h/@logwiper}
 clear
 
 . /opt/pwnix/pwnpad-scripts/px_functions.sh

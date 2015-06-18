@@ -1,5 +1,7 @@
 #!/bin/bash
 # Ettercap ARP cache poison script
+#set the prompt to the name of the script
+PS1=${PS1//@\\h/@ettercap}
 clear
 
 #this block controls the features for px_interface_selector

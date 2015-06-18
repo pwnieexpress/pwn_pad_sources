@@ -1,5 +1,7 @@
 # /bin/bash
 # Script to copy captures folder to USB drive attached to PwnPad via OTG cable
+#set the prompt to the name of the script
+PS1=${PS1//@\\h/@usb_copy}
 clear
 
 f_checkforusb(){
