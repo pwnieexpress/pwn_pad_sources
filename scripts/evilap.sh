@@ -160,11 +160,15 @@ f_karmaornot(){
       printf "[+] Starting EvilAP with forced connection attack\n"
       f_beacon_rate
       f_preplaunch
+      trap f_endclean INT
+      trap f_endclean KILL
       f_evilap
       ;;
     2)
       printf "[+] Starting EvilAP without forced connection attack\n"
       f_preplaunch
+      trap f_endclean INT
+      trap f_endclean KILL
       f_niceap
       ;;
     *) f_karmaornot ;;
@@ -174,9 +178,6 @@ f_karmaornot(){
 f_mon_enable
 if [ "$?" = "0" ]; then
   EXIT_NOW=0
-  trap f_endclean INT
-  trap f_endclean KILL
-
   [ "$EXIT_NOW" = 0 ] && f_banner
   [ "$EXIT_NOW" = 0 ] && require_ip=1 f_interface
   [ "$EXIT_NOW" = 0 ] && f_ssid

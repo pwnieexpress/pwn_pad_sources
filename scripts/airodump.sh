@@ -12,6 +12,9 @@ f_run(){
   f_log
   # Check for GPS
   f_gps
+  #we have a monitor interface now, so set traps to cleanup
+  trap f_cleanup INT
+  trap f_cleanup KILL
 
   if [ $opt_log -eq 1 ]; then
     if [ $GPS_STATUS -eq 0 ]; then
@@ -100,10 +103,6 @@ f_cleanup(){
 
 f_mon_enable
 if [ "$?" = "0" ]; then
-  #we have a monitor interface now, so set traps to cleanup
-  trap f_cleanup INT
-  trap f_cleanup KILL
-
   f_run
   f_cleanup
 fi

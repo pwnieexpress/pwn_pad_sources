@@ -2,9 +2,6 @@
 # SSL strip script for sniffing on available interfaces
 clear
 
-trap f_clean_up INT
-trap f_clean_up KILL
-
 #this block controls the features for px_interface_selector
 include_cell=1
 require_ip=1
@@ -30,6 +27,9 @@ f_run(){
   sleep 2
 
   f_interface
+  trap f_clean_up INT
+  trap f_clean_up KILL
+
   f_ip_tables
 
   logfile=/opt/pwnix/captures/passwords/sslstrip_$(date +%F-%H%M).log
