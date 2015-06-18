@@ -29,8 +29,11 @@ export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 export TERM=xterm-color
 unset LD_PRELOAD
 
-# Copy mounts so chroot can see what is mounted
-/system/xbin/busybox chroot $NEW_ROOT /bin/cp /proc/mounts /etc/mtab
+# Link /etc/mtab to /proc/self/mounts so we always know what is mounted
+if [ -f "$NEW_ROOT/etc/mtab" ]; then
+  /system/xbin/busybox chroot $NEW_ROOT /bin/rm -f /etc/mtab
+  /system/xbin/busybox chroot $NEW_ROOT /bin/ln -s /proc/self/mounts /etc/mtab
+fi
 
 # Start services in chroot environment
 /system/xbin/busybox chroot $NEW_ROOT /etc/init.d/cron start

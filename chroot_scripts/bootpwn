@@ -18,9 +18,5 @@ echo "[!] Welcome to the Pwn zone. Get your game face on."
 /system/xbin/busybox stty columns 85
 /system/xbin/busybox stty rows 46
 
-# Copy mounts so chroot can see what is mounted
-# Can then mount USB OTG flash drive to copy files to/from chroot environment
-/system/xbin/busybox cp /proc/mounts $NEW_ROOT/etc/mtab
-
 # Drop user to shell
 /system/xbin/busybox chroot $NEW_ROOT /bin/bash --login
