@@ -64,6 +64,9 @@ f_run(){
   f_setflashables
   echo
 
+  #For Dallas, remove when the script can support threaded flashing
+  fastboot devices | awk '{print $1}'
+
   # Get builder
   read -p '[!] Enter your initials for the log and press [ENTER] to flash, CTRL+C to abort: ' initials
 
@@ -175,7 +178,7 @@ f_logserial(){
   k=0
   while (( $k < $device_count ))
   do
-	echo "[${pwnie_product[$k]} on ${product_serial[$k]}] ${serial_array[$k]} $(date) - $initials" | tee -a serial_datetime.txt
+	echo "[${pwnie_product[$k]} on ${product_array[$k]}] ${serial_array[$k]} $(date) - $initials" | tee -a serial_datetime.txt
 	(( k++ ))
   done
 }
