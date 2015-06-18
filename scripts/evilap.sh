@@ -8,7 +8,7 @@ include_monitor=0
 include_airbase=0
 include_cell=1
 include_usb=0 #the computer thinks we are sharing internet, not the other way
-#this interface selection is for the uplink, attack always uses wlan1
+#this interface selection is for the uplink, attack always uses external wifi
 default_interface=gsm_int
 message="be used for Internet uplink"
 . /opt/pwnix/pwnpad-scripts/px_functions.sh
@@ -32,8 +32,8 @@ f_clean_up(){
 f_restore_ident(){
   printf "[+] Restoring network identity\n"
   hostn=`cat /etc/hostname`
-  ifconfig wlan1 down &> /dev/null
-  macchanger -p wlan1 &> /dev/null
+  ifconfig wlan1mon down &> /dev/null
+  macchanger -p wlan1mon &> /dev/null
   hostname $hostn
 }
 
@@ -80,9 +80,9 @@ f_preplaunch(){
   #Change the hostname and mac address randomly
   printf "\n[+] Rolling MAC address and hostname randomly\n\n"
 
-  ifconfig wlan1 down
+  ifconfig wlan1mon down
 
-  hn=`ifconfig wlan1 |grep HWaddr |awk '{print$5}' |awk -F":" '{print$1$2$3$4$5$6}'`
+  hn=`ifconfig wlan1mon |grep HWaddr |awk '{print$5}' |awk -F":" '{print$1$2$3$4$5$6}'`
   hostname $hn
   printf "[+] New hostname set: $hn\n"
 
