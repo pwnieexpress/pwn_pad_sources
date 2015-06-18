@@ -15,8 +15,8 @@ unset LD_PRELOAD
 
 echo "[!] Welcome to the Pwn zone. Get your game face on."
 
-/system/xbin/busybox stty columns 85
-/system/xbin/busybox stty rows 46
+#automatically set current window size
+/system/xbin/busybox resize
 
 # Drop user to shell
 /system/xbin/busybox chroot $NEW_ROOT /bin/bash --login
