@@ -8,15 +8,15 @@ include_monitor=0
 include_airbase=0
 include_cell=1
 include_usb=0 #the computer thinks we are sharing internet, not the other way
-#this interface selection is for the uplink, attack always uses wlan1
+#this interface selection is for the uplink, attack always uses external wifi
 default_interface=gsm_int
 message="be used for Internet uplink"
 . /opt/pwnix/pwnpad-scripts/px_functions.sh
 
 f_endclean(){
   printf "\n[-] Exiting...\n"
-  f_clean_up
   f_restore_ident
+  f_clean_up
   EXIT_NOW=1
 }
 
@@ -32,8 +32,8 @@ f_clean_up(){
 f_restore_ident(){
   printf "[+] Restoring network identity\n"
   hostn=`cat /etc/hostname`
-  ifconfig wlan1 down &> /dev/null
-  macchanger -p wlan1 &> /dev/null
+  ifconfig wlan1mon down &> /dev/null
+  macchanger -p wlan1mon &> /dev/null
   hostname $hostn
 }
 
@@ -80,9 +80,9 @@ f_preplaunch(){
   #Change the hostname and mac address randomly
   printf "\n[+] Rolling MAC address and hostname randomly\n\n"
 
-  ifconfig wlan1 down
+  ifconfig wlan1mon down
 
-  hn=`ifconfig wlan1 |grep HWaddr |awk '{print$5}' |awk -F":" '{print$1$2$3$4$5$6}'`
+  hn=`ifconfig wlan1mon |grep HWaddr |awk '{print$5}' |awk -F":" '{print$1$2$3$4$5$6}'`
   hostname $hn
   printf "[+] New hostname set: $hn\n"
 
@@ -160,11 +160,15 @@ f_karmaornot(){
       printf "[+] Starting EvilAP with forced connection attack\n"
       f_beacon_rate
       f_preplaunch
+      trap f_endclean INT
+      trap f_endclean KILL
       f_evilap
       ;;
     2)
       printf "[+] Starting EvilAP without forced connection attack\n"
       f_preplaunch
+      trap f_endclean INT
+      trap f_endclean KILL
       f_niceap
       ;;
     *) f_karmaornot ;;
@@ -174,9 +178,6 @@ f_karmaornot(){
 f_mon_enable
 if [ "$?" = "0" ]; then
   EXIT_NOW=0
-  trap f_endclean INT
-  trap f_endclean KILL
-
   [ "$EXIT_NOW" = 0 ] && f_banner
   [ "$EXIT_NOW" = 0 ] && require_ip=1 f_interface
   [ "$EXIT_NOW" = 0 ] && f_ssid

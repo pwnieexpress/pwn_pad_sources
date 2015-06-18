@@ -114,10 +114,6 @@ f_endmsg(){
 
 f_mon_enable
 if [ "$?" = "0" ]; then
-  #this seems to cause f_cleanup to run twice, not really sure why
-  #trap f_cleanup INT
-  #trap f_cleanup KILL
-
   LOGDIR="/opt/pwnix/captures/wireless/"
   cd "$LOGDIR" &> /dev/null
   if [ $? != 0 ]; then

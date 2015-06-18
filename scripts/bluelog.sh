@@ -5,7 +5,7 @@ clear
 bluetooth=1
 . /opt/pwnix/pwnpad-scripts/px_functions.sh
 
-if f_validate_one hci0; then
+if loud_one=1 f_validate_one hci0; then
 
 hciconfig hci0 up
 cd /opt/pwnix/captures/bluetooth/
