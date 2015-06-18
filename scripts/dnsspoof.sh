@@ -5,7 +5,7 @@ clear
 
 . /opt/pwnix/pwnpad-scripts/px_functions.sh
 
-if f_validate_one at0; then
+if loud_one=1 f_validate_one at0; then
 
 f_banner(){
   printf "\nEvilAP Ettercap-NG 0.8.0 DNS Spoofing Tool\n\n"
