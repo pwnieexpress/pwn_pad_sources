@@ -15,8 +15,8 @@ message="be used for Internet uplink"
 
 f_endclean(){
   printf "\n[-] Exiting...\n"
-  f_clean_up
   f_restore_ident
+  f_clean_up
   EXIT_NOW=1
 }
 
