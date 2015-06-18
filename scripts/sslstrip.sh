@@ -12,7 +12,7 @@ f_clean_up(){
   printf "\n[!] Killing other instances of sslstrip and flushing iptables\n\n"
   sslstrippid=$(pgrep -x sslstrip)
   dns2proxypid=$(pgrep -x dns2proxy.py)
-  kill $sslstrippid $dns2proxypid
+  kill $sslstrippid $dns2proxypid > /dev/null 2>&1
 
   # Remove SSL Strip iptables rule ONLY
   iptables -t nat -D PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8888
