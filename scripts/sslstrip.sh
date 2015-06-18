@@ -12,7 +12,7 @@ f_clean_up(){
   printf "\n[!] Killing other instances of sslstrip and flushing iptables\n\n"
   killall sslstrip
   # kill dns2proxy.py
-  dns2proxypid=$(pgrep -f dns2proxy.py)
+  dns2proxypid=$(pgrep -x dns2proxy.py)
   kill $dns2proxypid
 
   # Remove SSL Strip iptables rule ONLY
