@@ -1,5 +1,7 @@
 #!/bin/bash
 # Desc: EvilAP script to forcefully connect wireless clients
+#set the prompt to the name of the script
+PS1=${PS1//@\\h/@evilap}
 clear
 
 #this block controls the features for px_interface_selector

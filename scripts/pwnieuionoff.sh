@@ -1,5 +1,7 @@
 #!/bin/bash
 # Script to turn Pwnie UI off/on (ON by default)
+#set the prompt to the name of the script
+PS1=${PS1//@\\h/@pwnieuionoff}
 clear
 
 printf "\nThis will enable/disable the Pwnie UI at https://localhost:1443\n\n"

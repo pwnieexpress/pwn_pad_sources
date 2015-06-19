@@ -1,6 +1,8 @@
 #!/system/bin/sh
 # Description: Factory resets Pwn Pad 2013/2014 and Pwn Phone 2014
 # Result: Stock Pwn Pad 2013/2014 or Pwn Phone 2014
+#set the prompt to the name of the script
+PS1=${PS1//@\\h/@FACTORY RESET}
 clear
 
 f_run(){

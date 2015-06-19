@@ -1,5 +1,7 @@
 #!/bin/bash
 # Script to turn SSHD on and off
+#set the prompt to the name of the script
+PS1=${PS1//@\\h/@ssh_toggle}
 clear
 
 f_show_ip(){

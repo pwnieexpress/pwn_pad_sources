@@ -1,6 +1,8 @@
 #!/bin/bash
 # Script to use ettercap to redirect all DNS traffic back to the device
 # Use with SET (site cloner)
+#set the prompt to the name of the script
+PS1=${PS1//@\\h/@dnsspoof}
 clear
 
 . /opt/pwnix/pwnpad-scripts/px_functions.sh
@@ -20,7 +22,7 @@ f_run(){
   f_banner
 
   #ettercap fails if the interface is down
-  ip link set $interface up
+  ip link set at0 up
 
   ettercap -i at0 -T -q -P dns_spoof
 }

@@ -1,5 +1,7 @@
 #!/bin/bash
 # Script to run Wifite
+#set the prompt to the name of the script
+PS1=${PS1//@\\h/@wifite}
 clear
 
 . /opt/pwnix/pwnpad-scripts/px_functions.sh

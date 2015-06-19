@@ -1,6 +1,8 @@
 #!/bin/bash
 # /usr/bin/macchanger --help
 # Roll MAC address and hostname
+#set the prompt to the name of the script
+PS1=${PS1//@\\h/@macchanger}
 clear
 
 #this block controls the features for px_interface_selector

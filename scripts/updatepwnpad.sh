@@ -1,5 +1,7 @@
 # /bin/bash
 #script to update mobile line using standard chef update procedure
+#set the prompt to the name of the script
+PS1=${PS1//@\\h/@update}
 clear
 
 . /opt/pwnix/pwnpad-scripts/px_functions.sh
