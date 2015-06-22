@@ -1,5 +1,7 @@
 #!/bin/bash
 #Description: Script to watch strings go by in real time
+#set the prompt to the name of the script
+PS1=${PS1//@\\h/@stringswatch}
 clear
 
 #this block controls the features for px_interface_selector

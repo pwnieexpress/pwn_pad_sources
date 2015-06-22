@@ -1,5 +1,7 @@
 #!/bin/bash
 # Cleartext password sniffing on all available interfaces
+#set the prompt to the name of the script
+PS1=${PS1//@\\h/@dsniff}
 clear
 
 #this block controls the features for px_interface_selector
