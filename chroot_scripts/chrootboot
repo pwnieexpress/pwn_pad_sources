@@ -1,10 +1,6 @@
 #!/system/bin/sh
 # Start chroot environment and services at system startup
 
-# Set SELinux to permissive
-# su 0 setenforce 0
-
-# Use the fourth loopback device to leave the first couple open
 export SOURCE_IMG=/data/local/kali_img/kali.img
 export NEW_ROOT=/data/local/kali
 
