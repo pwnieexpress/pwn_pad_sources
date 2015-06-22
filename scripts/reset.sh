@@ -9,10 +9,10 @@ clear
 printf '\n[!] FACTORY RESET in progress. All changes will be lost.\n\n'
 
 # Snag serial
-serialno=`/system/bin/getprop ro.serialno`
+serialno=$(/system/bin/getprop ro.serialno)
 
 # Set backup
-backup=`ls /sdcard/TWRP/BACKUPS/$serialno/ |grep -i pwn`
+backup=$(ls /sdcard/TWRP/BACKUPS/$serialno/ |grep -i pwn)
 
 # Construst cmd for script
 rm -f /cache/recovery/openrecoveryscript
