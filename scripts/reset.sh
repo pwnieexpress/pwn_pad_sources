@@ -30,7 +30,7 @@ if [ ! -f /data/local/kali_img/stockchroot.img ]; then
   #we do not have stockchroot.img, that means we are migrating from v0 to v1
   cat << EOF >> /cache/recovery/openrecoveryscript
 print [ Converting v0 chroot to v1 chroot ]
-cmd busybox dd if=/dev/zero of=/data/local/kali_img/stockchroot.img bs=1 count=0 seek=3G
+cmd busybox dd if=/dev/zero of=/data/local/kali_img/stockchroot.img bs=1 count=0 seek=2047M
 cmd busybox /sbin/mkfs.ext2 -F /data/local/kali_img/stockchroot.img
 cmd busybox mkdir /data/local/kali_img/kalitmp
 cmd busybox busybox mount -t ext2 /data/local/kali_img/stockchroot.img /data/local/kali_img/kalitmp/
