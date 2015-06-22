@@ -16,7 +16,7 @@ backup=$(ls /sdcard/TWRP/BACKUPS/$serialno/ |grep -i pwn)
 
 # Construst cmd for script
 rm -f /cache/recovery/openrecoveryscript
-[ "$chroot_only" = 0 ] && printf "restore /data/media/0/TWRP/BACKUPS/$serialno/$backup\n" > /cache/recovery/openrecoveryscript
+[ "$chroot_only" = "0" ] && printf "restore /data/media/0/TWRP/BACKUPS/$serialno/$backup\n" > /cache/recovery/openrecoveryscript
 cat << EOF >> /cache/recovery/openrecoveryscript
 print  [SETUP STARTED]
 cmd export PATH=/usr/bin:/usr/sbin:/bin:/usr/local/bin:/usr/local/sbin:$PATH
@@ -36,17 +36,6 @@ EOF
 # Reboot into recovery; run script
 reboot recovery
 
-
-#protocode
-#if kali.img
-# rm kali.img
-#  if kali_backup.img
-#    warn user unusual state, please run reset again
-#  elif ! kali_backup.img
-#    make kali_backup.img from /data/local/kali
-#  else
-#    unknown failure
-#  fi
 
 #posix
 #if [ -f /data/local/kali_img/kali.img ]; then
