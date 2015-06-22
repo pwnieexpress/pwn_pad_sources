@@ -35,3 +35,44 @@ EOF
 
 # Reboot into recovery; run script
 reboot recovery
+
+
+#protocode
+#if kali.img
+# rm kali.img
+#  if kali_backup.img
+#    warn user unusual state, please run reset again
+#  elif ! kali_backup.img
+#    make kali_backup.img from /data/local/kali
+#  else
+#    unknown failure
+#  fi
+
+#posix
+#if [ -f /data/local/kali_img/kali.img ]; then
+#  rm -f /data/local/kali_img/kali.img
+#fi
+#
+#if [ ! -f /data/local/kali_img/stockchroot.img ]; then
+#  #we do not have stockchroot.img, that means we are migrating from v0 to v1
+#  #todo rewrite to not need chroot calls, we are fixing a broken chroot possibly
+#  mount -o bind /dev /data/local/kali/dev
+#  chroot /data/local/kali/ /bin/dd if=/dev/zero of=/stockchroot.img bs=1 count=0 seek=4G
+#  chroot /data/local/kali/ /sbin/mkfs.ext4 -F /kali.img
+#  mv /data/local/kali/stockchroot.img /data/local/kali_img/
+#  mkdir /data/local/kali_img/kalitmp
+#  mount -t ext4 /data/local/kali_img/stockchroot.img /data/local/kali_img/kalitmp/
+#  umount /data/local/kali/dev
+#  cp -a /data/local/kali/* /data/local/kali_img/kalitmp/
+#  umount /data/local/kali_img/kalitmp/
+#  rm -r /data/local/kali_img/kalitmp
+#else
+#  #we have stockchroot.img, that means we kill /data/local/kali and unpack there
+#  rm -r /data/local/kali/*
+#  mkdir /data/local/kali_img/kalitmp
+#  mount -t ext4 /data/local/kali_img/stockchroot.img /data/local/kali_img/kalitmp
+#  cp -a /data/local/kali_img/kalitmp/* /data/local/kali
+#  umount /data/local/kali_img/kalitmp
+#  rm -r /data/local/kali_img/kalitmp
+#fi
+
