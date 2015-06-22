@@ -29,23 +29,23 @@ fi
 if [ ! -f /data/local/kali_img/stockchroot.img ]; then
   #we do not have stockchroot.img, that means we are migrating from v0 to v1
   cat << EOF >> /cache/recovery/openrecoveryscript
-  busybox dd if=/dev/zero of=/stockchroot.img bs=1 count=0 seek=4G
-  busybox /sbin/mkfs.ext2 -F /data/local/kali_img/stockchroot.img
-  mkdir /data/local/kali_img/kalitmp
-  busybox mount -t ext2 /data/local/kali_img/stockchroot.img /data/local/kali_img/kalitmp/
-  cp -a /data/local/kali/* /data/local/kali_img/kalitmp/
-  busybox umount /data/local/kali_img/kalitmp/
-  rm -r /data/local/kali_img/kalitmp
+  cmd busybox dd if=/dev/zero of=/stockchroot.img bs=1 count=0 seek=4G
+  cmd busybox /sbin/mkfs.ext2 -F /data/local/kali_img/stockchroot.img
+  cmd busybox mkdir /data/local/kali_img/kalitmp
+  cmd busybox busybox mount -t ext2 /data/local/kali_img/stockchroot.img /data/local/kali_img/kalitmp/
+  cmd busybox cp -a /data/local/kali/* /data/local/kali_img/kalitmp/
+  cmd busybox umount /data/local/kali_img/kalitmp/
+  cmd busybox rm -r /data/local/kali_img/kalitmp
 EOF
 else
   #we have stockchroot.img, that means we kill /data/local/kali and unpack there
   cat << EOF >> /cache/recovery/openrecoveryscript
-  rm -r /data/local/kali/*
-  mkdir /data/local/kali_img/kalitmp
-  busybox mount -t ext2 /data/local/kali_img/stockchroot.img /data/local/kali_img/kalitmp
-  cp -a /data/local/kali_img/kalitmp/* /data/local/kali
-  busybox umount /data/local/kali_img/kalitmp
-  rm -r /data/local/kali_img/kalitmp
+  cmd busybox rm -r /data/local/kali/*
+  cmd busybox mkdir /data/local/kali_img/kalitmp
+  cmd busybox mount -t ext2 /data/local/kali_img/stockchroot.img /data/local/kali_img/kalitmp
+  cmd busybox cp -a /data/local/kali_img/kalitmp/* /data/local/kali
+  cmd busybox umount /data/local/kali_img/kalitmp
+  cmd busybox rm -r /data/local/kali_img/kalitmp
 EOF
 fi
 cat << EOF >> /cache/recovery/openrecoveryscript
