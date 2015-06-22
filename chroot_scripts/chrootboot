@@ -1,14 +1,12 @@
 #!/system/bin/sh
 # Start chroot environment and services at system startup
 
-# Set SELinux to permissive
-# su 0 setenforce 0
-
-# Use the fourth loopback device to leave the first couple open
-export SOURCE_IMG=/data/local/kali_img/kali.img
 export NEW_ROOT=/data/local/kali
 
-mount -o loop -t ext4 $SOURCE_IMG $NEW_ROOT
+if [ -f /data/local/kali_img/kali.img ]; then
+  export SOURCE_IMG=/data/local/kali_img/kali.img
+  mount -o loop -t ext4 $SOURCE_IMG $NEW_ROOT
+fi
 
 # Mount other filesystems for chroot environment
 /system/xbin/busybox mount --rbind /dev $NEW_ROOT/dev
