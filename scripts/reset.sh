@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # Description: Factory resets Pwn Pad 2013/2014 and Pwn Phone 2014
-# Result: Stock Pwn Pad 2013/2014 or Pwn Phone 2014
+# Result: Stock Pwn Pad 2013/2014/3 or Pwn Phone 2014
 clear
 
 #Blank everything by default, but allow to blank only some
