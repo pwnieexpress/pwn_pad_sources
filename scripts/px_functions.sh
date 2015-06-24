@@ -275,7 +275,7 @@ f_mon_disable(){
 }
 
 f_channel_list(){
-  unset channel_list 2.4_channels 5_channels
+  unset channel_list twofour_channels five_channels
   [ -n "$1" ] && return 1
   if [ -f /sys/class/net/$1/phy80211/name ]; then
     channel_list=$(iw phy $(cat /sys/class/net/$1/phy80211/name) info 2>&1 | grep -oP '\[\K[^\]]+')
@@ -283,8 +283,8 @@ f_channel_list(){
     channel_list="1 2 3 4 5 6 7 8 9 10 11"
   fi
   for i in $channel_list; do
-    [ "$i" -lt 15 ] && 24_channels="${24_channels} $i"
-    [ "$i" -gt 14 ] && 5_channels="${5_channels} $i"
+    [ "$i" -lt 15 ] && twofour_channels="${twofour_channels} $i"
+    [ "$i" -gt 14 ] && five_channels="${five_channels} $i"
   done
   return 0
 }
