@@ -283,7 +283,7 @@ f_channel_list(){
     channel_list="1 2 3 4 5 6 7 8 9 10 11"
   fi
   for i in $channel_list; do
-    [ "$i" -lt 15 ] && 2.4_channels="${2.4_channels} $i"
+    [ "$i" -lt 15 ] && 24_channels="${24_channels} $i"
     [ "$i" -gt 14 ] && 5_channels="${5_channels} $i"
   done
   return 0

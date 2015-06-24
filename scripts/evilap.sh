@@ -58,7 +58,7 @@ f_channel(){
   clear
   [ -n "$channel" ] && printf "\nChannel $channel is invalid.\n"
   printf "\n[+] Please enter a channel to run EvilAP on (Default: 1).\n\n"
-  [ -n "${2.4_channels}" ] && printf "Available 2.4 GHz channels are: $2.4_channels\n"
+  [ -n "${24_channels}" ] && printf "Available 2.4 GHz channels are: $2.4_channels\n"
   [ -n "${5_channels}" ] && printf "Available 5 GHz channels are: $5_channels\n"
   printf "\n"
 
