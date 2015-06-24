@@ -275,6 +275,7 @@ f_mon_disable(){
 }
 
 f_channel_list(){
+  [ -n "$i" ] && return 1
   if [ -f /sys/class/net/$1/phy80211/name ]; then
     channel_list=$(iw phy $(cat /sys/class/net/$i/phy80211/name) info | grep -oP '\[\K[^\]]+')
   else
@@ -282,9 +283,10 @@ f_channel_list(){
   fi
   unset 2.4_channels 5_channels
   for i in $channel_list; do
-    [ "$i" -lt 15 ] && 2.4_channels="$2.4_channels $i"
-    [ "$i" -gt 14 ] && 5_channels="$5_channels $i"
+    [ "$i" -lt 15 ] && 2.4_channels="${2.4_channels} $i"
+    [ "$i" -gt 14 ] && 5_channels="${5_channels} $i"
   done
+  return 0
 }
 
 f_validate_channel(){
@@ -292,6 +294,8 @@ f_validate_channel(){
   # $1 is interface
   # $2 is channel
   [ -z "$channel_list" ] && return 1
+  [ -z "$1" ] && return 1
+  [ -z "$2" ] && return 1
   VALID=1
   for i in $channel_list; do
     [ "$2" = "$i" ] && VALID=0
