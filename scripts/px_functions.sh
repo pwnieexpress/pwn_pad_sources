@@ -278,7 +278,7 @@ f_channel_list(){
   unset channel_list 2.4_channels 5_channels
   [ -n "$1" ] && return 1
   if [ -f /sys/class/net/$1/phy80211/name ]; then
-    channel_list=$(iw phy $(cat /sys/class/net/$1/phy80211/name) info | grep -oP '\[\K[^\]]+')
+    channel_list=$(iw phy $(cat /sys/class/net/$1/phy80211/name) info 2>&1 | grep -oP '\[\K[^\]]+')
   else
     channel_list="1 2 3 4 5 6 7 8 9 10 11"
   fi
