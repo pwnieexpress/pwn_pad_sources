@@ -56,7 +56,7 @@ f_ssid(){
 
 f_channel(){
   clear
-  [ -n "$channel" ] && printf "\nChannel $channel is invalid.\n"
+  [ -n "$channel" ] && printf "\nChannel $channel is ${1:-invalid}.\n"
   printf "\n[+] Please enter a channel to run EvilAP on (Default: 1).\n\n"
   [ -n "${twofour_channels}" ] && printf "Available 2.4 GHz channels are: ${twofour_channels}\n"
   [ -n "${five_channels}" ] && printf "Available 5 GHz channels are: ${five_channels}\n"
@@ -67,9 +67,14 @@ f_channel(){
 
   [ -z "$channel" ] && channel=1
   f_validate_channel wlan1mon $channel
-  if [ $? != 0 ]; then
-    f_channel
-  fi
+  RETCODE=$?
+  case $RETCODE in
+    0) return 0 ;;
+    2) f_channel "not in the supported channel list" ;;
+    3) f_channel "not supported in the current regulatory domain" ;;
+    *) f_channel ;;
+  esac
+  return 1
 }
 
 f_beacon_rate(){

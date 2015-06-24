@@ -301,6 +301,7 @@ f_validate_channel(){
     [ "$2" = "$i" ] && VALID=0
   done
   if [ "$VALID" = "0" ]; then
+    ip link set $1 up > /dev/null 2>&1
     iw $1 set channel $2 > /dev/null 2>&1
     RETCODE=$?
     if [ "$RETCODE" = "0" ]; then
@@ -311,5 +312,5 @@ f_validate_channel(){
   else
     return 2
   fi
-  return 5
+  return 4
 }
