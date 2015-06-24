@@ -56,14 +56,20 @@ f_ssid(){
 
 f_channel(){
   clear
-  printf "\n[+] Enter the channel to run EvilAP on [1-14]\n"
-  printf "[-] Default channel: [1]\n\n"
+  [ -n "$channel" ] && printf "\nChannel $channel is invalid.\n"
+  printf "\n[+] Please enter a channel to run EvilAP on (Default: 1).\n\n"
+  [ -n "$2.4_channels" ] && printf "Available 2.4 GHz channels are: $2.4_channels\n"
+  [ -n "$5_channels" ] && printf "Available 5 GHz channels are: $5_channels\n"
+  printf "\n"
+
+  unset channel
   read -p "Channel: " channel
 
-  case $channel in
-    [1-14]*) ;;
-    *) channel=1 ;;
-  esac
+  [ -z "$channel" ] && channel=1
+  f_validate_channel wlan1mon $channel
+  if [ $? != 0 ]; then
+    f_channel
+  fi
 }
 
 f_beacon_rate(){
@@ -183,6 +189,7 @@ if [ "$?" = "0" ]; then
   [ "$EXIT_NOW" = 0 ] && f_banner
   [ "$EXIT_NOW" = 0 ] && require_ip=1 f_interface
   [ "$EXIT_NOW" = 0 ] && f_ssid
+  [ "$EXIT_NOW" = 0 ] && f_channel_list wlan1mon
   [ "$EXIT_NOW" = 0 ] && f_channel
   [ "$EXIT_NOW" = 0 ] && f_karmaornot
   [ "$EXIT_NOW" = 0 ] && f_endclean
