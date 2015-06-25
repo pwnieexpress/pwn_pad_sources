@@ -42,7 +42,7 @@ else
   #we have stockchroot.img, that means we kill /data/local/kali and unpack there
 
   #support any chroot to restore from, adjust product as needed
-  PRODUCT=$(cat /etc/product)
+  PRODUCT=$(cat /data/local/kali/etc/product)
   if [ "${PRODUCT}" = "Pwn Pad" ]; then
     product="pwnpad"
   elif [ "${PRODUCT}" = "Pwn Phone 2014" ]; then
