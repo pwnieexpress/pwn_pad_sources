@@ -62,7 +62,7 @@ cmd busybox umount /data/local/kali_img/kalitmp
 cmd busybox rm -r /data/local/kali_img/kalitmp
 cmd busybox echo "$PRODUCT" > /data/local/kali/etc/product
 cmd busybox echo "$product" > /data/local/kali/etc/hostname
-cmd busybox sed -i "s/127\.0\.0\.1.*/127.0.0.1       $product localhost/g" /data/local/kali/etc/hosts
+cmd busybox sed -i "s/127\.0\.0\.1.*/127.0.0.1       $product localhost/" /data/local/kali/etc/hosts
 EOF
 fi
 cat << EOF >> /cache/recovery/openrecoveryscript
