@@ -40,6 +40,18 @@ cmd busybox rm -r /data/local/kali_img/kalitmp
 EOF
 else
   #we have stockchroot.img, that means we kill /data/local/kali and unpack there
+
+  #support any chroot to restore from, adjust product as needed
+  PRODUCT=$(cat /etc/product)
+  if [ "${PRODUCT}" = "Pwn Pad" ]; then
+    product="pwnpad"
+  elif [ "${PRODUCT}" = "Pwn Phone 2014" ]; then
+    product="pwnphone"
+  else
+    PRODUCT="unknown"
+    product="unknown"
+  fi
+
   cat << EOF >> /cache/recovery/openrecoveryscript
 print [ Restoring v1 chroot ]
 cmd busybox rm -r /data/local/kali/*
@@ -48,6 +60,9 @@ cmd busybox mount -t ext4 /data/local/kali_img/stockchroot.img /data/local/kali_
 cmd busybox cp -a /data/local/kali_img/kalitmp/* /data/local/kali
 cmd busybox umount /data/local/kali_img/kalitmp
 cmd busybox rm -r /data/local/kali_img/kalitmp
+cmd busybox echo "$PRODUCT" > /data/local/kali/etc/product
+cmd busybox echo "$product" > /data/local/kali/etc/hostname
+cmd busybox sed -i "s/127\.0\.0\.1.*/127.0.0.1       $product localhost/g" /data/local/kali/etc/hosts
 EOF
 fi
 cat << EOF >> /cache/recovery/openrecoveryscript
