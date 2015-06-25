@@ -18,18 +18,19 @@ f_run(){
   trap f_cleanup INT
   trap f_cleanup KILL
 
+  STD_OPTS="-C0 --manufacturer"
   if [ $opt_log -eq 1 ]; then
     if [ $GPS_STATUS -eq 0 ]; then
-      airodump-ng --manufacturer --gpsd -w airodump wlan1mon
+      airodump-ng $STD_OPTS --gpsd -w airodump wlan1mon
     else
-      airodump-ng --manufacturer -w airodump wlan1mon
+      airodump-ng $STD_OPTS -w airodump wlan1mon
     fi
 
   elif [ $opt_log -eq 2 ]; then
     if [ $GPS_STATUS -eq 0 ]; then
-      airodump-ng --manufacturer --gpsd wlan1mon
+      airodump-ng $STD_OPTS --gpsd wlan1mon
     else
-      airodump-ng --manufacturer wlan1mon
+      airodump-ng $STD_OPTS wlan1mon
     fi
   fi
 }
