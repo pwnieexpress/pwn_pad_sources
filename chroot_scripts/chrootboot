@@ -34,13 +34,13 @@ if [ -f "$NEW_ROOT/etc/mtab" ]; then
 fi
 
 # Start services in chroot environment
-[ -f "$NEW_ROOT/etc/rc2.d/S??cron" ] && /system/xbin/busybox chroot $NEW_ROOT /etc/init.d/cron start
-[ -f "$NEW_ROOT/etc/rc2.d/S??hermes" ] && /system/xbin/busybox chroot $NEW_ROOT /etc/init.d/hermes start
-[ -f "$NEW_ROOT/etc/rc2.d/S??insight_api" ] && /system/xbin/busybox chroot $NEW_ROOT /etc/init.d/insight_api start
-[ -f "$NEW_ROOT/etc/rc2.d/S??pwnix_kismet_server" ] && /system/xbin/busybox chroot $NEW_ROOT /etc/init.d/pwnix_kismet_server start
-[ -f "$NEW_ROOT/etc/rc2.d/S??pwnix_realtime_wireless" ] && /system/xbin/busybox chroot $NEW_ROOT /etc/init.d/pwnix_realtime_wireless start
-[ -f "$NEW_ROOT/etc/rc2.d/S??pwnscan" ] && /system/xbin/busybox chroot $NEW_ROOT /etc/init.d/pwnscan start
-[ -f "$NEW_ROOT/etc/rc2.d/S??rc.local" ] && /system/xbin/busybox chroot $NEW_ROOT /etc/init.d/rc.local start
+[ -f $NEW_ROOT/etc/rc2.d/S??cron ] && /system/xbin/busybox chroot $NEW_ROOT /etc/init.d/cron start
+[ -f $NEW_ROOT/etc/rc2.d/S??hermes ] && /system/xbin/busybox chroot $NEW_ROOT /etc/init.d/hermes start
+[ -f $NEW_ROOT/etc/rc2.d/S??insight_api ] && /system/xbin/busybox chroot $NEW_ROOT /etc/init.d/insight_api start
+[ -f $NEW_ROOT/etc/rc2.d/S??pwnix_kismet_server ] && /system/xbin/busybox chroot $NEW_ROOT /etc/init.d/pwnix_kismet_server start
+[ -f $NEW_ROOT/etc/rc2.d/S??pwnix_realtime_wireless ] && /system/xbin/busybox chroot $NEW_ROOT /etc/init.d/pwnix_realtime_wireless start
+[ -f $NEW_ROOT/etc/rc2.d/S??pwnscan ] && /system/xbin/busybox chroot $NEW_ROOT /etc/init.d/pwnscan start
+[ -f $NEW_ROOT/etc/rc2.d/S??rc.local ] && /system/xbin/busybox chroot $NEW_ROOT /etc/init.d/rc.local start
 
 # If first_boot.sh is in chroot root filesystem (/data/local/kali); then
 # run it to generate SSH keys, etc.
