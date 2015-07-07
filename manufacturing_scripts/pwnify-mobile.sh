@@ -49,10 +49,10 @@ f_run(){
   f_verify_flashables
 
   # Kill running server
-  adb kill-server
+  adb kill-server >> "${DEBUG_FILE}" 2>&1
 
   # Start server
-  adb start-server
+  adb start-server >> "${DEBUG_FILE}" 2>&1
 
 
   # Snag serials
@@ -65,7 +65,7 @@ f_run(){
   f_setflashables
 
   # Get builder
-  printf "[!] Enter your initials for the log and press [ENTER] to flash, CTRL+C to abort: "
+  printf "\n[!] Enter your initials for the log and press [ENTER] to flash, CTRL+C to abort: "
   read initials
 
   # Log serials
@@ -79,7 +79,7 @@ f_flash() {
   k=0
   while (( $k < $device_count ))
   do
-    fastboot oem unlock -s ${serial_array[$k]} 2>&1 > "${DEBUG_FILE}" &
+    fastboot oem unlock -s ${serial_array[$k]} >> "${DEBUG_FILE}" 2>&1 &
     WAITPIDS="$WAITPIDS "$!
     (( k++ ))
   done
@@ -92,7 +92,7 @@ f_flash() {
   k=0
   while (( $k < $device_count ))
   do
-    fastboot erase boot -s ${serial_array[$k]} 2>&1 > "${DEBUG_FILE}" &
+    fastboot erase boot -s ${serial_array[$k]} >> "${DEBUG_FILE}" 2>&1 &
     WAITPIDS="$WAITPIDS "$!
     (( k++ ))
   done
@@ -105,7 +105,7 @@ f_flash() {
   while (( $k < $device_count ))
   do
     if [ "${pwnie_product[$k]}" != "Pwn Pad 3" ]; then
-      fastboot flash boot ${image_base[$k]}/boot.img -s ${serial_array[$k]} 2>&1 > "${DEBUG_FILE}" &
+      fastboot flash boot ${image_base[$k]}/boot.img -s ${serial_array[$k]} >> "${DEBUG_FILE}" 2>&1 &
       WAITPIDS="$WAITPIDS "$!
     fi
     (( k++ ))
@@ -118,7 +118,7 @@ f_flash() {
   k=0
   while (( $k < $device_count ))
   do
-    fastboot flash recovery ${image_base[$k]}/${recovery[$k]} -s ${serial_array[$k]} 2>&1 > "${DEBUG_FILE}" &
+    fastboot flash recovery ${image_base[$k]}/${recovery[$k]} -s ${serial_array[$k]} >> "${DEBUG_FILE}" 2>&1 &
     WAITPIDS="$WAITPIDS "$!
     (( k++ ))
   done
@@ -130,7 +130,7 @@ f_flash() {
   k=0
   while (( $k < $device_count ))
   do
-    fastboot format system -s ${serial_array[$k]} 2>&1 > "${DEBUG_FILE}" &
+    fastboot format system -s ${serial_array[$k]} >> "${DEBUG_FILE}" 2>&1 &
     WAITPIDS="$WAITPIDS "$!
     (( k++ ))
   done
@@ -142,7 +142,7 @@ f_flash() {
   k=0
   while (( $k < $device_count ))
   do
-    fastboot format userdata -s ${serial_array[$k]} 2>&1 > "${DEBUG_FILE}" &
+    fastboot format userdata -s ${serial_array[$k]} >> "${DEBUG_FILE}" 2>&1 &
     WAITPIDS="$WAITPIDS "$!
     (( k++ ))
   done
@@ -154,7 +154,7 @@ f_flash() {
   k=0
   while (( $k < $device_count ))
   do
-    fastboot format cache -s ${serial_array[$k]} 2>&1 > "${DEBUG_FILE}" &
+    fastboot format cache -s ${serial_array[$k]} >> "${DEBUG_FILE}" 2>&1 &
     WAITPIDS="$WAITPIDS "$!
     (( k++ ))
   done
@@ -249,7 +249,7 @@ f_verify_flashables(){
     printf "Checking files, please stand by...\n\n"
     for i in "$(pwd)/nexus_2012" "$(pwd)/nexus_2013"  "$(pwd)/nexus_5" "$(pwd)/shield-tablet"; do
       if [ -d "$i" ]; then
-        pushd "$i" 2>&1 > "${DEBUG_FILE}"
+        pushd "$i" >> "${DEBUG_FILE}" 2>&1
         sha512sum --status -c checksums.sha512
         if [ $? = 0 ]; then
           printf "Files in $i are good to go, ready to flash.\n"
@@ -257,7 +257,7 @@ f_verify_flashables(){
           printf "Files in $i are corrupt, unable to flash.\n"
           f_pause "Press enter if you are *sure* you won't be needing the missing/corrupt files or ^C to quit and fix your files"
         fi
-        popd 2>&1 > "${DEBUG_FILE}"
+        popd >> "${DEBUG_FILE}" 2>&1
       else
         printf "Files to flash $i are missing, unable to flash this device type\n"
         f_pause "Press enter if you are *sure* you won't be needing the missing/corrupt files or ^C to quit and fix your files"
@@ -273,7 +273,7 @@ f_push(){
   k=0
   while (( $k < $device_count ))
   do
-    fastboot boot ${image_base[$k]}/${recovery[$k]} -s ${serial_array[$k]} 2>&1 > "${DEBUG_FILE}" &
+    fastboot boot ${image_base[$k]}/${recovery[$k]} -s ${serial_array[$k]} >> "${DEBUG_FILE}" 2>&1 &
     WAITPIDS="$WAITPIDS "$!
     (( k++ ))
   done
@@ -284,7 +284,7 @@ f_push(){
   while (( $k < $device_count ))
   do
     sleepy_time[$k]=0
-    while ! adb -s ${serial_array[$k]} shell true 2>&1 > "${DEBUG_FILE}"; do
+    while ! adb -s ${serial_array[$k]} shell true >> "${DEBUG_FILE}" 2>&1; do
       sleep 1
       (( sleepy_time[$k]++ ))
       printf "Waiting on ${serial_array[$k]} to boot recovery for ${sleepy_time[$k]} seconds.\n"
@@ -297,7 +297,7 @@ f_push(){
   k=0
   while (( $k < $device_count ))
   do
-    adb -s ${serial_array[$k]} push ${image_base[$k]}/TWRP/ /data/media/0/TWRP/ 2>&1 > "${DEBUG_FILE}" &
+    adb -s ${serial_array[$k]} push ${image_base[$k]}/TWRP/ /data/media/0/TWRP/ >> "${DEBUG_FILE}" 2>&1 &
     WAITPIDS="$WAITPIDS "$!
     (( k++ ))
   done
@@ -308,7 +308,7 @@ f_push(){
   k=0
   while (( $k < $device_count ))
   do
-    adb -s ${serial_array[$k]} shell "mv /data/media/0/TWRP/BACKUPS/serial/ /data/media/0/TWRP/BACKUPS/${serial_array[$k]}" 2>&1 > "${DEBUG_FILE}" &
+    adb -s ${serial_array[$k]} shell "mv /data/media/0/TWRP/BACKUPS/serial/ /data/media/0/TWRP/BACKUPS/${serial_array[$k]}" >> "${DEBUG_FILE}" 2>&1 &
     WAITPIDS="$WAITPIDS "$!
     (( k++ ))
   done
@@ -320,7 +320,7 @@ f_push(){
   while (( $k < $device_count ))
   do
     if [ "${pwnie_product[$k]}" != "Pwn Pad 3" ]; then
-      adb -s ${serial_array[$k]} push TWRP/sdcard/ /sdcard/ 2>&1 > "${DEBUG_FILE}" &
+      adb -s ${serial_array[$k]} push TWRP/sdcard/ /sdcard/ >> "${DEBUG_FILE}" 2>&1 &
       WAITPIDS="$WAITPIDS "$!
     fi
     (( k++ ))
@@ -359,7 +359,7 @@ EOF
   k=0
   while (( $k < $device_count ))
   do
-    adb -s ${serial_array[$k]} reboot recovery 2>&1 > "${DEBUG_FILE}" &
+    adb -s ${serial_array[$k]} reboot recovery >> "${DEBUG_FILE}" 2>&1 &
     WAITPIDS="$WAITPIDS "$!
     (( k++ ))
   done
@@ -369,7 +369,7 @@ EOF
 }
 
 f_cleanup() {
-  adb kill-server 2>&1 > "${DEBUG_FILE}"
+  adb kill-server >> "${DEBUG_FILE}" 2>&1
 }
 
 f_run
