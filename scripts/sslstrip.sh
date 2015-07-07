@@ -48,7 +48,11 @@ f_run(){
   else
     printf "dns2proxy is currently unavailable\n"
   fi
-  /usr/bin/sslstrip -pfk -w $logfile -l 8888 $interface
+  if [ "$logchoice" = "1" ]; then
+    /usr/bin/sslstrip -pfk -w $logfile -l 8888 $interface
+  else
+    /usr/bin/sslstrip -pfk -l 8888 $interface
+  fi
 }
 
 f_logging(){
