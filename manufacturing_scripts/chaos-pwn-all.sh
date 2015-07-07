@@ -291,7 +291,17 @@ f_push(){
   done
   wait $WAITPIDS
   unset WAITPIDS
-  sleep 20
+
+  while (( $k < $device_count ))
+  do
+    sleepy_time[$k]=0
+    while ! adb -s ${serial_array[$k]} shell true; do
+      sleep 1
+      sleepy_time[$k]++
+      printf "Waiting on ${serial_array[$k]} for ${sleepy_time[$k]} seconds.\n"
+    done
+    (( k++ ))
+  done
 
   # Reboot into recovery to mitigate boot chain error
   #echo '[+] Reboot into recovery'
@@ -316,7 +326,6 @@ f_push(){
   done
   wait $WAITPIDS
   unset WAITPIDS
-  sleep 2
 
   # Write serial number to backup directory
   k=0
