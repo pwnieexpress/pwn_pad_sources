@@ -48,8 +48,20 @@ f_run(){
   else
     printf "dns2proxy is currently unavailable\n"
   fi
-  /usr/bin/sslstrip -pfk -w $logfile  -l 8888 $interface
+  /usr/bin/sslstrip -pfk -w $logfile -l 8888 $interface
 }
 
+f_logging(){
+  clear
+  printf "\nWould you like to log data?\n\n"
+  printf "Captures saved to /opt/pwnix/captures/passwords/\n\n"
+  printf "1. Yes\n"
+  printf "2. No\n\n"
+
+  logchoice=$(f_one_or_two)
+}
+
+cd /opt/pwnix/captures/passwords &> /dev/null
+f_logging
 f_run
 f_clean_up
