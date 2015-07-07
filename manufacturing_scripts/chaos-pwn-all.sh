@@ -7,7 +7,8 @@
 # Company: Pwnie Express
 
 f_pause(){
-  read -p "$@"
+  printf "$@"
+  read
 }
 
 f_run(){
@@ -68,7 +69,8 @@ f_run(){
   fastboot devices | awk '{print $1}'
 
   # Get builder
-  read -p '[!] Enter your initials for the log and press [ENTER] to flash, CTRL+C to abort: ' initials
+  printf "[!] Enter your initials for the log and press [ENTER] to flash, CTRL+C to abort: "
+  read initials
 
   # Log serials
   f_logserial
@@ -248,7 +250,8 @@ f_setflashables(){
 
 f_one_or_two(){
   printf "1.) Yes\n2.) No\n\n"
-  read -p "Choice [1-2]: " input
+  printf "Choice [1-2]: "
+  read input
   case $input in
     [1-2]*) return $input ;;
     *)
@@ -291,7 +294,18 @@ f_push(){
   done
   wait $WAITPIDS
   unset WAITPIDS
-  sleep 20
+
+  k=0
+  while (( $k < $device_count ))
+  do
+    sleepy_time[$k]=0
+    while ! adb -s ${serial_array[$k]} shell true; do
+      sleep 1
+      (( sleepy_time[$k]++ ))
+      printf "Waiting on ${serial_array[$k]} to boot recovery for ${sleepy_time[$k]} seconds.\n"
+    done
+    (( k++ ))
+  done
 
   # Reboot into recovery to mitigate boot chain error
   #echo '[+] Reboot into recovery'
@@ -316,7 +330,6 @@ f_push(){
   done
   wait $WAITPIDS
   unset WAITPIDS
-  sleep 2
 
   # Write serial number to backup directory
   k=0
