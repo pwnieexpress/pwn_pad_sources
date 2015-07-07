@@ -392,7 +392,7 @@ f_cleanup
 
 #main runners
 #f_feedme
-  #this is the main look, so likely read some global variable for status
+  #this is the main loop, so likely read some global variable for status
   #simple like "$serial - $currentstate"
 #f_getserial
 #  this constantly looks for new devices, adds their serial to the queue
