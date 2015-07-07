@@ -47,7 +47,7 @@ f_run(){
   f_verify_flashables
 
   # Kill running server
-  killall adb &> /dev/null
+  adb kill-server
 
   # Start server
   adb start-server
@@ -388,11 +388,15 @@ EOF
 
 }
 
+f_cleanup() {
+  adb kill-server
+}
+
 f_run
 f_flash
 f_push
 f_setup
-
+f_cleanup
 
 ##Continuous rewrite structure
 #drop all output, create desired output
