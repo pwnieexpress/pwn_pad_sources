@@ -48,11 +48,7 @@ f_run(){
   else
     printf "dns2proxy is currently unavialable\n"
   fi
-  /usr/bin/sslstrip -pfk -w $logfile  -l 8888 $interface > /dev/null 2>&1 &
-
-  sleep 3
-  printf "\n\n"
-  tail -f $logfile
+  /usr/bin/sslstrip -pfk -w $logfile  -l 8888 $interface
 }
 
 f_run
