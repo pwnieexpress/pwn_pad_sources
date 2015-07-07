@@ -1,7 +1,7 @@
 #!/bin/bash
 # Target: All Pwnie Express officially supported mobile devices
 # Action: Unlocks bootloader, flashes custom boot and recovery, then restores backup and sets up chroot environment
-# Result: Pwnify all
+# Result: Pwnify any supported mobile device
 # Author: t1mz0r tim@pwnieexpress.com
 # Author: Zero_Chaos zero@pwnieexpress.com
 # Company: Pwnie Express
@@ -15,35 +15,34 @@ f_run(){
 
   # Splash
   clear
-  echo "       __ __      _ _  _ ____ ___   ___ _  _ ___ ___ ___ ___ ___       "
-  echo "      | _ \ \    / | \| |_  _| __| | __\ \/ / _ \ _ \ __| __/ __/      "
-  echo "      | _ /\ \/\/ /| .\ |_||_| _|  | _| >  <| _ / _ / _|\__ \__ \      "
-  echo "      |_|   \_/\_/ |_|\_|____|___| |___/_/\_\_| |_|_\___|___/___/      "
-  echo "                                                                       "
-  echo "                       -------------------------                       "
-  echo "                         RUN THIS TOOL AS ROOT                         "
-  echo "                       -------------------------                       "
-  echo "                                                                       "
-  echo "                       --= All Pwn Builder =--                         "
-  echo "           A Mobile Pentesting platform from Pwnie Express             "
-  echo "                                                                       "
-  echo " ----------------------------------------------------------------------"
-  echo "  WARNING: THIS WILL WIPE ALL DATA AND INSTALL PACKAGES ON THE DEVICE. "
-  echo "  Pwnie Express is not responsible for any damages resulting from the  "
-  echo "  use of this tool. Backup critical data before continuing.            "
-  echo " ----------------------------------------------------------------------"
-  echo "                                                                       "
+  printf "       __ __      _ _  _ ____ ___   ___ _  _ ___ ___ ___ ___ ___       \n"
+  printf "      | _ \ \    / | \| |_  _| __| | __\ \/ / _ \ _ \ __| __/ __/      \n"
+  printf "      | _ /\ \/\/ /| .\ |_||_| _|  | _| >  <| _ / _ / _|\__ \__ \      \n"
+  printf "      |_|   \_/\_/ |_|\_|____|___| |___/_/\_\_| |_|_\___|___/___/      \n"
+  printf "                                                                       \n"
+#  printf "                       -------------------------                       \n"
+#  printf "                         RUN THIS TOOL AS ROOT                         \n"
+#  printf "                       -------------------------                       \n"
+#  printf "                                                                       \n"
+  printf "                       --= All Pwn Builder =--                         \n"
+  printf "           A Mobile Pentesting platform from Pwnie Express             \n"
+  printf "                                                                       \n"
+  printf " ----------------------------------------------------------------------\n"
+  printf "  WARNING: THIS WILL WIPE ALL DATA AND INSTALL PACKAGES ON THE DEVICE. \n"
+  printf "  Pwnie Express is not responsible for any damages resulting from the  \n"
+  printf "  use of this tool. Backup critical data before continuing.            \n"
+  printf " ----------------------------------------------------------------------\n"
+  printf "                                                                       \n"
 
-  echo ' Boot (n) devices into fastboot mode and attach to host machine.'
-  echo
+  printf " Boot (n) devices into fastboot mode and continually attach to host machine.\n\n"
   f_pause ' Press [ENTER] to continue, CTRL+C to abort. '
-  echo
+  printf "\n"
 
 # Check for root
-  if [[ $EUID -ne 0 ]]; then
-    printf '\n [!] This tool must be run as root [!]\n\n'
+#  if [[ $EUID -ne 0 ]]; then
+#    printf '\n [!] This tool must be run as root [!]\n\n'
   #exit 1
-  fi
+#  fi
 
   f_verify_flashables
 
@@ -52,7 +51,6 @@ f_run(){
 
   # Start server
   adb start-server
-  echo
 
 
   # Snag serials
@@ -63,7 +61,6 @@ f_run(){
   f_setpwnieproduct
   #set flash files
   f_setflashables
-  echo
 
   #For Dallas, remove when the script can support threaded flashing
   fastboot devices | awk '{print $1}'
@@ -79,8 +76,7 @@ f_run(){
 f_flash() {
 
   # Unlock bootloader
-  echo
-  echo '[+] Unlock the device(s)'
+  printf '\n[+] Unlock the device(s)\n'
   k=0
   while (( $k < $device_count ))
   do
@@ -90,12 +86,10 @@ f_flash() {
   done
   wait $WAITPIDS
   unset WAITPIDS
-  echo
-  echo '...device(s) have been unlocked.'
+  printf '\n...device(s) have been unlocked.\n'
 
   # Erase boot
-  echo
-  echo '[+] Erase boot'
+  printf '\n[+] Erase boot\n'
   k=0
   while (( $k < $device_count ))
   do
@@ -107,8 +101,7 @@ f_flash() {
   unset WAITPIDS
 
   # Flash boot
-  echo
-  echo '[+] Flash boot'
+  printf '\n[+] Flash boot\n'
   k=0
   while (( $k < $device_count ))
   do
@@ -122,8 +115,7 @@ f_flash() {
   unset WAITPIDS
 
   # Flash recovery
-  echo
-  echo '[+] Flash recovery'
+  printf '\n[+] Flash recovery\n'
   k=0
   while (( $k < $device_count ))
   do
@@ -135,8 +127,7 @@ f_flash() {
   unset WAITPIDS
 
   # Format system
-  echo
-  echo '[+] Erase and format system'
+  printf '\n[+] Erase and format system\n'
   k=0
   while (( $k < $device_count ))
   do
@@ -148,8 +139,7 @@ f_flash() {
   unset WAITPIDS
 
   # Format userdata
-  echo
-  echo '[+] Erase and format userdata'
+  printf '\n[+] Erase and format userdata\n'
   k=0
   while (( $k < $device_count ))
   do
@@ -161,8 +151,7 @@ f_flash() {
   unset WAITPIDS
 
   # Format cache
-  echo
-  echo '[+] Erase and format cache'
+  printf '\n[+] Erase and format cache\n'
   k=0
   while (( $k < $device_count ))
   do
@@ -180,7 +169,7 @@ f_logserial(){
   k=0
   while (( $k < $device_count ))
   do
-	echo "[${pwnie_product[$k]} on ${product_array[$k]}] ${serial_array[$k]} $(date) - $initials" | tee -a serial_datetime.txt
+	printf "[${pwnie_product[$k]} on ${product_array[$k]}] ${serial_array[$k]} $(date) - $initials\n" | tee -a serial_datetime.txt
 	(( k++ ))
   done
 }
@@ -200,9 +189,9 @@ f_getserial(){
 
   # Print devices
   if [ "$device_count" != "1" ]; then
-	echo "There are $device_count devices connected"
+	printf "There are $device_count devices connected:\n"
   else
-	echo "There is 1 device connected:"
+	printf "There is 1 device connected:\n"
   fi
 }
 
@@ -283,8 +272,7 @@ f_verify_flashables(){
 f_push(){
 
   # Boot into recovery
-  echo
-  echo '[+] Boot into recovery'
+  printf '\n[+] Boot into recovery\n'
   k=0
   while (( $k < $device_count ))
   do
@@ -307,20 +295,8 @@ f_push(){
     (( k++ ))
   done
 
-  # Reboot into recovery to mitigate boot chain error
-  #echo '[+] Reboot into recovery'
-  #k=0
-  #while (( $k < $device_count ))
-  #do
-  #	adb -s ${serial_array[$k]} reboot recovery &
-  #	(( k++ ))
-  #done
-  #wait
-  #sleep 20
-
   # Push backup to be restored
-  echo
-  echo '[+] Push backup'
+  printf '\n[+] Push backup\n'
   k=0
   while (( $k < $device_count ))
   do
@@ -378,17 +354,11 @@ EOF
   done
 
   # Reboot into recovery to run script
-  echo
-  echo '[+] Reboot into recovery'
-  echo
-  echo ' Restoring...'
-  echo
-  echo ' After the target backup has been restored, the Kali chroot environment must be setup.'
-  echo
-  echo ' Do not power off the device during this time.'
-  echo
-  echo '[!] When the device has rebooted into the system, the build is complete.'
-  echo
+  printf '\n[+] Reboot into recovery\n'
+  printf '\n Restoring...\n'
+  printf '\n After the target backup has been restored, the Kali chroot environment must be setup.\n'
+  printf '\n Do not power off the device during this time.\n'
+  printf '\n[!] When the device has rebooted into the system, the build is complete.\n\n'
   k=0
   while (( $k < $device_count ))
   do
