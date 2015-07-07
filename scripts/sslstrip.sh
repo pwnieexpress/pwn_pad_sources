@@ -46,7 +46,7 @@ f_run(){
     cd /usr/share/mana-toolkit/sslstrip-hsts
     python /usr/share/mana-toolkit/sslstrip-hsts/dns2proxy.py $interface &
   else
-    printf "dns2proxy is currently unavialable\n"
+    printf "dns2proxy is currently unavailable\n"
   fi
   /usr/bin/sslstrip -pfk -w $logfile  -l 8888 $interface
 }
