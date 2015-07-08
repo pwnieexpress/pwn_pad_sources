@@ -56,6 +56,5 @@ f_run(){
 }
 
 cd /opt/pwnix/captures/passwords &> /dev/null
-f_logging
 f_run
 f_clean_up
