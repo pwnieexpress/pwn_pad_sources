@@ -6,6 +6,11 @@
 # Author: Zero_Chaos zero@pwnieexpress.com
 # Company: Pwnie Express
 
+if [ "$SHELL" = "/bin/zsh" ]; then
+  #this is mostly for me, so zsh supports 0 based arrays
+  setopt KSH_ARRAYS
+fi
+
 DEBUG_FILE="debug.out"
 
 f_pause(){
@@ -58,19 +63,26 @@ f_startup(){
   adb start-server >> "${DEBUG_FILE}" 2>&1
 }
 
-f_setup(){
-
-  # Snag serials
-  f_getserial
-  #get the product
-  f_getproduct
-  #set pwnie names
-  f_setpwnieproduct
-  #set flash files
-  f_setflashables
-
-  # Log serials
-  f_logserial
+f_queuequalify(){
+  for queued in ${queued_devices[@]}; do
+    #find next index, running_devices is always the master index
+    index="${#running_devices[@]}"
+    #get the product
+    product_array[${index}]=( $(fastboot -s $queued getvar product 2>&1 | grep "product" | awk '{print $2}') )
+    #set pwnie names
+    f_setpwnieproduct $index
+    if [ "$?" != "0" ]; then
+      #dream up some way of alerting the user this device is unsupported
+      continue
+    fi
+    #set flash files
+    f_setflashables $index
+    if [ "$?" != "0" ]; then
+      #dream up some way of alerting the user this product is unsupported
+      continue
+    fi
+    #XXX: got tired and stopped here
+  done
 }
 
 f_flash() {
@@ -174,59 +186,26 @@ f_logserial(){
   done
 }
 
-f_getserial(){
-  # Count devices
-  device_count="$(fastboot devices |wc -l)"
-
-  # Store serials
-  i=0
-  while read line
-  do
-   	serial_array[$i]="$line"
-   	(( i++ ))
-  done < <(fastboot devices | awk '{print $1}')
-}
-
-f_getproduct(){
-  k=0
-  while (( $k < $device_count ))
-  do
-    product_array[$k]=$(fastboot -s ${serial_array[$k]} getvar product 2>&1 | grep "product" | awk '{print $2}')
-    (( k++ ))
-  done
-}
-
 f_setpwnieproduct(){
-  k=0
-  while (( $k < $device_count ))
-  do
-    case ${product_array[$k]} in
-      grouper) pwnie_product[$k]="Pwn Pad 2013" ;;
-      tilapia) pwnie_product[$k]="Pwn Pad 2013" ;;
-      flo) pwnie_product[$k]="Pwn Pad 2014" ;;
-      deb) pwnie_product[$k]="Pwn Pad 2014" ;;
-      hammerhead) pwnie_product[$k]="Pwn Phone 2014" ;;
-      ShieldTablet) pwnie_product[$k]="Pwn Pad 3" ;;
-      *) printf "Unsupported product ${product_array[$k]}\n"; exit 1 ;;
-    esac
-    (( k++ ))
-  done
+  case ${product_array[$1]} in
+    grouper) pwnie_product[$1]="Pwn Pad 2013" ;;
+    tilapia) pwnie_product[$1]="Pwn Pad 2013" ;;
+    flo) pwnie_product[$1]="Pwn Pad 2014" ;;
+    deb) pwnie_product[$1]="Pwn Pad 2014" ;;
+    hammerhead) pwnie_product[$1]="Pwn Phone 2014" ;;
+    ShieldTablet) pwnie_product[$1]="Pwn Pad 3" ;;
+    *) printf "Unsupported product ${product_array[$1]}\n"; return 1 ;;
+  esac
 }
 
 f_setflashables(){
-  k=0
-  while (( $k < $device_count ))
-  do
-    #this is where we set the file locations
-    case "${pwnie_product[$k]}" in
-      "Pwn Pad 2013") image_base[$k]="$(pwd)/nexus_2012" recovery[$k]="twrp-2.8.6.0-grouper.img" ;;
-      "Pwn Pad 2014") image_base[$k]="$(pwd)/nexus_2013" recovery[$k]="openrecovery-twrp-2.6.3.0-deb.img" ;;
-      "Pwn Phone 2014") image_base[$k]="$(pwd)/nexus_5" recovery[$k]="recovery.img" ;;
-      "Pwn Pad 3") image_base[$k]="$(pwd)/shield-tablet" recovery[$k]="twrp-2.8.6.0-shieldtablet.img" ;;
-      *) printf "Unknown flashables ${pwnie_product[$k]}\n"; exit 1 ;;
-    esac
-    (( k++ ))
-  done
+  case "${pwnie_product[$1]}" in
+    "Pwn Pad 2013") image_base[$1]="$(pwd)/nexus_2012" recovery[$1]="twrp-2.8.6.0-grouper.img" ;;
+    "Pwn Pad 2014") image_base[$1]="$(pwd)/nexus_2013" recovery[$1]="openrecovery-twrp-2.6.3.0-deb.img" ;;
+    "Pwn Phone 2014") image_base[$1]="$(pwd)/nexus_5" recovery[$1]="recovery.img" ;;
+    "Pwn Pad 3") image_base[$1]="$(pwd)/shield-tablet" recovery[$1]="twrp-2.8.6.0-shieldtablet.img" ;;
+    *) printf "Unknown flashables ${pwnie_product[$1]}\n"; return 1 ;;
+  esac
 }
 
 f_one_or_two(){
@@ -375,8 +354,54 @@ f_cleanup() {
   adb kill-server >> "${DEBUG_FILE}" 2>&1
 }
 
+f_mainloop(){
+  #find a list of currently attached devices
+  f_getconnected #populates connected_devices array
+  #check for new devices and add them to the queue to be flashed
+  f_queuenewdevices
+  #get information about queued devices to prepare them for flashing
+  f_queuequalify
+  #fire off flash run
+  #update display
+  sleep 1
+}
+
+f_queuenewdevices() {
+  queued_devices=( )
+  for connected in ${connected_devices[@]}; do
+    if [ has "${connected}" "${running_devices[@]}" ]; then
+      printf "$connected is already running\n" #XXX
+    else
+      printf "$connected is not already running, adding it to the queue\n" #XXX
+      queued_devices+=( $connected )
+    fi
+  done
+}
+
+has() {
+  local needle="$1"
+  shift
+
+  local x
+  for x in "$@"; do
+    [ "$needle" = "$x" ] && return 0
+  done
+  return 1
+}
+
+f_getconnected() {
+  local i=1
+  local serial=""
+  for serial in $(fastboot devices | awk '{print $1}'); do
+    printf "adding connected device $i as $serial\n" #XXX
+    connected_devices[$i]=$serial
+    (( i++ ))
+  done
+}
+
 f_startup
-f_setup
+f_mainloop
+
 f_flash
 f_push
 f_setup
