@@ -13,6 +13,10 @@ fi
 
 DEBUG_FILE="debug.out"
 
+trap f_clean INT
+trap f_clean KILL
+
+
 f_pause(){
   printf "$@"
   read
@@ -355,15 +359,17 @@ f_cleanup() {
 }
 
 f_mainloop(){
-  #find a list of currently attached devices
-  f_getconnected #populates connected_devices array
-  #check for new devices and add them to the queue to be flashed
-  f_queuenewdevices
-  #get information about queued devices to prepare them for flashing
-  f_queuequalify
-  #fire off flash run
-  #update display
-  sleep 1
+  while true; do
+    #find a list of currently attached devices
+    f_getconnected #populates connected_devices array
+    #check for new devices and add them to the queue to be flashed
+    f_queuenewdevices
+    #get information about queued devices to prepare them for flashing
+    f_queuequalify
+    #fire off flash run
+    #update display
+    sleep 1
+  done
 }
 
 f_queuenewdevices() {
@@ -402,10 +408,10 @@ f_getconnected() {
 f_startup
 f_mainloop
 
-f_flash
-f_push
-f_setup
-f_cleanup
+#f_flash
+#f_push
+#f_setup
+#f_cleanup
 
 ##Continuous rewrite structure
 #drop all output, create desired output
