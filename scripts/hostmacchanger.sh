@@ -20,7 +20,7 @@ f_roll_mac(){
 
 f_roll_hostname(){
   printf "[+] Rolling hostname for further obfuscation...\n"
-  mac=$(ifconfig $interface |grep HWaddr |awk '{print$5}' |awk -F":" '{print$1$2$3$4$5$6}')
+  mac=$(macchanger --show $interface | grep "Current MAC:" | awk '{print $3}' |awk -F":" '{print$1$2$3$4$5$6}')
   hn=$mac
   sudo hostname $hn
   printf "[!] Hostname has been changed!\n"
