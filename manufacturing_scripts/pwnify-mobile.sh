@@ -13,8 +13,7 @@ f_pause(){
   read
 }
 
-f_run(){
-
+f_startup(){
   # Splash
   clear
   printf "       __ __      _ _  _ ____ ___   ___ _  _ ___ ___ ___ ___ ___       \n"
@@ -43,8 +42,12 @@ f_run(){
 # Check for root
 #  if [[ $EUID -ne 0 ]]; then
 #    printf '\n [!] This tool must be run as root [!]\n\n'
-  #exit 1
+#    exit 1
 #  fi
+
+  # Get builder
+  printf "\n[!] Enter your initials for the log and press [ENTER] to flash, CTRL+C to abort: "
+  read initials
 
   f_verify_flashables
 
@@ -53,7 +56,9 @@ f_run(){
 
   # Start server
   adb start-server >> "${DEBUG_FILE}" 2>&1
+}
 
+f_setup(){
 
   # Snag serials
   f_getserial
@@ -63,10 +68,6 @@ f_run(){
   f_setpwnieproduct
   #set flash files
   f_setflashables
-
-  # Get builder
-  printf "\n[!] Enter your initials for the log and press [ENTER] to flash, CTRL+C to abort: "
-  read initials
 
   # Log serials
   f_logserial
@@ -174,7 +175,6 @@ f_logserial(){
 }
 
 f_getserial(){
-
   # Count devices
   device_count="$(fastboot devices |wc -l)"
 
@@ -246,6 +246,7 @@ f_verify_flashables(){
   f_one_or_two
   VERIFY="$?"
   if [ "$VERIFY" = "1" ]; then
+    printf "Session started by $initials who verified checksums\n" >> serial_datetime.txt
     printf "Checking files, please stand by...\n\n"
     for i in "$(pwd)/nexus_2012" "$(pwd)/nexus_2013"  "$(pwd)/nexus_5" "$(pwd)/shield-tablet"; do
       if [ -d "$i" ]; then
@@ -263,6 +264,8 @@ f_verify_flashables(){
         f_pause "Press enter if you are *sure* you won't be needing the missing/corrupt files or ^C to quit and fix your files"
       fi
     done
+  else
+    printf "Session started by $initials who did *NOT* verify checksums\n" >> serial_datetime.txt
   fi
 }
 
@@ -372,7 +375,8 @@ f_cleanup() {
   adb kill-server >> "${DEBUG_FILE}" 2>&1
 }
 
-f_run
+f_startup
+f_setup
 f_flash
 f_push
 f_setup
