@@ -44,7 +44,8 @@ f_run(){
 
   if [ -f /usr/share/mana-toolkit/sslstrip-hsts/dns2proxy.py ]; then
     cd /usr/share/mana-toolkit/sslstrip-hsts
-    python /usr/share/mana-toolkit/sslstrip-hsts/dns2proxy.py $interface &
+    python /usr/share/mana-toolkit/sslstrip-hsts/dns2proxy.py $interface > /dev/null 2>&1 &
+    printf "Started dns2proxy\n"
   else
     printf "dns2proxy is currently unavailable\n"
   fi
