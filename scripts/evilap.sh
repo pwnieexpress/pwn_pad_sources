@@ -95,7 +95,7 @@ f_preplaunch(){
 
   ifconfig wlan1mon down
 
-  hn=$(macchanger --show $interface | grep "Current MAC:" | awk '{print $3}' |awk -F":" '{print$1$2$3$4$5$6}')
+  hn=$(macchanger --show $interface | grep "Current" | awk '{print $3}' |awk -F":" '{print$1$2$3$4$5$6}')
   hostname $hn
   printf "[+] New hostname set: $hn\n"
 
