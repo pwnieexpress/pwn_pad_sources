@@ -8,8 +8,6 @@ clear
 #Blank everything by default, but allow to blank only some
 : ${chroot_only:=0}
 
-printf '\n[!] FACTORY RESET in progress. All changes will be lost.\n\n'
-
 # Snag serial
 serialno=$(/system/bin/getprop ro.serialno)
 
@@ -29,7 +27,7 @@ fi
 if [ ! -f /data/local/kali_img/stockchroot.img ]; then
   #we do not have stockchroot.img, that means we are migrating from v0 to v1
   cat << EOF >> /cache/recovery/openrecoveryscript
-print [ Converting v0 chroot to v1 chroot ]
+print  [ Converting v0 chroot to v1 chroot ]
 cmd busybox dd if=/dev/zero of=/data/local/kali_img/stockchroot.img bs=1 count=0 seek=2047M
 cmd busybox /sbin/mkfs.ext2 -F /data/local/kali_img/stockchroot.img
 cmd busybox mkdir /data/local/kali_img/kalitmp
@@ -53,7 +51,7 @@ else
   fi
 
   cat << EOF >> /cache/recovery/openrecoveryscript
-print [ Restoring v1 chroot ]
+print  [ Restoring v1 chroot ]
 cmd busybox rm -r /data/local/kali/*
 cmd busybox mkdir /data/local/kali_img/kalitmp
 cmd busybox mount -t ext4 /data/local/kali_img/stockchroot.img /data/local/kali_img/kalitmp
