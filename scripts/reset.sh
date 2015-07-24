@@ -32,7 +32,7 @@ cmd busybox dd if=/dev/zero of=/data/local/kali_img/stockchroot.img bs=1 count=0
 cmd busybox /sbin/mkfs.ext2 -F /data/local/kali_img/stockchroot.img
 cmd busybox mkdir /data/local/kali_img/kalitmp
 cmd busybox mount -t ext4 /data/local/kali_img/stockchroot.img /data/local/kali_img/kalitmp/
-cmd busybox cp -a /data/local/kali/* /data/local/kali_img/kalitmp/
+cmd cp -a /data/local/kali/* /data/local/kali_img/kalitmp/
 cmd busybox umount /data/local/kali_img/kalitmp/
 cmd busybox rm -r /data/local/kali_img/kalitmp
 EOF
@@ -55,7 +55,7 @@ print  [ Restoring v1 chroot ]
 cmd busybox rm -r /data/local/kali/*
 cmd busybox mkdir /data/local/kali_img/kalitmp
 cmd busybox mount -t ext4 /data/local/kali_img/stockchroot.img /data/local/kali_img/kalitmp
-cmd busybox cp -a /data/local/kali_img/kalitmp/* /data/local/kali
+cmd cp -a /data/local/kali_img/kalitmp/* /data/local/kali
 cmd busybox umount /data/local/kali_img/kalitmp
 cmd busybox rm -r /data/local/kali_img/kalitmp
 cmd busybox echo "$PRODUCT" > /data/local/kali/etc/product
