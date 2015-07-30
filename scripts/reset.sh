@@ -21,23 +21,11 @@ cat << EOF >> /cache/recovery/openrecoveryscript
 print  [SETUP STARTED]
 cmd export PATH=/system/xbin:/system/bin:$PATH
 EOF
-if [ -f /data/local/kali_img/kali.img ]; then
-  rm -f /data/local/kali_img/kali.img
-fi
-if [ ! -f /data/local/kali_img/stockchroot.img ]; then
-  #we do not have stockchroot.img, that means we are migrating from v0 to v1
-  cat << EOF >> /cache/recovery/openrecoveryscript
-print  [ Converting v0 chroot to v1 chroot ]
-cmd busybox dd if=/dev/zero of=/data/local/kali_img/stockchroot.img bs=1 count=0 seek=2047M
-cmd busybox /sbin/mkfs.ext2 -F /data/local/kali_img/stockchroot.img
-cmd busybox mkdir /data/local/kali_img/kalitmp
-cmd busybox mount -t ext4 /data/local/kali_img/stockchroot.img /data/local/kali_img/kalitmp/
-cmd cp -a /data/local/kali/* /data/local/kali_img/kalitmp/
-cmd busybox umount /data/local/kali_img/kalitmp/
-cmd busybox rm -r /data/local/kali_img/kalitmp
-EOF
-else
-  #we have stockchroot.img, that means we kill /data/local/kali and unpack there
+if [ -f /data/local/kali_img/stockchroot.img ]; then
+  #if we have a stockchroot.img, use it and remove the old version
+  if [ -f /data/local/kali_img/kali.img ]; then
+    rm -f /data/local/kali_img/kali.img
+  fi
 
   #support any chroot to restore from, adjust product as needed
   PRODUCT=$(cat /data/local/kali/etc/product)
@@ -50,6 +38,7 @@ else
     product="unknown"
   fi
 
+  #we have stockchroot.img, that means we kill /data/local/kali and unpack there
   cat << EOF >> /cache/recovery/openrecoveryscript
 print  [ Restoring v1 chroot ]
 cmd busybox rm -r /data/local/kali/*
@@ -62,6 +51,20 @@ cmd busybox echo "$PRODUCT" > /data/local/kali/etc/product
 cmd busybox echo "$product" > /data/local/kali/etc/hostname
 cmd busybox sed -i "s/127\.0\.0\.1.*/127.0.0.1       $product localhost/" /data/local/kali/etc/hosts
 EOF
+else
+  #we do not have stockchroot.img, that means we are on v0
+  cat << EOF >> /cache/recovery/openrecoveryscript
+print  [ Restoring v0 chroot ]
+cmd busybox mount -o bind /dev /data/local/kali/dev
+cmd busybox chroot /data/local/kali/ /bin/dd if=/dev/zero of=/kali.img bs=1 count=0 seek=4G
+cmd busybox chroot /data/local/kali/ /sbin/mkfs.ext4 -F /kali.img
+cmd busybox umount /data/local/kali/dev
+cmd busybox mv /data/local/kali/kali.img /data/local/kali_img/
+cmd busybox mkdir /data/local/kali_img/kalitmp
+cmd busybox mount -t ext4 /data/local/kali_img/kali.img /data/local/kali_img/kalitmp/
+cmd cp -a /data/local/kali/* /data/local/kali_img/kalitmp/
+cmd busybox umount /data/local/kali_img/kalitmp/
+cmd busybox rm -r /data/local/kali_img/kalitmp
 fi
 cat << EOF >> /cache/recovery/openrecoveryscript
 print  [SETUP COMPLETE]
