@@ -65,6 +65,7 @@ cmd busybox mount -t ext4 /data/local/kali_img/kali.img /data/local/kali_img/kal
 cmd cp -a /data/local/kali/* /data/local/kali_img/kalitmp/
 cmd busybox umount /data/local/kali_img/kalitmp/
 cmd busybox rm -r /data/local/kali_img/kalitmp
+EOF
 fi
 cat << EOF >> /cache/recovery/openrecoveryscript
 print  [SETUP COMPLETE]
