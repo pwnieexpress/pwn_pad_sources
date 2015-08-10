@@ -5,6 +5,7 @@ PS1=${PS1//@\\h/@evilap}
 clear
 
 #this block controls the features for px_interface_selector
+include_null=1
 include_extwifi=0
 include_monitor=0
 include_airbase=0
@@ -95,9 +96,11 @@ f_preplaunch(){
 
   ifconfig wlan1mon down
 
-  hn=$(macchanger --show $interface | grep "Current" | awk '{print $3}' |awk -F":" '{print$1$2$3$4$5$6}')
-  hostname $hn
-  printf "[+] New hostname set: $hn\n"
+  if [ -n "${interface}" ]; then
+    hn=$(macchanger --show ${interface} | grep "Current" | awk '{print $3}' |awk -F":" '{print$1$2$3$4$5$6}')
+    hostname $hn
+    printf "[+] New hostname set: $hn\n"
+  fi
 
   sleep 2
   #interface is already in monitor mode
@@ -132,9 +135,11 @@ f_evilap(){
   #Start DHCP server on at0
   dhcpd -cf /etc/dhcp/dhcpd.conf -pf /var/run/dhcpd.pid at0
 
-  #IP forwarding and iptables routing using internet connection
-  printf 1 > /proc/sys/net/ipv4/ip_forward
-  iptables -t nat -A POSTROUTING -o $interface -j MASQUERADE
+  if [ -n "${interface}" ]; then
+    #IP forwarding and iptables routing using internet connection
+    printf 1 > /proc/sys/net/ipv4/ip_forward
+    iptables -t nat -A POSTROUTING -o ${interface} -j MASQUERADE
+  fi
 
   tail -f $logname
 }
@@ -154,9 +159,11 @@ f_niceap(){
   #Start DHCP server on at0
   dhcpd -cf /etc/dhcp/dhcpd.conf -pf /var/run/dhcpd.pid at0
 
-  #IP forwarding and iptables routing using internet connection
-  printf 1 > /proc/sys/net/ipv4/ip_forward
-  iptables -t nat -A POSTROUTING -o $interface -j MASQUERADE
+  if [ -n "${interface}" ]; then
+    #IP forwarding and iptables routing using internet connection
+    printf 1 > /proc/sys/net/ipv4/ip_forward
+    iptables -t nat -A POSTROUTING -o ${interface} -j MASQUERADE
+  fi
 
   tail -f $logname
 }

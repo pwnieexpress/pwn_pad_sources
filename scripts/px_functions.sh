@@ -1,5 +1,6 @@
 #unified f_interface function abstract, plus some other misc functions
 # variables consumed:
+ : ${include_null:=0}      # enable or disable null interface (default off)
  : ${include_wired:=1}     # enable or disable eth0  (default on)
  : ${include_intwifi:=1}   # enable or disable wlan0 (default on)
  : ${include_extwifi:=1}   # enable or disable wlan1 (default on)
@@ -63,6 +64,7 @@ f_interface(){
   printf "$(f_colorize at0)5. at0  (Use with EvilAP)$(f_isdefault at0)\e[0m\n"
   printf "$(f_colorize $gsm_int)6. $gsm_int (4G GSM connection)$(f_isdefault $gsm_int)\e[0m\n"
   printf "$(f_colorize rndis0)7. rndis0  (USB tether)$(f_isdefault rndis0)\e[0m\n"
+[ "$include_null" = "1" ] && printf "$(f_colorize null)8. null  (no uplink)$(f_isdefault null)\e[0m\n"
   printf "\n"
   printf "NOTE: If selected interface is \e[1;31minvalid\e[0m, or \e[1;90mdisabled\e[0m, this menu will loop.\n"
   printf "      To be \e[1;32mvalid\e[0m, an interface must $what_valid.\n"
@@ -118,6 +120,12 @@ f_validate_choice(){
     if [ "$include_usb" != "1" ] && [ "$1" = "rndis0" ]; then return 2; fi
   fi
   #valid actually holds 0 for good and 1 for bad, I know, I know.
+  if [ "$1" = "null" ] && [ "$include_null" = "1" ]; then
+    #pretend null validates all the time, there be dragons here
+    #currently this is only used in uplink choices when user may
+    #not need an uplink, just be careful that the script can handle it.
+    return 0
+  fi
   if [ "$1" = "wlan0" ]; then
     if [ -x /system/bin/getprop ]; then
       if [ "$(/system/bin/getprop wlan.driver.status)" = "unloaded" ]; then
