@@ -15,7 +15,9 @@ fi
 /system/xbin/busybox mount -o nosuid,noexec,relatime -t tmpfs tmpfs $NEW_ROOT/run
 
 # Mount Android filesystems for chroot environment
+[ ! -d "${NEW_ROOT}"/sdcard ] && mkdir "${NEW_ROOT}"/sdcard
 /system/xbin/busybox mount --rbind /data/media/0 $NEW_ROOT/sdcard
+[ ! -d "${NEW_ROOT}"/system ] && mkdir "${NEW_ROOT}"/system
 /system/xbin/busybox mount --rbind /system $NEW_ROOT/system
 
 # Run script to assign interfaces at system startup (wlan0 internal, wlan1 TP-Link)
