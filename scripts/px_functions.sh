@@ -78,6 +78,7 @@ f_interface(){
     5) interface=at0 ;;
     6) interface=$gsm_int ;;
     7) interface=rndis0 ;;
+    8) interface=null
     0) include_all=1 naughty="Welcome Elite User!\n" f_interface  ;;
     *) interface=${default_interface} ;;
   esac
