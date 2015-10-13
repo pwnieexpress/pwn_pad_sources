@@ -25,26 +25,21 @@ set -e
 busybox mkdir -p /data/local/kali
 busybox mkdir -p /data/local/kali_img/kalitmp
 busybox mount -t ext4 /data/local/kali_img/stockchroot.img /data/local/kali_img/kalitmp
-cp -a /data/local/kali_img/kalitmp/* /data/local/kali
+busybox cp -a /data/local/kali_img/kalitmp/* /data/local/kali
 busybox umount /data/local/kali_img/kalitmp
 busybox rm -r /data/local/kali_img/kalitmp
 
 #detect product
 hardw=$(/system/bin/getprop ro.hardware)
-case ${hardw}
+case ${hardw} in
   hammerhead)
-                PRODUCT="Pwn Phone 2014"
-                product="pwnphone"
-                ;;
-  grouper)
-  tilapia)
-  deb)
-  flo)
-  tn8)
-  shieldtablet)
-                PRODUCT="Pwn Pad"
-                product="pwnpad"
-                ;;
+              PRODUCT="Pwn Phone 2014"
+              product="pwnphone"
+              ;;
+  grouper|tilapia|deb|flo|tn8|shieldtablet)
+              PRODUCT="Pwn Pad"
+              product="pwnpad"
+              ;;
   *) exit 1 ;;
 esac
 
