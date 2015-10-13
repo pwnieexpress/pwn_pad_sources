@@ -2,8 +2,8 @@
 #Initial chroot v1 setup if it hasn't been done yet
 
 #tests
-if [ ! -r /data/local/kali_image/stockchroot.img ]; then
-  printf "Unable to read /data/local/kali_image/stockchroot.img\n"
+if [ ! -r /data/local/kali_img/stockchroot.img ]; then
+  printf "Unable to read /data/local/kali_img/stockchroot.img\n"
   exit 1
 fi
 
