@@ -21,8 +21,6 @@ if [ ! -d "${NEW_ROOT}" ]; then
   else
     exit 1
   fi
-else
-  exit 1
 fi
 
 # Mount other filesystems for chroot environment
