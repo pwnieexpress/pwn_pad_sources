@@ -11,7 +11,7 @@ fi
 
 #chroot v1
 if [ ! -d "${NEW_ROOT}" ]; then
-  if [ -r /data/local/kali_img/stockchroot.img ] && [ -x /system/bin/chroot_setup ] && [ -x /system/xbin/busybox ]; then
+  if [ -r /data/local/kali_img/stockchroot.img ] && [ -x /system/bin/chroot_v1_setup ] && [ -x /system/xbin/busybox ]; then
     /system/bin/chroot_v1_setup
     if [ "$?" != "0" ]; then
       #chroot_v1_setup failed, remove broken install
