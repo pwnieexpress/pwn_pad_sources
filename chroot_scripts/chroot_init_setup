@@ -1,12 +1,7 @@
 #!/system/bin/sh
-#Initial chroot v1 setup if it hasn't been done yet
+#Initial chroot setup if it hasn't been done yet
 
 #tests
-if [ ! -r /data/local/kali_img/stockchroot.img ]; then
-  printf "Unable to read /data/local/kali_img/stockchroot.img\n"
-  exit 1
-fi
-
 if [ ! -x /system/xbin/busybox ]; then
   printf "Please install busybox (expected location is /system/xbin/busybox)\n"
   exit 1
@@ -17,6 +12,23 @@ if [ ! -x /system/bin/getprop ]; then
   exit 1
 fi
 
+#try v2 chroot first
+if [ ! -f /data/local/kali_img/stockchroot.sfs ]; then
+  printf "Unable to read /data/local/kali_img/stockchroot.sfs (chroot v2).\n"
+  printf "Attempting chroot v1 setup...\n"
+else
+  chroot_file="/data/local/kali_img/stockchroot.sfs"
+fi
+
+#try v1 chroot if v2 doesn't exist
+if [ -z "${chroot_file}" ]; then
+  if [ ! -r /data/local/kali_img/stockchroot.img ]; then
+    printf "Unable to read /data/local/kali_img/stockchroot.img\n"
+    exit 1
+  else
+    chroot_file="/data/local/kali_img/stockchroot.img"
+fi
+
 #immediately fail on error
 #this may cause /data/local/kali to be partially populated if this script is run directly
 set -e
@@ -24,7 +36,7 @@ set -e
 #unpack chroot v1
 busybox mkdir -p /data/local/kali
 busybox mkdir -p /data/local/kali_img/kalitmp
-busybox mount -t ext4 /data/local/kali_img/stockchroot.img /data/local/kali_img/kalitmp
+busybox mount -t auto "${chroot_file}" /data/local/kali_img/kalitmp
 busybox cp -a /data/local/kali_img/kalitmp/* /data/local/kali
 busybox umount /data/local/kali_img/kalitmp
 busybox rm -r /data/local/kali_img/kalitmp
@@ -47,4 +59,3 @@ esac
 busybox echo "$PRODUCT" > /data/local/kali/etc/product
 busybox echo "$product" > /data/local/kali/etc/hostname
 busybox sed -i "s/127\.0\.0\.1.*/127.0.0.1       $product localhost/" /data/local/kali/etc/hosts
-
