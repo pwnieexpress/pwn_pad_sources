@@ -14,15 +14,25 @@ serialno=$(/system/bin/getprop ro.serialno)
 # Set backup
 backup=$(ls /sdcard/TWRP/BACKUPS/$serialno/ |grep -i pwn)
 
-# Construst cmd for script
+# Construct cmd for script
 rm -f /cache/recovery/openrecoveryscript
 [ "$chroot_only" = "0" ] && printf "restore /data/media/0/TWRP/BACKUPS/$serialno/$backup\n" > /cache/recovery/openrecoveryscript
 cat << EOF >> /cache/recovery/openrecoveryscript
 print  [SETUP STARTED]
 cmd export PATH=/system/xbin:/system/bin:$PATH
 EOF
-if [ -f /data/local/kali_img/stockchroot.img ]; then
-  #if we have a stockchroot.img, use it and remove the old version
+if [-f /data/local/kali_img/stockchroot.sfs ]; then
+  chroot_file="/data/local/kali_img/stockchroot.sfs"
+  chroot_version="2"
+  mount_command="cmd busybox mount -t squashfs /data/local/kali_img/stockchroot.sfs /data/local/kali_img/kalitmp"
+elif [ -f /data/local/kali_img/stockchroot.img ]; then
+  chroot_file="/data/local/kali_img/stockchroot.img"
+  chroot_version="1"
+  mount_command="cmd busybox mount -t ext4 /data/local/kali_img/stockchroot.img /data/local/kali_img/kalitmp"
+fi
+
+if [ -n "${chroot_file}" ]; then
+  #if we have a stockchroot.{img,sfs}, use it and remove the old version
   if [ -f /data/local/kali_img/kali.img ]; then
     rm -f /data/local/kali_img/kali.img
   fi
@@ -40,10 +50,10 @@ if [ -f /data/local/kali_img/stockchroot.img ]; then
 
   #we have stockchroot.img, that means we kill /data/local/kali and unpack there
   cat << EOF >> /cache/recovery/openrecoveryscript
-print  [ Restoring v1 chroot ]
+print  [ Restoring v${chroot_version} chroot ]
 cmd busybox rm -r /data/local/kali/*
 cmd busybox mkdir /data/local/kali_img/kalitmp
-cmd busybox mount -t ext4 /data/local/kali_img/stockchroot.img /data/local/kali_img/kalitmp
+${mount_command}
 cmd cp -a /data/local/kali_img/kalitmp/* /data/local/kali
 cmd busybox umount /data/local/kali_img/kalitmp
 cmd busybox rm -r /data/local/kali_img/kalitmp
@@ -52,7 +62,7 @@ cmd busybox echo "$product" > /data/local/kali/etc/hostname
 cmd busybox sed -i "s/127\.0\.0\.1.*/127.0.0.1       $product localhost/" /data/local/kali/etc/hosts
 EOF
 else
-  #we do not have stockchroot.img, that means we are on v0
+  #we do not have stockchroot.{img,sfs}, that means we are on v0
   cat << EOF >> /cache/recovery/openrecoveryscript
 print  [ Restoring v0 chroot ]
 cmd busybox mount -o bind /dev /data/local/kali/dev
