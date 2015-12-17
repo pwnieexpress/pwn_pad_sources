@@ -27,6 +27,7 @@ if [ -z "${chroot_file}" ]; then
     exit 1
   else
     chroot_file="/data/local/kali_img/stockchroot.img"
+  fi
 fi
 
 #immediately fail on error
