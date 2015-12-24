@@ -27,6 +27,8 @@ fi
 /system/xbin/busybox mount --rbind /dev $NEW_ROOT/dev
 /system/xbin/busybox mount --rbind /proc $NEW_ROOT/proc
 /system/xbin/busybox mount --rbind /sys $NEW_ROOT/sys
+#kali 2 pretends it suppots selinux so if this is mounted rw it fails all over itself
+mount | grep -q ${NEW_ROOT}/sys/fs/selinux && /system/xbin/busybox mount -o remount,ro $NEW_ROOT/sys/fs/selinux
 /system/xbin/busybox mount -o nosuid,noexec,relatime -t tmpfs tmpfs $NEW_ROOT/run
 
 # Mount Android filesystems for chroot environment
