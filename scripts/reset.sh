@@ -24,11 +24,9 @@ EOF
 if [-f /data/local/kali_img/stockchroot.sfs ]; then
   chroot_file="/data/local/kali_img/stockchroot.sfs"
   chroot_version="2"
-  mount_command="cmd busybox mount -t squashfs /data/local/kali_img/stockchroot.sfs /data/local/kali_img/kalitmp"
 elif [ -f /data/local/kali_img/stockchroot.img ]; then
   chroot_file="/data/local/kali_img/stockchroot.img"
   chroot_version="1"
-  mount_command="cmd busybox mount -t ext4 /data/local/kali_img/stockchroot.img /data/local/kali_img/kalitmp"
 fi
 
 if [ -n "${chroot_file}" ]; then
@@ -53,7 +51,7 @@ if [ -n "${chroot_file}" ]; then
 print  [ Restoring v${chroot_version} chroot ]
 cmd busybox rm -r /data/local/kali/*
 cmd busybox mkdir /data/local/kali_img/kalitmp
-${mount_command}
+cmd busybox mount -t auto ${chroot_file} /data/local/kali_img/kalitmp
 cmd cp -a /data/local/kali_img/kalitmp/* /data/local/kali
 cmd busybox umount /data/local/kali_img/kalitmp
 cmd busybox rm -r /data/local/kali_img/kalitmp
