@@ -12,21 +12,23 @@ if [ ! -x /system/bin/getprop ]; then
   exit 1
 fi
 
-#try v2 chroot first
-if [ ! -f /data/local/kali_img/stockchroot.sfs ]; then
-  printf "Unable to read /data/local/kali_img/stockchroot.sfs (chroot v2).\n"
-  printf "Attempting chroot v1 setup...\n"
-else
-  chroot_file="/data/local/kali_img/stockchroot.sfs"
-fi
-
-#try v1 chroot if v2 doesn't exist
-if [ -z "${chroot_file}" ]; then
-  if [ ! -r /data/local/kali_img/stockchroot.img ]; then
-    printf "Unable to read /data/local/kali_img/stockchroot.img\n"
+if grep -q squashfs /proc/filesystems; then
+  #try v2 chroot first
+  if [ ! -f /data/local/kali_img/stockchroot.sfs ]; then
+    printf "Unable to read /data/local/kali_img/stockchroot.sfs (chroot v2).\n"
     exit 1
   else
-    chroot_file="/data/local/kali_img/stockchroot.img"
+    chroot_file="/data/local/kali_img/stockchroot.sfs"
+  fi
+else
+  #try v1 chroot only if v2 isn't supported
+  if [ -z "${chroot_file}" ]; then
+    if [ ! -r /data/local/kali_img/stockchroot.img ]; then
+      printf "Unable to read /data/local/kali_img/stockchroot.img (chroot v1).\n"
+      exit 1
+    else
+      chroot_file="/data/local/kali_img/stockchroot.img"
+    fi
   fi
 fi
 
@@ -34,7 +36,7 @@ fi
 #this may cause /data/local/kali to be partially populated if this script is run directly
 set -e
 
-#unpack chroot v1
+#unpack chroot
 busybox mkdir -p /data/local/kali
 busybox mkdir -p /data/local/kali_img/kalitmp
 busybox mount -t auto "${chroot_file}" /data/local/kali_img/kalitmp
