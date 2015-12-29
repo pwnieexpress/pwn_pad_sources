@@ -18,10 +18,37 @@ f_show_ip(){
   fi
 }
 
+selinuxfs() {
+  if [ -z "${1}" ]; then
+    printf "selinuxfs must be called with lock or unlock\n"
+    exit 1
+  fi
+  case $1 in
+    lock)
+      if [ "${SELINUX_RO}" = "1" ] && [ -w /sys/fs/selinux ]; then
+        mount -o remount,ro,bind /sys/fs/selinux
+      elif [ -z "${SELINUX_RO}" ]; then
+        printf "selinuxfs lock cannot be called until after unlock\n"
+        exit 1
+      fi
+      ;;
+    unlock)
+      if mount | grep -q '/sys/fs/selinux' && [ ! -w /sys/fs/selinux ]; then
+        mount -o remount,rw,bind /sys/fs/selinux
+        SELINUX_RO="1"
+      else
+        SELINUX_RO="0"
+      fi
+      ;;
+  esac
+}
+
 f_start_ssh(){
   printf "[+] Starting SSH server...\n"
   service ssh start
+  selinuxfs unlock
   /system/bin/setenforce 0
+  selinuxfs lock
   printf "[!] Done\n"
   f_show_ip
 }
