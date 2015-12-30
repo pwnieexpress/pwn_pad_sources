@@ -25,8 +25,6 @@ if [ ! -d "${NEW_ROOT}" ]; then
   fi
 fi
 
-#AOPP is mounting /data nosuid which breaks sudo/su et al in the chroot
-/system/xbin/busybox mount -o remount,suid /data
 # Mount other filesystems for chroot environment
 /system/xbin/busybox mount --rbind /dev $NEW_ROOT/dev
 /system/xbin/busybox mount --rbind /proc $NEW_ROOT/proc
