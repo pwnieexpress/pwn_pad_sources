@@ -20,7 +20,7 @@ echo "[!] Welcome to the Pwn zone. Get your game face on."
 
 # AOPP is mounting /data nosuid which breaks sudo/su et al in the chroot
 # Unfortunately, this is happening after chrootboot runs
-if mount | grep "/data " | grep -q nosuid; then
+if /system/xbin/busybox mount | /system/xbin/busybox grep "/data " | /sytem/xbin/busybox grep -q nosuid; then
   /system/xbin/busybox mount -o remount,suid /data
 fi
 
