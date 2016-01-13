@@ -20,7 +20,7 @@ f_banner(){
 
 f_confirm_and_do_update(){
   if [ $(f_one_or_two) -eq 1 ]; then
-    print "Starting update...\n"
+    printf "Starting update...\n"
     /opt/pwnix/chef/update.sh
     printf "\n[!] Congratulations, this device has been updated!\n"
     printf "The current version is:\n"
