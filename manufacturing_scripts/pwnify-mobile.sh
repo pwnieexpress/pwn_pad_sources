@@ -13,8 +13,8 @@ fi
 
 DEBUG_FILE="debug.out"
 
-trap f_clean INT
-trap f_clean KILL
+trap f_cleanup INT
+trap f_cleanup KILL
 
 
 f_pause(){
@@ -72,7 +72,7 @@ f_queuequalify(){
     #find next index, running_devices is always the master index
     index="${#running_devices[@]}"
     #get the product
-    product_array[${index}]=( $(fastboot -s $queued getvar product 2>&1 | grep "product" | awk '{print $2}') )
+    product_array[${index}]=$(fastboot -s $queued getvar product 2>&1 | grep "product" | awk '{print $2}')
     #set pwnie names
     f_setpwnieproduct $index
     if [ "$?" != "0" ]; then
@@ -356,6 +356,7 @@ EOF
 
 f_cleanup() {
   adb kill-server >> "${DEBUG_FILE}" 2>&1
+  exit
 }
 
 f_mainloop(){
@@ -375,7 +376,7 @@ f_mainloop(){
 f_queuenewdevices() {
   queued_devices=( )
   for connected in ${connected_devices[@]}; do
-    if [ has "${connected}" "${running_devices[@]}" ]; then
+    if has "${connected}" ${running_devices[@]}; then
       printf "$connected is already running\n" #XXX
     else
       printf "$connected is not already running, adding it to the queue\n" #XXX
