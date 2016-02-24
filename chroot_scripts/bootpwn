@@ -11,6 +11,7 @@ export HOME=/root
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/pwnix/bin
 export TERM=xterm-color
 export TZ=America/New_York
+export LANG=en_US.UTF-8
 unset LD_PRELOAD
 
 echo "[!] Welcome to the Pwn zone. Get your game face on."
