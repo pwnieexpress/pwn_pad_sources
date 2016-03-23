@@ -10,8 +10,8 @@ bluetooth=1
 if loud_one=1 f_validate_one hci0; then
   hciconfig hci0 up
   cd /opt/pwnix/blue_hydra/
-  [ service dbus status ] || service dbus start
-  [ service bluetooth status ] || service bluetooth start
+  service dbus status || service dbus start
+  service bluetooth status || service bluetooth start
   clear
   ./bin/blue_hydra
   cd /opt/pwnix/captures/bluetooth
