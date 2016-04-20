@@ -94,18 +94,13 @@ f_preplaunch(){
   #Change the hostname and mac address randomly
   printf "\n[+] Rolling MAC address and hostname randomly\n\n"
 
-  ifconfig wlan1mon down
-
-  if [ -n "${interface}" ]; then
-    hn=$(macchanger --show ${interface} | grep "Current" | awk '{print $3}' |awk -F":" '{print$1$2$3$4$5$6}')
-    hostname $hn
-    printf "[+] New hostname set: $hn\n"
-  fi
-
-  sleep 2
   #interface is already in monitor mode
   ifconfig wlan1mon down
+  sleep 1
   macchanger -r wlan1mon
+  hn=$(macchanger --show wlan1mon | grep "Current" | awk '{print $3}' |awk -F":" '{print$1$2$3$4$5$6}')
+  hostname $hn
+  printf "[+] New hostname set: $hn\n"
   ifconfig wlan1mon up
 
   mkdir /dev/net/ &> /dev/null
