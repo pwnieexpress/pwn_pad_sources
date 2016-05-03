@@ -137,7 +137,7 @@ f_validate_choice(){
   ip addr show dev $1 > /dev/zero 2>&1
   local valid=$?
   if [ "$require_ip" = "1" ] && [ "$valid" = 0 ];then
-    local has_ip="$(ip addr show dev $1 | awk '/inet / {print $2}')"
+    local has_ip="$(ip addr show dev $1 | awk '/inet/ {print $2}')"
     if [ -z "$has_ip" ]; then
       valid=1
     fi
