@@ -6,6 +6,11 @@
 # Company: Pwnie Express
 # Contact: josefelipe@pwnieexpress.com
 
+# Increase strictness by making script exit to catch potential bugs caused by
+# failed commands or unset variables
+set -e
+set -u
+
 f_pause(){
   read -p "$*"
 }
