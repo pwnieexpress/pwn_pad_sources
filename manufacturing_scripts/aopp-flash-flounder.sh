@@ -61,8 +61,11 @@ f_run(){
     exit 1
   fi
 
-  # Kill running server
-  killall adb &> /dev/null
+  # Kill server if one is already running
+  if [[ -n "$(pgrep adb)" ]]; then
+    echo "Killing server"
+    killall adb &> /dev/null
+  fi
 
   # Start server
   echo
