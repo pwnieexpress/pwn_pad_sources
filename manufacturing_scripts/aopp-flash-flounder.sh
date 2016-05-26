@@ -12,7 +12,12 @@ set -e
 set -u
 
 check_dependencies() {
-  dependencies=(adb fastboot)
+  # Have dependency checking to ensure users know which packages to install
+  # on a new system
+  dependencies=(
+    adb
+    fastboot
+  )
   for command in "${dependencies[@]}"; do
     if ! [ -x "$(command -v "${command}")" ]; then
       echo "Command '${command}' not found. Please have android-tools-adb and android-tools-fastboot packages installed." >&2
@@ -21,12 +26,11 @@ check_dependencies() {
   done
 }
 
-f_pause(){
+f_pause() {
   read -p "$*"
 }
 
-f_run(){
-
+f_run() {
   # Splash
   clear
   echo " "
@@ -87,7 +91,6 @@ f_run(){
 }
 
 f_getserial() {
-
   # Count devices
   device_count="$(fastboot devices | wc -l)"
 
@@ -114,7 +117,6 @@ f_getserial() {
 }
 
 f_unlock() {
-
   # Unlock bootloader
   echo
   echo "[+] Unlock the device"
@@ -159,7 +161,6 @@ f_unlock() {
 }
 
 f_setup() {
-
   # Boot into recovery
   echo
   echo "[+] Boot into recovery"
