@@ -90,11 +90,15 @@ f_getserial() {
   done < <(fastboot devices | cut -c 1-12)
 
   # Print devices
-  if (( "${device_count}" > 1 ))
+  if [[ "${device_count}" -gt "1" ]]
   then
     echo "There are ${device_count} devices connected: "
-  else
+  elif [[ "${device_count}" -eq "1" ]]
+  then
     echo "There is 1 device connected: "
+  else
+    echo "There are no devices connected. Exiting now."
+    exit 1
   fi
   fastboot devices
 }
@@ -105,7 +109,7 @@ f_unlock() {
   echo
   echo "[+] Unlock the device"
   k=0
-  while (( "${k}" < "${device_count}" ))
+  while (( "${k}" -lt "${device_count}" ))
   do
     fastboot oem unlock -s "${serial_array["${k}"]}" &
     (( k++ ))
@@ -114,7 +118,7 @@ f_unlock() {
 
   # Wait for unlock
   devices="$(fastboot devices | wc -l)"
-  while (( "${devices}" < 1 ))
+  while (( "${devices}" -lt 1 ))
   do
     sleep 1
   done
@@ -124,7 +128,7 @@ f_unlock() {
   echo
   echo "[+] Flash recovery"
   k=0
-  while (( "${k}" < "${device_count}" ))
+  while (( "${k}" -lt "${device_count}" ))
   do
     fastboot flash recovery twrp-3.0.2-0-flounder.img -s "${serial_array["${k}"]}" &
     sleep 1
@@ -136,7 +140,7 @@ f_unlock() {
   echo
   echo "[+] Erase and format system"
   k=0
-  while (( "${k}" < "${device_count}" ))
+  while (( "${k}" -lt "${device_count}" ))
   do
     fastboot format system -s "${serial_array["${k}"]}" &
     (( k++ ))
@@ -150,7 +154,7 @@ f_setup() {
   echo
   echo "[+] Boot into recovery"
   k=0
-  while (( "${k}" < "${device_count}" ))
+  while (( "${k}" -lt "${device_count}" ))
   do
     fastboot boot twrp-3.0.2-0-flounder.img -s "${serial_array["${k}"]}" &
     sleep 1
@@ -165,7 +169,7 @@ f_setup() {
   echo
   echo "[+] Remove old chroot files"
   k=0
-  while (( "${k}" < "${device_count}" ))
+  while (( "${k}" -lt "${device_count}" ))
   do
     adb -s "${serial_array[${k}]}" shell rm -rf /sdcard/Android/data/com.pwnieexpress.android.pxinstaller/files/* &
     (( k++ ))
@@ -176,7 +180,7 @@ f_setup() {
   echo
   echo "[+] Erase and format userdata"
   k=0
-  while (( "${k}" < "${device_count}" ))
+  while (( "${k}" -lt "${device_count}" ))
   do
     adb -s "${serial_array["${k}"]}" shell twrp wipe data &
     (( k++ ))
@@ -187,7 +191,7 @@ f_setup() {
   echo
   echo "[+] Erase and format cache"
   k=0
-  while (( "${k}" < "${device_count}" ))
+  while (( "${k}" -lt "${device_count}" ))
   do
     adb -s "${serial_array["${k}"]}" shell twrp wipe cache &
     (( k++ ))
@@ -198,7 +202,7 @@ f_setup() {
   echo
   echo "[+] Erase and format dalvik-cache"
   k=0
-  while (( "${k}" < "${device_count}" ))
+  while (( "${k}" -lt "${device_count}" ))
   do
     adb -s "${serial_array["${k}"]}" shell twrp wipe dalvik &
     (( k++ ))
@@ -212,7 +216,7 @@ f_flash() {
   echo
   echo "[+] Push ROM zip"
   k=0
-  while (( "${k}" < "${device_count}" ))
+  while (( "${k}" -lt "${device_count}" ))
   do
     adb -s "${serial_array[$k]}" push aopp-0.1-20160523-UNOFFICIAL-flounder_lte.zip /sdcard/ &
     sleep 1
@@ -224,7 +228,7 @@ f_flash() {
   echo
   echo "[+] Flash ROM zip"
   k=0
-  while (( "${k}" < "${device_count}" ))
+  while (( "${k}" -lt "${device_count}" ))
   do
     adb -s "${serial_array[${k}]}" shell twrp install /sdcard/aopp-0.1-20160523-UNOFFICIAL-flounder_lte.zip &
     sleep 1
@@ -237,7 +241,7 @@ f_flash() {
   echo "[+] Reboot"
   echo 
   k=0
-  while (( "${k}" < "${device_count}" ))
+  while (( "${k}" -lt "${device_count}" ))
   do
     adb -s "${serial_array["${k}"]}" reboot &
     (( k++ ))
