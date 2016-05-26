@@ -11,6 +11,16 @@
 set -e
 set -u
 
+check_dependencies() {
+  dependencies=(adb fastboot)
+  for command in "${dependencies[@]}"; do
+    if ! [ -x "$(command -v "${command}")" ]; then
+      echo "Command '${command}' not found. Please have android-tools-adb and android-tools-fastboot packages installed." >&2
+      exit 1
+    fi
+  done
+}
+
 f_pause(){
   read -p "$*"
 }
@@ -249,6 +259,7 @@ f_flash() {
   wait
 }
 
+check_dependencies
 f_run
 f_unlock
 f_setup
