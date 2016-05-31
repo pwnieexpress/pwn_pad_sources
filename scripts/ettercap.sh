@@ -66,18 +66,15 @@ f_run(){
   fi
 
   if [ $logchoice -eq 1 ]; then
-    if [ $sslfakecert -eq 1 ]; then
-      ettercap -i $interface -T -q -l $filename -M arp:remote ${syntax}/$gw/ ${syntax}/$target1/
-    else
-      ettercap -i $interface -T -S -q -l $filename -M arp:remote ${syntax}/$gw/ ${syntax}/$target1/
-    fi
+    log="-l ${filename}"
   else
-    if [ $sslfakecert -eq 1 ]; then
-      ettercap -i $interface -T -q -M arp:remote ${syntax}/$gw/ ${syntax}/$target1/
-    else
-      ettercap -i $interface -T -S -q -M arp:remote ${syntax}/$gw/ ${syntax}/$target1/
+    log=""
+  fi
 
-    fi
+  if [ $sslfakecert -eq 1 ]; then
+    ettercap -i $interface -T -q ${log} -M arp:remote ${syntax}/$gw/ ${syntax}/$target1/
+  else
+    ettercap -i $interface -T -S -q ${log} -M arp:remote ${syntax}/$gw/ ${syntax}/$target1/
   fi
 }
 
