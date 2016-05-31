@@ -41,10 +41,10 @@ f_generate_filename(){
 
 f_version_check(){
    # Check for Kali1 version for target syntax change...
-  dpkg --list |grep ettercap |grep -i 1:0.8.2-2~kali1 &>/dev/null
-  ver=$?
+  dpkg --list |grep ettercap |grep -qi 1:0.8.2-2~kali1
+  RETCODE=$?
 
-  if [ $ver -eq 0 ]; then
+  if [ $RETCODE -eq 0 ]; then
     f_run_kali1
   else
     f_run
