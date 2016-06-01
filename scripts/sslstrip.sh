@@ -12,7 +12,7 @@ default_interface="at0"
 
 # Cleanup function to ensure sslstrip stops and iptable rules stop
 f_clean_up(){
-  printf "\n[!] Shutting down sslstrip..."
+  printf "\n[!] Shutting down sslstrip...\n"
   if [ -n "${sslstrippid}" ]; then
     printf "killing sslstrip[${sslstrippid}]\n"
     kill ${sslstrippid} > /dev/null 2>&1
