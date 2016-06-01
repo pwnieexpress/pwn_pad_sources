@@ -91,29 +91,29 @@ f_run() {
 }
 
 f_getserial() {
-  # Count devices
-  device_count="$(fastboot devices | wc -l)"
-
-  # Store serials
-  j="0"
-  while read line
-  do
-    serial_array["${j}"]="${line}"
-    (( j++ ))
-  done < <(fastboot devices | cut -c 1-12)
-
-  # Print devices
-  if [[ "${device_count}" -gt "1" ]]
-  then
-    echo "There are ${device_count} devices connected: "
-  elif [[ "${device_count}" -eq "1" ]]
-  then
-    echo "There is 1 device connected: "
-  else
+  devices="$(fastboot devices)"
+  
+  if [[ -z "${devices}" ]]; then
     echo "There are no devices connected. Exiting now."
+    kill_server
     exit 1
   fi
-  fastboot devices
+
+  serial_array=()
+  
+  for device in ${devices}; do
+    serial_array+=("${device:0:12}")
+  done 
+
+  device_count="${#serial_array[@]}"
+  
+  if [[ "${device_count}" -gt "1" ]]; then
+    echo "There are ${device_count} devices connected: "
+  else
+    echo "There is 1 device connected: "
+  fi
+  
+  echo "${devices}"
 }
 
 f_unlock() {
