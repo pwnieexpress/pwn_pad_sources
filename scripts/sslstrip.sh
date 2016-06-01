@@ -42,7 +42,7 @@ f_run(){
 
   logfile="${LOGDIR}"/sslstrip_$(date +%F-%H%M).log
 
-  if [ -r "/usr/share/mana-toolkit/sslstrip-hsts/dns2proxy" ]; then
+  if [ -d "/usr/share/mana-toolkit/sslstrip-hsts/dns2proxy" ]; then
     dns2proxy_path=/usr/share/mana-toolkit/sslstrip-hsts/dns2proxy
   else
     dns2proxy_path=/usr/share/mana-toolkit/sslstrip-hsts
