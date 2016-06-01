@@ -44,13 +44,15 @@ f_run(){
 
   if [ -d "/usr/share/mana-toolkit/sslstrip-hsts/dns2proxy" ]; then
     dns2proxy_path=/usr/share/mana-toolkit/sslstrip-hsts/dns2proxy
+    int_syntax="-i "
   else
     dns2proxy_path=/usr/share/mana-toolkit/sslstrip-hsts
+    int_syntax=""
   fi
 
   if [ -r "${dns2proxy_path}/dns2proxy.py" ]; then
     cd "${dns2proxy_path}"
-    python "${dns2proxy_path}/dns2proxy.py" ${interface} > /dev/null 2>&1 &
+    python "${dns2proxy_path}/dns2proxy.py" "${int_syntax}"${interface} > /dev/null 2>&1 &
     printf "dns2proxy by LeonardoNVE is running...\n"
   else
     printf "dns2proxy is currently unavailable\n"
