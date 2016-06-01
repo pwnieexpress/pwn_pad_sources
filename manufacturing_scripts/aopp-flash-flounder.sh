@@ -178,6 +178,8 @@ f_unlock() {
 }
 
 f_setup() {
+  destination="$(basename "${rom}")"
+
   # Boot into recovery
   echo
   echo "[+] Boot into recovery"
@@ -237,7 +239,7 @@ f_flash() {
   echo
   echo "[+] Flash ROM zip"
   for device in "${serial_array[@]}"; do
-    adb -s "${device}" shell twrp install "/sdcard/${rom}" &
+    adb -s "${device}" shell twrp install "${destination}" &
     sleep 1
   done
   wait
