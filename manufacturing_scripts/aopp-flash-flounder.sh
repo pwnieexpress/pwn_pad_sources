@@ -129,7 +129,7 @@ f_getserial() {
 
   serial_array=()
   
-  for device in ${devices}; do
+  for device in "${devices}"; do
     serial_array+=("${device:0:12}")
   done 
 
