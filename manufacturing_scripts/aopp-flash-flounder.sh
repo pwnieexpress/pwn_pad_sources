@@ -18,15 +18,22 @@ rom="aopp-0.1-20160523-UNOFFICIAL-flounder_lte.zip"
 while getopts ":r:" FLAG; do
   case "${FLAG}" in
     r)
-      if [ -f "${OPTARG}" ]; then 
-        rom="${OPTARG}"
-      else
-        echo "'${OPTARG}' does not exist. Exiting now."
-        exit 1
-      fi
-      ;;
+      rom="${OPTARG}"
+    ;;
    esac
 done
+
+kill_server() {
+  killall adb &> /dev/null
+}
+trap 'killall adb &> /dev/null' EXIT
+
+check_rom() {
+  if ! [ -f "${rom}" ]; then
+    echo "ROM '${rom}' does not exist. Exiting now."
+    exit 1
+  fi
+}
 
 check_dependencies() {
   # Have dependency checking to ensure users know which packages to install
@@ -37,6 +44,7 @@ check_dependencies() {
   )
   for command in "${dependencies[@]}"; do
     if ! [ -x "$(command -v "${command}")" ]; then
+      echo
       echo "Command '${command}' not found. Please have android-tools-adb and android-tools-fastboot packages installed." >&2
       exit 1
     fi
@@ -92,8 +100,11 @@ f_run() {
     exit 1
   fi
 
+  check_rom
+
   # Kill server if one is already running
   if [[ -n "$(pgrep adb)" ]]; then
+    echo
     echo "Killing server"
     killall adb &> /dev/null
   fi
