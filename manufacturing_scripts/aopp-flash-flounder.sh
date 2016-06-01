@@ -11,6 +11,23 @@
 set -e
 set -u
 
+# Set rom variable at top for easy editing
+rom="aopp-0.1-20160523-UNOFFICIAL-flounder_lte.zip"
+
+# Have the option to read ROM version from command line
+while getopts ":r:" FLAG; do
+  case "${FLAG}" in
+    r)
+      if [ -f "${OPTARG}" ]; then 
+        rom="${OPTARG}"
+      else
+        echo "'${OPTARG}' does not exist. Exiting now."
+        exit 1
+      fi
+      ;;
+   esac
+done
+
 check_dependencies() {
   # Have dependency checking to ensure users know which packages to install
   # on a new system
@@ -95,7 +112,7 @@ f_getserial() {
   
   if [[ -z "${devices}" ]]; then
     echo "There are no devices connected. Exiting now."
-    kill_server
+    killall adb &> /dev/null
     exit 1
   fi
 
@@ -196,12 +213,11 @@ f_setup() {
 }
 
 f_flash() {
-
   # Push rom zip
   echo
   echo "[+] Push ROM zip"
   for device in "${serial_array[@]}"; do
-    adb -s "${device}" push aopp-0.1-20160523-UNOFFICIAL-flounder_lte.zip /sdcard/ &
+    adb -s "${device}" push "${rom}" /sdcard/ &
     sleep 1
   done
   wait
@@ -210,7 +226,7 @@ f_flash() {
   echo
   echo "[+] Flash ROM zip"
   for device in "${serial_array[@]}"; do
-    adb -s "${device}" shell twrp install /sdcard/aopp-0.1-20160523-UNOFFICIAL-flounder_lte.zip &
+    adb -s "${device}" shell twrp install "/sdcard/${rom}" &
     sleep 1
   done
   wait
