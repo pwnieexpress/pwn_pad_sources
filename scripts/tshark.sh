@@ -16,7 +16,7 @@ f_savecap() {
 
   case $saveyesno in
     1) flags="-w tshark-$(date +%F-%H%M).cap" ;;
-    2) filename="" ;;
+    2) flags="" ;;
     *) f_savecap ;;
   esac
 }
