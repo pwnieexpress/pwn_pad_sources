@@ -10,15 +10,19 @@ f_banner(){
 }
 
 f_select(){
-  printf "1) ubertooth-lap\n"
+  printf "1) ubertooth-rx\n"
   printf "2) ubertooth-dump\n"
-  printf "3) ubertooth-btle\n\n"
+  printf "3) ubertooth-btle\n"
+  printf "4) check firmware version\n"
+  printf "5) reset ubertooth\n\n"
   read -p "Choice: " selection
 
   case $selection in
-    1) ubertooth-lap ;;
+    1) ubertooth-rx ;;
     2) ubertooth-dump ;;
     3) ubertooth-btle -f ;;
+    4) ubertooth-util -v ;;
+    5) ubertooth-util -r ;;
     *) f_select ;;
   esac
 }
