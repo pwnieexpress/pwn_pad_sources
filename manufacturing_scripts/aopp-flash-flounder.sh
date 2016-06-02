@@ -11,6 +11,30 @@
 set -e
 set -u
 
+# Set rom variable at top for easy editing
+rom="aopp-0.1-20160523-UNOFFICIAL-flounder_lte.zip"
+
+# Have the option to read ROM version from command line
+while getopts ":r:" FLAG; do
+  case "${FLAG}" in
+    r)
+      rom="${OPTARG}"
+    ;;
+   esac
+done
+
+kill_server() {
+  killall adb &> /dev/null
+}
+trap 'killall adb &> /dev/null' EXIT
+
+check_rom() {
+  if ! [ -f "${rom}" ]; then
+    echo "ROM '${rom}' does not exist. Exiting now."
+    exit 1
+  fi
+}
+
 check_dependencies() {
   # Have dependency checking to ensure users know which packages to install
   # on a new system
@@ -20,6 +44,7 @@ check_dependencies() {
   )
   for command in "${dependencies[@]}"; do
     if ! [ -x "$(command -v "${command}")" ]; then
+      echo
       echo "Command '${command}' not found. Please have android-tools-adb and android-tools-fastboot packages installed." >&2
       exit 1
     fi
@@ -75,8 +100,11 @@ f_run() {
     exit 1
   fi
 
+  check_rom
+
   # Kill server if one is already running
   if [[ -n "$(pgrep adb)" ]]; then
+    echo
     echo "Killing server"
     killall adb &> /dev/null
   fi
@@ -91,47 +119,42 @@ f_run() {
 }
 
 f_getserial() {
-  # Count devices
-  device_count="$(fastboot devices | wc -l)"
-
-  # Store serials
-  j="0"
-  while read line
-  do
-    serial_array["${j}"]="${line}"
-    (( j++ ))
-  done < <(fastboot devices | cut -c 1-12)
-
-  # Print devices
-  if [[ "${device_count}" -gt "1" ]]
-  then
-    echo "There are ${device_count} devices connected: "
-  elif [[ "${device_count}" -eq "1" ]]
-  then
-    echo "There is 1 device connected: "
-  else
+  devices="$(fastboot devices)"
+  
+  if [[ -z "${devices}" ]]; then
     echo "There are no devices connected. Exiting now."
+    killall adb &> /dev/null
     exit 1
   fi
-  fastboot devices
+
+  serial_array=()
+  
+  for device in "${devices}"; do
+    serial_array+=("${device:0:12}")
+  done 
+
+  device_count="${#serial_array[@]}"
+  
+  if [[ "${device_count}" -gt "1" ]]; then
+    echo "There are ${device_count} devices connected: "
+  else
+    echo "There is 1 device connected: "
+  fi
+  
+  echo "${devices}"
 }
 
 f_unlock() {
   # Unlock bootloader
   echo
   echo "[+] Unlock the device"
-  k=0
-  while (( "${k}" -lt "${device_count}" ))
-  do
-    fastboot oem unlock -s "${serial_array["${k}"]}" &
-    (( k++ ))
+  for device in "${serial_array[@]}"; do
+    fastboot oem unlock -s "${device}"
   done
   wait
 
   # Wait for unlock
-  devices="$(fastboot devices | wc -l)"
-  while (( "${devices}" -lt 1 ))
-  do
+  while (( "${device_count}" -lt 1 )); do
     sleep 1
   done
   wait
@@ -139,37 +162,30 @@ f_unlock() {
   # Flash recovery
   echo
   echo "[+] Flash recovery"
-  k=0
-  while (( "${k}" -lt "${device_count}" ))
-  do
-    fastboot flash recovery twrp-3.0.2-0-flounder.img -s "${serial_array["${k}"]}" &
+  for device in "${serial_array[@]}"; do
+    fastboot flash recovery twrp-3.0.2-0-flounder.img -s "${device}" &
     sleep 1
-    (( k++ ))
   done
   wait
 
   # Format system
   echo
   echo "[+] Erase and format system"
-  k=0
-  while (( "${k}" -lt "${device_count}" ))
-  do
-    fastboot format system -s "${serial_array["${k}"]}" &
-    (( k++ ))
+  for device in "${serial_array[@]}"; do
+    fastboot format system -s "${device}"
   done
   wait
 }
 
 f_setup() {
+  destination="$(basename "${rom}")"
+
   # Boot into recovery
   echo
   echo "[+] Boot into recovery"
-  k=0
-  while (( "${k}" -lt "${device_count}" ))
-  do
-    fastboot boot twrp-3.0.2-0-flounder.img -s "${serial_array["${k}"]}" &
+  for device in "${serial_array[@]}"; do
+    fastboot boot twrp-3.0.2-0-flounder.img -s "${device}" &
     sleep 1
-    (( k++ ))
   done
   wait
 
@@ -179,71 +195,52 @@ f_setup() {
   # Remove old chroot files
   echo
   echo "[+] Remove old chroot files"
-  k=0
-  while (( "${k}" -lt "${device_count}" ))
-  do
-    adb -s "${serial_array[${k}]}" shell rm -rf /sdcard/Android/data/com.pwnieexpress.android.pxinstaller/files/* &
-    (( k++ ))
+  for device in "${serial_array[@]}"; do
+    adb -s "${device}" shell rm -rf /sdcard/Android/data/com.pwnieexpress.android.pxinstaller/files/*
   done
   wait
 
   # Format userdata
   echo
   echo "[+] Erase and format userdata"
-  k=0
-  while (( "${k}" -lt "${device_count}" ))
-  do
-    adb -s "${serial_array["${k}"]}" shell twrp wipe data &
-    (( k++ ))
+  for device in "${serial_array[@]}"; do 
+   adb -s "${device}" shell twrp wipe data
   done
   wait
 
   # Format cache
   echo
   echo "[+] Erase and format cache"
-  k=0
-  while (( "${k}" -lt "${device_count}" ))
-  do
-    adb -s "${serial_array["${k}"]}" shell twrp wipe cache &
-    (( k++ ))
+  for device in "${serial_array[@]}"; do
+    adb -s "${device}" shell twrp wipe cache
   done
   wait
 
   # Format dalvik-cache
   echo
   echo "[+] Erase and format dalvik-cache"
-  k=0
-  while (( "${k}" -lt "${device_count}" ))
-  do
-    adb -s "${serial_array["${k}"]}" shell twrp wipe dalvik &
-    (( k++ ))
+  for device in "${serial_array[@]}"; do 
+    adb -s "${device}" shell twrp wipe dalvik
   done
   wait
 }
 
 f_flash() {
-
   # Push rom zip
   echo
   echo "[+] Push ROM zip"
-  k=0
-  while (( "${k}" -lt "${device_count}" ))
-  do
-    adb -s "${serial_array[$k]}" push aopp-0.1-20160523-UNOFFICIAL-flounder_lte.zip /sdcard/ &
+  for device in "${serial_array[@]}"; do
+    adb -s "${device}" push "${rom}" /sdcard/ &
     sleep 1
-    (( k++ ))
   done
   wait
 
   # Flash rom zip
   echo
   echo "[+] Flash ROM zip"
-  k=0
-  while (( "${k}" -lt "${device_count}" ))
-  do
-    adb -s "${serial_array[${k}]}" shell twrp install /sdcard/aopp-0.1-20160523-UNOFFICIAL-flounder_lte.zip &
+  for device in "${serial_array[@]}"; do
+    adb -s "${device}" shell twrp install "${destination}" &
     sleep 1
-    (( k++ ))
   done
   wait
  
@@ -251,11 +248,8 @@ f_flash() {
   echo
   echo "[+] Reboot"
   echo 
-  k=0
-  while (( "${k}" -lt "${device_count}" ))
-  do
-    adb -s "${serial_array["${k}"]}" reboot &
-    (( k++ ))
+  for device in "${serial_array[@]}"; do
+    adb -s "${device}" reboot
   done
   wait
 }
