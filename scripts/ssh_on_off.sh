@@ -47,7 +47,7 @@ f_start_ssh(){
   printf "[+] Starting SSH server...\n"
   service ssh start
   selinuxfs unlock
-  /system/bin/setenforce 0
+  /system/bin/setenforce 0 > /dev/null 2>&1
   selinuxfs lock
   printf "[!] Done\n"
   f_show_ip
