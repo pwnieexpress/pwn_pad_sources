@@ -10,7 +10,7 @@ f_banner(){
 }
 
 f_select(){
-  printf "1) ubertooth-rx\n"
+  printf "1) ubertooth lap detection\n"
   printf "2) ubertooth-dump\n"
   printf "3) ubertooth-btle\n"
   printf "4) check firmware version\n"
@@ -18,7 +18,14 @@ f_select(){
   read -p "Choice: " selection
 
   case $selection in
-    1) ubertooth-rx ;;
+    1) if [ -x /usr/bin/ubertooth-rx ]; then
+         ubertooth-rx
+       elif [ -x /usr/bin/ubertooth-lap ]; then
+         ubertooth-lap
+       else
+         printf "Unable to find ubertooth-rx or ubertooth-lap\n"
+       fi
+       ;;
     2) ubertooth-dump ;;
     3) ubertooth-btle -f ;;
     4) ubertooth-util -v ;;
