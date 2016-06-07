@@ -24,18 +24,18 @@ BETWEEN CAST($START_TIME AS integer) AND CAST($STOP_TIME AS integer);
 EOF
 )
 
-echo $QUERY | sqlite3 -header -column /opt/pwnix/blue_hydra.db > $FILENAME
+  echo $QUERY | sqlite3 -header -column /opt/pwnix/blue_hydra.db > $FILENAME
+  cd /opt/pwnix/captures/bluetooth
 }
 
 if loud_one=1 f_validate_one hci0; then
   hciconfig hci0 up
-  cd /opt/pwnix/blue_hydra/
   service dbus status || service dbus start
   service bluetooth status || service bluetooth start
   clear
   START_TIME=$(date +"%s")
   FILENAME=/opt/pwnix/captures/blue_hydra_${START_TIME}.out
-  cd /opt/pwnix/captures/bluetooth
+  cd /opt/pwnix/blue_hydra/
   trap f_endsummary INT
   trap f_endsummary KILL
   ./bin/blue_hydra
