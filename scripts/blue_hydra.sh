@@ -10,9 +10,9 @@ bluetooth=1
 f_endsummary() {
   clear
   printf "\n[-] Blue_Hydra db file saved to /opt/pwnix/blue_hydra.db\n\n"
-  printf "\n[-] Blue_Hydra summary saved to /opt/pwnix/captures/blue_hydra_${START_TIME}.out\n\n"
-  STOP_TIME=$(date +"%s")
-  QUERY=$(cat <<EOF
+  if [ "${save}" = "1" ]; then
+    STOP_TIME=$(date +"%s")
+    QUERY=$(cat <<EOF
 SELECT address, vendor, company, manufacturer, 
        classic_mode AS classic, 
        le_mode AS le, le_address_type, 
@@ -24,11 +24,27 @@ BETWEEN CAST($START_TIME AS integer) AND CAST($STOP_TIME AS integer);
 EOF
 )
 
-  echo $QUERY | sqlite3 -header -column /opt/pwnix/blue_hydra.db > $FILENAME
+    echo $QUERY | sqlite3 -header -column /opt/pwnix/blue_hydra.db > $FILENAME
+    printf "\n[-] Blue_Hydra summary saved to /opt/pwnix/captures/blue_hydra_${START_TIME}.out\n\n"
+  fi
   cd /opt/pwnix/captures/bluetooth
 }
 
+f_savecap() {
+  printf "\nSave packet capture to /opt/pwnix/captures/bluetooth/ ?\n\n"
+  printf "1. Yes\n"
+  printf "2. No\n\n"
+  read -p "Choice: " saveyesno
+
+  case $saveyesno in
+    1) save=1 ;;
+    2) save=0 ;;
+    *) f_savecap ;;
+  esac
+}
+
 if loud_one=1 f_validate_one hci0; then
+  f_savecap
   hciconfig hci0 up
   service dbus status || service dbus start
   service bluetooth status || service bluetooth start
