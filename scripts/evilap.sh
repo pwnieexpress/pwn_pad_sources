@@ -103,7 +103,7 @@ f_preplaunch(){
   #interface is already in monitor mode
   ifconfig wlan1mon down
   if [ "${evilap_type}" = "hostapd" ]; then
-    airmon-ng stop wlan1mon
+    airmon-ng stop wlan1mon > /dev/null 2>&1
     sleep 1
     ifconfig wlan1 down
   fi
