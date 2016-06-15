@@ -28,8 +28,8 @@ f_clean_up(){
   killall airbase-ng &> /dev/null
   killall dhcpd &> /dev/null
   f_mon_disable
-  iptables --flush
-  iptables --table nat --flush
+  ${iptables_command/A/D}
+  ${iptables_command/A/D} > /dev/null 2>&1
 }
 
 f_restore_ident(){
@@ -107,8 +107,6 @@ f_preplaunch(){
   ln -s /dev/tun /dev/net/tun &> /dev/null
   killall airbase-ng &> /dev/null
   killall dhcpd &> /dev/null
-  iptables --flush
-  iptables --table nat --flush
 }
 
 f_logname(){
