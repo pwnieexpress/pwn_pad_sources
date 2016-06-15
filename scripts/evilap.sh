@@ -161,8 +161,8 @@ f_karmaornot(){
     #IP forwarding and iptables routing using internet connection
     printf 1 > /proc/sys/net/ipv4/ip_forward
     android_vers=$(/system/bin/getprop ro.build.version.release)
-    case $android_vers in
-      5*) iptables_command="iptables -t nat -A natctrl_nat_POSTROUTING -o ${interface} -j MASQUERADE" ;;
+    case ${android_vers%%.*} in
+      5) iptables_command="iptables -t nat -A natctrl_nat_POSTROUTING -o ${interface} -j MASQUERADE" ;;
       *) iptables_command="iptables -t nat -A POSTROUTING -o ${interface} -j MASQUERADE" ;;
     esac
     $iptables_command
