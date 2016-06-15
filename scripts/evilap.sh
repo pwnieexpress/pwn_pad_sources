@@ -40,8 +40,6 @@ f_clean_up(){
 f_restore_ident(){
   printf "[+] Restoring network identity\n"
   hostn=$(cat /etc/hostname)
-  [ "${evilap_type}" = "airbase-ng" ] && evilap_interface="wlan1mon"
-  [ "${evilap_type}" = "hostapd" ] && evilap_interface="wlan1"
   ifconfig "${evilap_interface}" down &> /dev/null
   macchanger -p "${evilap_interface}" &> /dev/null
   hostname "$hostn"
@@ -103,25 +101,18 @@ f_preplaunch(){
   printf "\n[+] Rolling MAC address and hostname randomly\n\n"
 
   #interface is already in monitor mode
-  if [ "${evilap_type}" = "airbase-ng" ]; then
-    ifconfig wlan1mon down
-  elif [ "${evilap_type}" = "hostapd" ]; then
+  ifconfig wlan1mon down
+  if [ "${evilap_type}" = "hostapd" ]; then
     airmon-ng stop wlan1mon
     sleep 1
     ifconfig wlan1 down
   fi
   sleep 1
-  if [ "${evilap_type}" = "airbase-ng" ]; then
-    macchanger -r wlan1mon
-    hn=$(macchanger --show wlan1mon | grep "Current" | awk '{print $3}' |awk -F":" '{print$1$2$3$4$5$6}')
-  elif [ "${evilap_type}" = "hostapd" ]; then
-    macchanger -r wlan1
-    hn=$(macchanger --show wlan1 | grep "Current" | awk '{print $3}' |awk -F":" '{print$1$2$3$4$5$6}')
-  fi
-  hostname $hn
+  macchanger -r "${evilap_interface}"
+  hn=$(macchanger --show "${evilap_interface}" | grep "Current" | awk '{print $3}' |awk -F":" '{print$1$2$3$4$5$6}')
+  hostname "$hn"
   printf "[+] New hostname set: $hn\n"
-  [ "${evilap_type}" = "airbase-ng" ] && ifconfig wlan1mon up
-  [ "${evilap_type}" = "hostapd" ] && ifconfig wlan1 up
+  ifconfig "${evilap_interface}"
 
   mkdir /dev/net/ &> /dev/null
   ln -s /dev/tun /dev/net/tun &> /dev/null
@@ -142,8 +133,12 @@ f_logname(){
 f_evilap_type(){
   if [ -x /usr/sbin/hostapd-wpe ]; then
     evilap_type="hostapd"
+    evilap_interface="wlan1"
+    evilap_eth="wlan1"
   else
     evilap_type="airbase-ng"
+    evilap_interface="wlan1mon"
+    evilap_eth="at0"
   fi
 }
 
@@ -187,14 +182,14 @@ f_karmaornot(){
   fi
   sleep 2
 
-  #Bring up virtual interface at0
-  ifconfig at0 up 192.168.7.1 netmask 255.255.255.0
+  #Bring up interface
+  ifconfig "${evilap_eth}" up 192.168.7.1 netmask 255.255.255.0
 
-  #Start DHCP server on at0
+  #Start DHCP server on ${evilap_eth}
   if [ -d /var/lib/dhcp ] && [ ! -f /var/lib/dhcp/dhcpd.leases ]; then
     touch /var/lib/dhcp/dhcpd.leases
   fi
-  dhcpd -cf /etc/dhcp/dhcpd.conf -pf /var/run/dhcpd.pid at0
+  dhcpd -cf /etc/dhcp/dhcpd.conf -pf /var/run/dhcpd.pid "${evilap_eth}"
 
   if [ -n "${interface}" ]; then
     #IP forwarding and iptables routing using internet connection
@@ -202,7 +197,7 @@ f_karmaornot(){
     android_vers=$(/system/bin/getprop ro.build.version.release)
     case ${android_vers%%.*} in
       5) iptables_command="iptables -t nat -A natctrl_nat_POSTROUTING -o ${interface} -j MASQUERADE"
-         ip_command="ip rule add from all iif at0 lookup wlan0 pref 18000" ;;
+         ip_command="ip rule add from all iif ${evilap_eth} lookup ${interface} pref 18000" ;;
       *) iptables_command="iptables -t nat -A POSTROUTING -o ${interface} -j MASQUERADE" ;;
     esac
     [ -n "${ip_command}" ] && ${ip_command}
