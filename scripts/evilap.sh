@@ -121,9 +121,6 @@ f_logname(){
 }
 
 f_karmaornot(){
-  if [ -d /var/lib/dhcp ] && [ ! -f /var/lib/dhcp/dhcpd.leases ]; then
-    touch /var/lib/dhcp/dhcpd.leases
-  fi
   clear
   printf "\n[?] Force clients to connect with their probe requests?\n\n"
   printf "[!] Everything will start connecting to you if YES is selected!\n\n"
@@ -160,6 +157,9 @@ f_karmaornot(){
   ifconfig at0 up 192.168.7.1 netmask 255.255.255.0
 
   #Start DHCP server on at0
+  if [ -d /var/lib/dhcp ] && [ ! -f /var/lib/dhcp/dhcpd.leases ]; then
+    touch /var/lib/dhcp/dhcpd.leases
+  fi
   dhcpd -cf /etc/dhcp/dhcpd.conf -pf /var/run/dhcpd.pid at0
 
   if [ -n "${interface}" ]; then
