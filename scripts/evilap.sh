@@ -39,12 +39,12 @@ f_clean_up(){
 
 f_restore_ident(){
   printf "[+] Restoring network identity\n"
-  hostn=`cat /etc/hostname`
+  hostn=$(cat /etc/hostname)
   [ "${evilap_type}" = "airbase-ng" ] && evilap_interface="wlan1mon"
   [ "${evilap_type}" = "hostapd" ] && evilap_interface="wlan1"
-  ifconfig ${evilap_interface} down &> /dev/null
-  macchanger -p ${evilapd_interface} &> /dev/null
-  hostname $hostn
+  ifconfig "${evilap_interface}" down &> /dev/null
+  macchanger -p "${evilap_interface}" &> /dev/null
+  hostname "$hostn"
 }
 
 f_banner(){
@@ -103,7 +103,7 @@ f_preplaunch(){
   printf "\n[+] Rolling MAC address and hostname randomly\n\n"
 
   #interface is already in monitor mode
-  if [ "${evilap_type" = "airbase-ng" ]; then
+  if [ "${evilap_type}" = "airbase-ng" ]; then
     ifconfig wlan1mon down
   elif [ "${evilap_type}" = "hostapd" ]; then
     airmon-ng stop wlan1mon
@@ -120,15 +120,15 @@ f_preplaunch(){
   fi
   hostname $hn
   printf "[+] New hostname set: $hn\n"
-  [ "${evilap_type" = "airbase-ng" ] && ifconfig wlan1mon up
-  [ "${evilap_type" = "hostapd" ] && ifconfig wlan1 up
+  [ "${evilap_type}" = "airbase-ng" ] && ifconfig wlan1mon up
+  [ "${evilap_type}" = "hostapd" ] && ifconfig wlan1 up
 
   mkdir /dev/net/ &> /dev/null
   ln -s /dev/tun /dev/net/tun &> /dev/null
   killall airbase-ng &> /dev/null
   killall hostapd-wpe &> /dev/null
   killall dhcpd &> /dev/null
-  if [ iptables --table nat -L 2>&1 | grep -q MASQUERADE ]; then
+  if iptables --table nat -L 2>&1 | grep -q MASQUERADE; then
     printf "It looks like some kind of tethering is already enabled.\n"
     printf "Please disable tethering before attempting to run evilap.\n"
     f_endclean
@@ -176,15 +176,14 @@ f_karmaornot(){
   printf "[+] Creating new logfile: $logname\n"
 
   trap f_endclean INT
-  trap f_endclean KILL
 
   #Start evilap
   if [ "${evilap_type}" = "airbase-ng" ]; then
-    airbase-ng $airbase_flags -c $channel -e "$ssid" -v wlan1mon > $logname 2>&1 &
+    airbase-ng $airbase_flags -c $channel -e "$ssid" -v wlan1mon > "$logname" 2>&1 &
   elif [ "${evilap_type}" = "hostapd-wpe" ]; then
     hostapd_conf=$(mktemp -t hostapd.conf-XXXX)
     printf "interface=wlan1\nssid=\"$ssid\"\nchannel=$channel\n" > "${hostapd_conf}"
-    hostapd-wpe $hostap_flags -t "${hostapd_conf}"
+    hostapd-wpe $hostap_flags -t "${hostapd_conf}" > "${logname}" 2>&1 &
   fi
   sleep 2
 
@@ -206,11 +205,11 @@ f_karmaornot(){
          ip_command="ip rule add from all iif at0 lookup wlan0 pref 18000" ;;
       *) iptables_command="iptables -t nat -A POSTROUTING -o ${interface} -j MASQUERADE" ;;
     esac
-    [ -n "ip_command" ] && ${ip_command}
+    [ -n "${ip_command}" ] && ${ip_command}
     $iptables_command
   fi
 
-  tail -f $logname
+  tail -f "$logname"
 }
 
 f_mon_enable
