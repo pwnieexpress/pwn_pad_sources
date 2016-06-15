@@ -30,6 +30,8 @@ f_clean_up(){
   f_mon_disable
   ${iptables_command/A/D} > /dev/null 2>&1
   ${iptables_command/A/D} > /dev/null 2>&1
+  ${ip_command/add/del} > /dev/null 2>&1
+  ${ip_command/add/del} > /dev/null 2>&1
 }
 
 f_restore_ident(){
@@ -165,9 +167,11 @@ f_karmaornot(){
     printf 1 > /proc/sys/net/ipv4/ip_forward
     android_vers=$(/system/bin/getprop ro.build.version.release)
     case ${android_vers%%.*} in
-      5) iptables_command="iptables -t nat -A natctrl_nat_POSTROUTING -o ${interface} -j MASQUERADE" ;;
+      5) iptables_command="iptables -t nat -A natctrl_nat_POSTROUTING -o ${interface} -j MASQUERADE"
+         ip_command="ip rule add from all iif at0 lookup wlan0 pref 18000" ;;
       *) iptables_command="iptables -t nat -A POSTROUTING -o ${interface} -j MASQUERADE" ;;
     esac
+    [ -n "ip_command" ] && ${ip_command}
     $iptables_command
   fi
 
