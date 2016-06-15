@@ -99,7 +99,13 @@ f_preplaunch(){
   printf "\n[+] Rolling MAC address and hostname randomly\n\n"
 
   #interface is already in monitor mode
-  ifconfig wlan1mon down
+  if [ "${evilap_type" = "airbase-ng" ]; then
+    ifconfig wlan1mon down
+  elif [ "${evilap_type}" = "hostapd" ]; then
+    airmon-ng stop wlan1mon
+    sleep 1
+    ifconfig wlan1 down
+  fi
   sleep 1
   if [ "${evilap_type}" = "airbase-ng" ]; then
     macchanger -r wlan1mon
@@ -111,6 +117,7 @@ f_preplaunch(){
   hostname $hn
   printf "[+] New hostname set: $hn\n"
   [ "${evilap_type" = "airbase-ng" ] && ifconfig wlan1mon up
+  [ "${evilap_type" = "hostapd" ] && ifconfig wlan1 up
 
   mkdir /dev/net/ &> /dev/null
   ln -s /dev/tun /dev/net/tun &> /dev/null
