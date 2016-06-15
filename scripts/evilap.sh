@@ -38,8 +38,10 @@ f_clean_up(){
 f_restore_ident(){
   printf "[+] Restoring network identity\n"
   hostn=`cat /etc/hostname`
-  ifconfig wlan1mon down &> /dev/null
-  macchanger -p wlan1mon &> /dev/null
+  [ "${evilap_type}" = "airbase-ng" ] && evilap_interface="wlan1mon"
+  [ "${evilap_type}" = "hostapd" ] && evilap_interface="wlan1"
+  ifconfig ${evilap_interface} down &> /dev/null
+  macchanger -p ${evilapd_interface} &> /dev/null
   hostname $hostn
 }
 
