@@ -26,6 +26,7 @@ f_endclean(){
 f_clean_up(){
   printf "[-] Killing any instances of airbase or dhcpd\n"
   killall airbase-ng &> /dev/null
+  killall hostapd-wpe &> /dev/null
   killall dhcpd &> /dev/null
   f_mon_disable
   ${iptables_command/A/D} > /dev/null 2>&1
@@ -100,15 +101,21 @@ f_preplaunch(){
   #interface is already in monitor mode
   ifconfig wlan1mon down
   sleep 1
-  macchanger -r wlan1mon
-  hn=$(macchanger --show wlan1mon | grep "Current" | awk '{print $3}' |awk -F":" '{print$1$2$3$4$5$6}')
+  if [ "${evilap_type}" = "airbase-ng" ]; then
+    macchanger -r wlan1mon
+    hn=$(macchanger --show wlan1mon | grep "Current" | awk '{print $3}' |awk -F":" '{print$1$2$3$4$5$6}')
+  elif [ "${evilap_type}" = "hostapd" ]; then
+    macchanger -r wlan1
+    hn=$(macchanger --show wlan1 | grep "Current" | awk '{print $3}' |awk -F":" '{print$1$2$3$4$5$6}')
+  fi
   hostname $hn
   printf "[+] New hostname set: $hn\n"
-  ifconfig wlan1mon up
+  [ "${evilap_type" = "airbase-ng" ] && ifconfig wlan1mon up
 
   mkdir /dev/net/ &> /dev/null
   ln -s /dev/tun /dev/net/tun &> /dev/null
   killall airbase-ng &> /dev/null
+  killall hostapd-wpe &> /dev/null
   killall dhcpd &> /dev/null
   if [ iptables --table nat -L 2>&1 | grep -q MASQUERADE ]; then
     printf "It looks like some kind of tethering is already enabled.\n"
