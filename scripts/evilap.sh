@@ -28,11 +28,13 @@ f_clean_up(){
   killall airbase-ng &> /dev/null
   killall hostapd-wpe &> /dev/null
   killall dhcpd &> /dev/null
-  f_mon_disable
+  [ "${evilap_type}" = "airbase-ng" ] && f_mon_disable
   ${iptables_command/A/D} > /dev/null 2>&1
   ${iptables_command/A/D} > /dev/null 2>&1
-  ${ip_command/add/del} > /dev/null 2>&1
-  ${ip_command/add/del} > /dev/null 2>&1
+  if [ -n "${ip_command}" ]; then
+    ${ip_command/add/del} > /dev/null 2>&1
+    ${ip_command/add/del} > /dev/null 2>&1
+  fi
 }
 
 f_restore_ident(){
