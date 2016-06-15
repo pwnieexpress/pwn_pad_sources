@@ -177,7 +177,7 @@ f_karmaornot(){
     airbase-ng $airbase_flags -c $channel -e "$ssid" -v wlan1mon > "$logname" 2>&1 &
   elif [ "${evilap_type}" = "hostapd" ]; then
     hostapd_conf=$(mktemp -t hostapd.conf-XXXX)
-    printf "interface=wlan1\nssid=\"$ssid\"\nchannel=$channel\n" > "${hostapd_conf}"
+    printf "interface=wlan1\nssid=$ssid\nchannel=$channel\n" > "${hostapd_conf}"
     hostapd-wpe $hostap_flags -t "${hostapd_conf}" > "${logname}" 2>&1 &
   fi
   sleep 2
