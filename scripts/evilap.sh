@@ -28,7 +28,7 @@ f_clean_up(){
   killall airbase-ng &> /dev/null
   killall dhcpd &> /dev/null
   f_mon_disable
-  ${iptables_command/A/D}
+  ${iptables_command/A/D} > /dev/null 2>&1
   ${iptables_command/A/D} > /dev/null 2>&1
 }
 
@@ -107,6 +107,11 @@ f_preplaunch(){
   ln -s /dev/tun /dev/net/tun &> /dev/null
   killall airbase-ng &> /dev/null
   killall dhcpd &> /dev/null
+  if [ iptables --table nat -L 2>&1 | grep -q MASQUERADE ]; then
+    printf "It looks like some kind of tethering is already enabled.\n"
+    printf "Please disable tethering before attempting to run evilap.\n"
+    f_endclean
+  fi
 }
 
 f_logname(){
@@ -127,16 +132,16 @@ f_karmaornot(){
     1)
       printf "[+] Starting EvilAP with forced connection attack\n"
       f_beacon_rate
-      f_preplaunch
       evil_flags="-P -C $brate"
       ;;
     2)
       printf "[+] Starting EvilAP without forced connection attack\n"
-      f_preplaunch
       evil_flags=""
       ;;
     *) f_karmaornot ;;
   esac
+
+  f_preplaunch
 
   #Log path and name
   logname=$(f_logname)
