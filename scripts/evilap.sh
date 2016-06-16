@@ -205,6 +205,13 @@ f_karmaornot(){
 
       *) iptables_command1="iptables -t nat -A POSTROUTING -o ${interface} -j MASQUERADE" ;;
     esac
+    #hack ip route table name, remove this when bootpwn is updated
+    if ! grep -q local_network /etc/iproute2/rt_tables; then
+      if ! grep -q 97 /etc/iproute2/rt_tables; then
+        printf "97 local_network\n" > /etc/iproute2/rt_tables
+      fi
+    fi
+
     [ -n "${ip_command1}" ] && ${ip_command1}
     [ -n "${ip_command2}" ] && ${ip_command2}
     [ -n "${ip_command3}" ] && ${ip_command3}
