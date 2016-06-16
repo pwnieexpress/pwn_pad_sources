@@ -177,7 +177,8 @@ f_karmaornot(){
   elif [ "${evilap_type}" = "hostapd" ]; then
     hostapd_conf=$(mktemp -t hostapd.conf-XXXX)
     printf "interface=wlan1\nssid=$ssid\nchannel=$channel\n" > "${hostapd_conf}"
-    hostapd-wpe $hostap_flags -t "${hostapd_conf}" > "${logname}" 2>&1 &
+    hostapd-wpe $hostap_flags -dd -t "${hostapd_conf}" 2>&1 | grep --line-buffered --color=never \
+      -E "(WPE|deauthenticat|authentication|association|dissassociation)" > "${logname}" &
   fi
   sleep 2
 
