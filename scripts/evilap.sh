@@ -48,7 +48,8 @@ f_clean_up(){
   ${iptables_command1/A/D}
   #remember rule 2 is special, removes at start and re-adds at cleanup
   ${iptables_command2/D/A}
-  [ -n "${ip_command1}" ] && ${ip_command1/add/del}
+  #somehow just downing the interface seems to remove this rule...
+  #[ -n "${ip_command1}" ] && ${ip_command1/add/del}
   [ -n "${ip_command2}" ] && ${ip_command2/add/del}
   [ -n "${ip_command3}" ] && ${ip_command3/add/del}
 }
