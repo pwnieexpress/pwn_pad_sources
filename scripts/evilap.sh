@@ -25,9 +25,9 @@ f_endclean(){
 
 f_clean_up(){
   printf "[-] Killing any instances of evilap and dhcpd\n"
-  [ -n "${airbase-ng-pid}" ] && kill ${airbase-ng-pid} > /dev/null 2>&1
-  [ -n "${airbase-ng-pid}" ] && kill ${hostapd-wpe-pid} > /dev/null 2>&1
-  [ -n "${dhcpd-pid}" ] && kill ${dhcpd-pid} > /dev/null 2>&1
+  [ -n "${airbase_ng_pid}" ] && kill ${airbase_ng_pid} > /dev/null 2>&1
+  [ -n "${airbase_ng_pid}" ] && kill ${hostapd_wpe_pid} > /dev/null 2>&1
+  [ -n "${dhcpd_pid}" ] && kill ${dhcpd_pid} > /dev/null 2>&1
   [ "${evilap_type}" = "airbase-ng" ] && f_mon_disable
   ${iptables_command1/A/D}
   #remember rule 2 is special, removes at start and re-adds at cleanup
@@ -172,13 +172,13 @@ f_karmaornot(){
   #Start evilap
   if [ "${evilap_type}" = "airbase-ng" ]; then
     airbase-ng $airbase_flags -c $channel -e "$ssid" -v wlan1mon > "$logname" 2>&1 &
-    airbase-ng-pid="$!"
+    airbase_ng_pid="$!"
   elif [ "${evilap_type}" = "hostapd" ]; then
     hostapd_conf=$(mktemp -t hostapd.conf-XXXX)
     printf "interface=wlan1\nssid=$ssid\nchannel=$channel\n" > "${hostapd_conf}"
     hostapd-wpe $hostap_flags -dd -t "${hostapd_conf}" 2>&1 | grep --line-buffered --color=never \
       -E "(WPE|deauthenticat|authentication|association|dissassociation)" > "${logname}" &
-    hostapd-wpe-pid="$!"
+    hostapd_wpe_pid="$!"
   fi
   sleep 2
 
@@ -191,7 +191,7 @@ f_karmaornot(){
   fi
   dhcpd -cf /etc/dhcp/dhcpd.conf -pf /var/run/dhcpd.pid "${evilap_eth}"
   sleep 1
-  dhcpd-pid="$(cat /var/run/dhcpd.pid)"
+  dhcpd_pid="$(cat /var/run/dhcpd.pid)"
 
   if [ -n "${interface}" ]; then
     #IP forwarding and iptables routing using internet connection
