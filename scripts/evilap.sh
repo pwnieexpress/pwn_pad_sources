@@ -234,7 +234,7 @@ f_karmaornot(){
     ${iptables_command2}
   fi
 
-  tail -f "$logname"
+  tail -n +0 --pid=${hostapd_wpe_pid} -f "$logname"
 }
 
 f_sanity_check
