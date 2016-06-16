@@ -197,7 +197,8 @@ f_karmaornot(){
     android_vers=$(/system/bin/getprop ro.build.version.release)
     case ${android_vers%%.*} in
       5) iptables_command="iptables -t nat -A natctrl_nat_POSTROUTING -o ${interface} -j MASQUERADE"
-         ip_command="ip rule add from all iif ${evilap_eth} lookup ${interface} pref 18000" ;;
+         ip_command="ip route add 192.168.7.0/24 dev ${evilap_eth} scope link table local_network" ;;
+         #ip_command="ip rule add from all iif ${evilap_eth} lookup ${interface} pref 18000" ;;
       *) iptables_command="iptables -t nat -A POSTROUTING -o ${interface} -j MASQUERADE" ;;
     esac
     [ -n "${ip_command}" ] && ${ip_command}
