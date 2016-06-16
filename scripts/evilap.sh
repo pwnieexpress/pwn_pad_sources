@@ -29,8 +29,9 @@ f_clean_up(){
   killall hostapd-wpe &> /dev/null
   killall dhcpd &> /dev/null
   [ "${evilap_type}" = "airbase-ng" ] && f_mon_disable
-  ${iptables_command/A/D} > /dev/null 2>&1
-  ${iptables_command/A/D} > /dev/null 2>&1
+  ${iptables_command1/A/D}
+  #remember rule 2 is special, removes at start and re-adds at cleanup
+  ${iptables_command2/D/A}
   [ -n "${ip_command1}" ] && ${ip_command1/add/del}
   [ -n "${ip_command2}" ] && ${ip_command2/add/del}
   [ -n "${ip_command3}" ] && ${ip_command3/add/del}
@@ -196,17 +197,19 @@ f_karmaornot(){
     printf 1 > /proc/sys/net/ipv4/ip_forward
     android_vers=$(/system/bin/getprop ro.build.version.release)
     case ${android_vers%%.*} in
-      5) iptables_command="iptables -t nat -A natctrl_nat_POSTROUTING -o ${interface} -j MASQUERADE"
+      5) iptables_command1="iptables -t nat -A natctrl_nat_POSTROUTING -o ${interface} -j MASQUERADE"
+         iptables_command2="iptables -D natctrl_FORWARD -j DROP"
          ip_command1="ip route add 192.168.7.0/24 dev ${evilap_eth} scope link table local_network"
          ip_command2="ip rule add from all iif ${evilap_eth} lookup ${interface} pref 18000"
          ip_command3="ip rule add from all oif ${evilap_eth} lookup local_network pref 14000" ;;
 
-      *) iptables_command="iptables -t nat -A POSTROUTING -o ${interface} -j MASQUERADE" ;;
+      *) iptables_command1="iptables -t nat -A POSTROUTING -o ${interface} -j MASQUERADE" ;;
     esac
     [ -n "${ip_command1}" ] && ${ip_command1}
     [ -n "${ip_command2}" ] && ${ip_command2}
     [ -n "${ip_command3}" ] && ${ip_command3}
-    $iptables_command
+    ${iptables_command1}
+    ${iptables_command2}
   fi
 
   tail -f "$logname"
