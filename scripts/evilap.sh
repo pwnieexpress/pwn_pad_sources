@@ -16,6 +16,22 @@ default_interface=gsm_int
 message="be used for Internet uplink"
 . /opt/pwnix/pwnpad-scripts/px_functions.sh
 
+f_sanity_check(){
+  EXIT_NOW=0
+  if [ -n "$(pgrep hostapd-wpe)" ]; then
+    printf "hostapd-wpe[$(pgrep hostapd-wpe)] is already running.  Are you already running evilap?\n"
+    EXIT_NOW=1
+  fi
+  if [ -n "$(pgrep airbase-ng)" ]; then
+    printf "airbase-ng[$(pgrep airbase-ng)] is already running.  Are you already running evilap?\n"
+    EXIT_NOW=1
+  fi
+  if [ -n "$(pgrep dhcpd)" ]; then
+    printf "dhcpd[$(pgrep dhcpd)] is already running.  Are you already running evilap?\n"
+    EXIT_NOW=1
+  fi
+}
+
 f_endclean(){
   printf "\n[-] Exiting...\n"
   f_restore_ident
@@ -26,8 +42,8 @@ f_endclean(){
 f_clean_up(){
   printf "[-] Killing any instances of evilap and dhcpd\n"
   [ -n "${airbase_ng_pid}" ] && kill ${airbase_ng_pid} > /dev/null 2>&1
-  [ -n "${airbase_ng_pid}" ] && kill ${hostapd_wpe_pid} > /dev/null 2>&1
-  [ -n "${dhcpd_pid}" ] && kill ${dhcpd_pid} > /dev/null 2>&1
+  [ -n "${hostapd_wpe_pid}" ] && kill ${hostapd_wpe_pid} > /dev/null 2>&1
+  [ -r "/var/run/dhcpd.pid" ] && kill $(cat /var/run/dhcpd.pid) > /dev/null 2>&1
   [ "${evilap_type}" = "airbase-ng" ] && f_mon_disable
   ${iptables_command1/A/D}
   #remember rule 2 is special, removes at start and re-adds at cleanup
@@ -176,7 +192,7 @@ f_karmaornot(){
   elif [ "${evilap_type}" = "hostapd" ]; then
     hostapd_conf=$(mktemp -t hostapd.conf-XXXX)
     printf "interface=wlan1\nssid=$ssid\nchannel=$channel\n" > "${hostapd_conf}"
-    hostapd-wpe $hostap_flags -dd -t "${hostapd_conf}" 2>&1 | grep --line-buffered --color=never \
+    hostapd-wpe $hostap_flags -dd "${hostapd_conf}" 2>&1 | grep --line-buffered --color=never \
       -E "(WPE|deauthenticat|authentication|association|dissassociation)" > "${logname}" &
     hostapd_wpe_pid="$!"
   fi
@@ -190,8 +206,6 @@ f_karmaornot(){
     touch /var/lib/dhcp/dhcpd.leases
   fi
   dhcpd -cf /etc/dhcp/dhcpd.conf -pf /var/run/dhcpd.pid "${evilap_eth}"
-  sleep 1
-  dhcpd_pid="$(cat /var/run/dhcpd.pid)"
 
   if [ -n "${interface}" ]; then
     #IP forwarding and iptables routing using internet connection
@@ -223,9 +237,9 @@ f_karmaornot(){
   tail -f "$logname"
 }
 
-f_mon_enable
+f_sanity_check
+[ "$EXIT_NOW" = 0 ] && f_mon_enable
 if [ "$?" = "0" ]; then
-  EXIT_NOW=0
   [ "$EXIT_NOW" = 0 ] && f_banner
   [ "$EXIT_NOW" = 0 ] && require_ip=1 f_interface
   [ "$EXIT_NOW" = 0 ] && f_ssid
