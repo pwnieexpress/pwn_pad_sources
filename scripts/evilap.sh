@@ -208,7 +208,7 @@ f_karmaornot(){
   fi
   dhcpd -cf /etc/dhcp/dhcpd.conf -pf /var/run/dhcpd.pid "${evilap_eth}"
 
-  if [ -n "${interface}" ]; then
+  if [ "${interface}" != "null" ]; then
     #IP forwarding and iptables routing using internet connection
     printf 1 > /proc/sys/net/ipv4/ip_forward
     android_vers=$(/system/bin/getprop ro.build.version.release)
