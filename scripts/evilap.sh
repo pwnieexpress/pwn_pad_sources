@@ -224,7 +224,7 @@ f_karmaornot(){
     #hack ip route table name, remove this when bootpwn is updated
     if ! grep -q local_network /etc/iproute2/rt_tables; then
       if ! grep -q 97 /etc/iproute2/rt_tables; then
-        printf "97 local_network\n" > /etc/iproute2/rt_tables
+        printf "97 local_network\n" >> /etc/iproute2/rt_tables
       fi
     fi
 
