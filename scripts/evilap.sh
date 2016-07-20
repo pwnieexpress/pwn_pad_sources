@@ -184,7 +184,7 @@ f_karmaornot(){
   logname=$(f_logname)
   printf "[+] Creating new logfile: $logname\n"
 
-  trap f_endclean INT
+  trap f_endclean SIGINT SIGTERM EXIT
 
   #Start evilap
   if [ "${evilap_type}" = "airbase-ng" ]; then
