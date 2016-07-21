@@ -9,7 +9,7 @@ bluetooth=1
 
 f_endsummary() {
   clear
-  printf "\n[-] Blue_Hydra db file saved to /opt/pwnix/blue_hydra.db\n\n"
+  printf "\n[-] Blue_Hydra db file saved to /opt/pwnix/data/blue_hydra/blue_hydra.db\n\n"
   if [ "${save}" = "1" ]; then
     STOP_TIME=$(date +"%s")
     QUERY=$(cat <<EOF
@@ -24,8 +24,8 @@ BETWEEN CAST($START_TIME AS integer) AND CAST($STOP_TIME AS integer);
 EOF
 )
 
-    echo $QUERY | sqlite3 -header -column /opt/pwnix/blue_hydra.db > $FILENAME
-    printf "\n[-] Blue_Hydra summary saved to /opt/pwnix/captures/blue_hydra_${START_TIME}.out\n\n"
+    echo $QUERY | sqlite3 -header -column /opt/pwnix/data/blue_hydra/blue_hydra.db > $FILENAME
+    printf "\n[-] Blue_Hydra summary saved to $FILENAME\n\n"
   fi
   cd /opt/pwnix/captures/bluetooth
 }
@@ -50,7 +50,7 @@ if loud_one=1 f_validate_one hci0; then
   service bluetooth status || service bluetooth start
   clear
   START_TIME=$(date +"%s")
-  FILENAME=/opt/pwnix/captures/blue_hydra_${START_TIME}.out
+  FILENAME=/opt/pwnix/captures/bluetooth/blue_hydra_${START_TIME}.out
   cd /opt/pwnix/blue_hydra/
   trap f_endsummary INT
   trap f_endsummary KILL
