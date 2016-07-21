@@ -53,7 +53,7 @@ f_log(){
   printf "2. No\n\n"
   read -p "Choice [1 or 2]: " opt_log
   case $opt_log in
-    [1-2]*) ;;
+    1|2) ;;
     *) f_log;;
   esac
 }
