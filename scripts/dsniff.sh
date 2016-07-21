@@ -19,7 +19,7 @@ f_logging_setup(){
 f_get_logchoice(){
   read -p "Choice: " logchoice
   case $logchoice in
-    [1-2]*) ;;
+    [1-2]) ;;
     *)
       printf 'Please enter 1 for YES or 2 for NO.\n'
       f_get_logchoice
