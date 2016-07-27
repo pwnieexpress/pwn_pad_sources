@@ -15,7 +15,7 @@ f_savecap() {
   read -p "Choice: " saveyesno
 
   case $saveyesno in
-    1) flags="-w tshark-$(date +%F-%H%M).cap" ;;
+    1) flags="-w tshark-$(date +%F-%H%M).cap -P" ;;
     2) flags="" ;;
     *) f_savecap ;;
   esac
