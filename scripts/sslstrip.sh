@@ -44,6 +44,7 @@ f_run(){
   f_interface
   trap f_clean_up INT
   trap f_clean_up KILL
+  trap f_clean_up SIGHUP
 
   f_ip_tables
 

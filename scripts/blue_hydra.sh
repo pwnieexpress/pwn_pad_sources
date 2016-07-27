@@ -7,6 +7,19 @@ clear
 bluetooth=1
 . /opt/pwnix/pwnpad-scripts/px_functions.sh
 
+f_intbh(){
+bhPID=`ps aux |grep -m 1 -i blue_hydra|grep -v grep | awk {'print $2'}`
+`kill 2 ${bhPID}`
+printf "Blue_Hydra process killed..."
+f_cleanup
+}
+
+f_cleanup(){
+  printf "\nStopping Services..."
+  service dbus stop 
+  service bluetooth stop
+}
+
 f_endsummary() {
   clear
   printf "\n[-] Blue_Hydra db file saved to /opt/pwnix/data/blue_hydra/blue_hydra.db\n\n"
@@ -28,6 +41,7 @@ EOF
     printf "\n[-] Blue_Hydra summary saved to $FILENAME\n\n"
   fi
   cd /opt/pwnix/captures/bluetooth
+  f_cleanup
 }
 
 f_savecap() {
@@ -54,6 +68,7 @@ if loud_one=1 f_validate_one hci0; then
   cd /opt/pwnix/blue_hydra/
   trap f_endsummary INT
   trap f_endsummary KILL
+  trap f_intbh SIGHUP
   ./bin/blue_hydra
   f_endsummary
 fi

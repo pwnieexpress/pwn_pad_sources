@@ -17,6 +17,7 @@ f_run(){
   #we have a monitor interface now, so set traps to cleanup
   trap f_cleanup INT
   trap f_cleanup KILL
+  trap f_cleanup SIGHUP
 
   STD_OPTS="-C0 --manufacturer"
   if [ $opt_log -eq 1 ]; then

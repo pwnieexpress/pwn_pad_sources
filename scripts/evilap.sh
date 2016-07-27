@@ -184,8 +184,11 @@ f_karmaornot(){
   logname=$(f_logname)
   printf "[+] Creating new logfile: $logname\n"
 
-  trap f_endclean SIGINT SIGTERM EXIT
-
+  trap f_endclean SIGHUP
+  trap f_endclean SIGINT
+  trap f_endclean SIGTERM
+  trap f_endclean EXIT
+  
   #Start evilap
   if [ "${evilap_type}" = "airbase-ng" ]; then
     airbase-ng $airbase_flags -c $channel -e "$ssid" -v wlan1mon > "$logname" 2>&1 &
