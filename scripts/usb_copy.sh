@@ -39,7 +39,7 @@ f_mount_cp(){
     mount /dev/block/sda1 /usb-otg/
     printf "\n[!] ..Done\n\n"
     printf "[+] Copying captures directory...\n\n"
-    cp -a /opt/pwnix/captures/ /usb-otg/
+    cp -R /opt/pwnix/captures/ /usb-otg/
     printf "\n[!] ..Done\n\n"
     f_umount
   else
