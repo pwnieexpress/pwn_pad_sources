@@ -195,7 +195,7 @@ f_karmaornot(){
     printf "interface=wlan1\nssid=$ssid\nchannel=$channel\n" > "${hostapd_conf}"
     hostapd-wpe $hostap_flags -dd "${hostapd_conf}" 2>&1 | grep --line-buffered --color=never \
       -E "(WPE|deauthenticat|authentication|association|dissassociation)" > "${logname}" &
-    hostapd_wpe_pid="$!"
+    hostapd_wpe_pid="$(pgrep hostapd-wpe)"
   fi
   sleep 2
 
