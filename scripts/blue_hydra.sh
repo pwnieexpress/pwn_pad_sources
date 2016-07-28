@@ -8,8 +8,9 @@ bluetooth=1
 . /opt/pwnix/pwnpad-scripts/px_functions.sh
 
 f_intbh(){
-   bhPID=`ps aux |grep -m 1 -i blue_hydra|grep -v grep | awk {'print $2'}`
-   `kill 2 ${bhPID}`
+  # bhPID=`ps aux |grep -m 1 -i blue_hydra|grep -v grep | awk {'print $2'}`
+   BH_PID=`pgrep -f /bin/blue_hydra`
+   kill 2 ${BH_PID}
    printf "\nBlue_Hydra process killed...\n"
    f_cleanup
 }
@@ -69,6 +70,6 @@ if loud_one=1 f_validate_one hci0; then
   trap f_endsummary INT
   trap f_endsummary KILL
   trap f_intbh SIGHUP
-  ./bin/blue_hydra
+  ./bin/blue_hydra 
   f_endsummary
 fi
