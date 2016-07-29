@@ -70,6 +70,6 @@ if loud_one=1 f_validate_one hci0; then
   trap f_endsummary INT
   trap f_endsummary KILL
   trap f_intbh SIGHUP
-  ./bin/blue_hydra 
+  ./bin/blue_hydra
   f_endsummary
 fi
