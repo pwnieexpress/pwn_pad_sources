@@ -235,7 +235,11 @@ f_karmaornot(){
     ${iptables_command2}
   fi
 
-  tail -n +0 --pid=${hostapd_wpe_pid} -f "$logname"
+  if [ -n "${hostapd_wpe}" ]; then
+    tail -n +0 --pid=${hostapd_wpe_pid} -f "$logname"
+  elif [ -n "${airbase_ng_pid}" ]; then
+    tail -n +0 --pid=${airbase_ng_pid} -f "$logname"
+  fi
 }
 
 f_sanity_check
