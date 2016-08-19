@@ -97,7 +97,6 @@ f_gps_toggle(){
   esac
 }
 
-# Clean up without asking when the user hangs up (closes window)
 f_hangup(){
   adpid=`pgrep airodump-ng|head -n 1`
   kill 2 ${adpid}
