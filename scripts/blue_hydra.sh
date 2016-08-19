@@ -8,7 +8,6 @@ bluetooth=1
 . /opt/pwnix/pwnpad-scripts/px_functions.sh
 
 f_intbh(){
-  # bhPID=`ps aux |grep -m 1 -i blue_hydra|grep -v grep | awk {'print $2'}`
    BH_PID=`pgrep -f /bin/blue_hydra`
    kill 2 ${BH_PID}
    printf "\nBlue_Hydra process killed...\n"
@@ -17,7 +16,6 @@ f_intbh(){
 
 f_cleanup(){
   printf "\nStopping Services...\n"
-  service dbus stop #needed?
   service bluetooth stop
 }
 
