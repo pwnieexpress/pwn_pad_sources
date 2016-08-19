@@ -101,12 +101,6 @@ f_gps_toggle(){
 f_hangup(){
   adpid=`pgrep airodump-ng|head -n 1`
   kill 2 ${adpid}
-
-  # Stop monitor interface without asking
-  airmon-ng stop wlan1mon &> /dev/null
-
-  # Kill gpsd without asking
-  killall -9 gpsd &> /dev/null 
 }
 
 f_cleanup(){
