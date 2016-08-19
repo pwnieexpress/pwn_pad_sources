@@ -17,7 +17,7 @@ f_run(){
   #we have a monitor interface now, so set traps to cleanup
   trap f_cleanup INT
   trap f_cleanup KILL
-  trap f_cleanup SIGHUP
+  trap f_hangup SIGHUP
 
   STD_OPTS="-C0 --manufacturer"
   if [ $opt_log -eq 1 ]; then
@@ -95,6 +95,18 @@ f_gps_toggle(){
       ;;
     *)f_gps_toggle ;;
   esac
+}
+
+# Clean up without asking when the user hangs up (closes window)
+f_hangup(){
+  adpid=`pgrep airodump-ng|head -n 1`
+  kill 2 ${adpid}
+
+  # Stop monitor interface without asking
+  airmon-ng stop wlan1mon &> /dev/null
+
+  # Kill gpsd without asking
+  killall -9 gpsd &> /dev/null 
 }
 
 f_cleanup(){
