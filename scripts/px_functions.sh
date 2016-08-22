@@ -199,6 +199,10 @@ f_one_or_two(){
 
 #safe to call with or without monitor interface, returns 1 on fail and 0 if wlan1mon is available
 f_mon_enable(){
+  if command -v /system/bin/getprop > /dev/zero 2>&1; then
+    hardw=`/system/bin/getprop ro.hardware`
+  fi
+
   include_extwifi=1 include_monitor=1 require_ip=0
   if f_validate_one wlan1mon; then
     printf "Already have monitor mode interface wlan1mon available.\n"
@@ -226,6 +230,13 @@ f_mon_enable(){
       printf "Failed to create wlan1mon.\n"
       unset ${interface}
       return 1
+    fi
+  elif [ "$hardw" = "deb" ] || [ "$hardw" = "flo" ]; then
+    if [ -r "/sys/class/net/wlan0/device/modalias" ]; then
+    WLAN0_BUS=$(/system/xbin/busybox awk -F: '{print $1}' /sys/class/net/wlan0/device/modalias)
+    if [ "${WLAN0_BUS}" = "usb" ]; then
+      /system/bin/wia-ng.sh
+      f_mon_enable
     fi
   else
     printf "Unable to find a usable interface to put in monitor mode.\n"
