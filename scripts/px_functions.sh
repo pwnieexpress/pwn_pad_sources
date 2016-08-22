@@ -227,6 +227,9 @@ f_mon_enable(){
       unset ${interface}
       return 1
     fi
+  elif [ "$(/system/xbin/busybox awk -F: '{print $1}' /sys/class/net/wlan0/device/modalias 2>&1)" = "usb" ]; then
+    /system/bin/wia-ng.sh
+    f_mon_enable
   else
     printf "Unable to find a usable interface to put in monitor mode.\n"
     unset ${interface}
