@@ -19,7 +19,7 @@ f_scan(){
   filename2="/opt/pwnix/captures/nmap_scans/service_scan_$(date +%F-%H%M).txt"
 
   for network in ${networks}; do
-    nmap -sP $network | tee -a $filename1
+    nmap -e "${interface}" -sP "$network" | tee -a "$filename1"
   done
 
   printf "\nHostscan saved to $filename1\n\n"
