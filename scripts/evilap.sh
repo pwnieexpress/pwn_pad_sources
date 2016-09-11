@@ -183,9 +183,9 @@ f_logname(){
 f_evilap_type(){
   if [ -x /usr/sbin/hostapd-wpe ]; then
     evilap_type="hostapd"
-    #this is set by select_attack_interface now
-    evilap_interface="${attack_interface%mon}"
-    evilap_eth="${attack_interface%mon}"
+    #this is set after attack_interface_selector based on user selection
+    #evilap_interface="${attack_interface%mon}"
+    #evilap_eth="${attack_interface%mon}"
   else
     evilap_type="airbase-ng"
     evilap_interface="wlan1mon"
@@ -287,6 +287,10 @@ if [ "$EXIT_NOW" = 0 ] && [ "$SANITY_RETCODE" = "0" ] && [ "${evilap_type}" = "h
   select_attack_interface
 else
   attack_interface="wlan1"
+fi
+if [ "${evilap_type}" = "hostapd" ]; then
+  evilap_interface="${attack_interface%mon}"
+  evilap_eth="${attack_interface%mon}"
 fi
 if [ "${attack_interface}" = "wlan1" ]; then
   f_mon_enable || EXIT_NOW=1
