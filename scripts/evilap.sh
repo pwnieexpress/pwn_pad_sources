@@ -137,11 +137,19 @@ f_preplaunch(){
   printf "\n[+] Rolling MAC address and hostname randomly\n\n"
 
   #interface is already in monitor mode
-  ifconfig wlan1mon down
-  if [ "${evilap_type}" = "hostapd" ]; then
-    airmon-ng stop wlan1mon > /dev/null 2>&1
-    sleep 1
-    ifconfig wlan1 down
+  if [ "${attack_interface%mon}" = "wlan1" ]; then
+    ifconfig wlan1mon down
+    if [ "${evilap_type}" = "hostapd" ]; then
+      airmon-ng stop wlan1mon > /dev/null 2>&1
+      sleep 1
+      ifconfig wlan1 down
+    fi
+  elif [ "${attack_interface}" = "wlan0" ]; then
+    ifconfig wlan0 down
+  else
+    printf "We got confused while prepping for launch\n"
+    EXIT_NOW=1
+    return 1
   fi
   sleep 1
   macchanger -r "${evilap_interface}"
@@ -168,7 +176,7 @@ f_evilap_type(){
     evilap_type="hostapd"
     #this is set by select_attack_interface now
     evilap_interface="${attack_interface%mon}"
-    evilap_eth="wlan1"
+    evilap_eth="${attack_interface%mon}"
   else
     evilap_type="airbase-ng"
     evilap_interface="wlan1mon"
@@ -212,7 +220,7 @@ f_karmaornot(){
     airbase_ng_pid="$!"
   elif [ "${evilap_type}" = "hostapd" ]; then
     hostapd_conf=$(mktemp -t hostapd.conf-XXXX)
-    printf "interface=wlan1\nssid=$ssid\nchannel=$channel\n" > "${hostapd_conf}"
+    printf "interface=${attack_interface%mon}\nssid=$ssid\nchannel=$channel\n" > "${hostapd_conf}"
     hostapd-wpe $hostap_flags -dd "${hostapd_conf}" 2>&1 | grep --line-buffered --color=never \
       -E "(WPE|deauthenticat|authentication|association|dissassociation)" > "${logname}" &
     hostapd_wpe_pid="$(pgrep hostapd-wpe)"
