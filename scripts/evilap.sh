@@ -108,7 +108,16 @@ f_channel(){
 
   [ -z "$channel" ] && channel=1
 
-  f_validate_channel ${attack_interface%mon}mon $channel
+  if [ "${attack_interface%mon}" = "wlan1" ]; then
+    f_validate_channel wlan1mon $channel
+  elif [ "${attack_interface}" = "wlan0" ]; then
+    f_validate_channel wlan0 $channel
+  else
+    printf "We got confused trying to validate channel.\n"
+    EXIT_NOW=1
+    return 1
+  fi
+
   RETCODE=$?
   case $RETCODE in
     0) return 0 ;;
