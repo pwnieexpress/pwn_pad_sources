@@ -272,15 +272,14 @@ else
   attack_interface="wlan1"
 fi
 if [ "${attack_interface}" = "wlan1" ]; then
-  f_mon_enable
+  f_mon_enable || EXIT_NOW=1
 fi
-if [ "$?" = "0" ]; then
-  [ "$EXIT_NOW" = 0 ] && select_uplink_interface
-  [ "$EXIT_NOW" = 0 ] && f_ssid
+[ "$EXIT_NOW" = 0 ] && select_uplink_interface
+[ "$EXIT_NOW" = 0 ] && f_ssid
 if [ "$EXIT_NOW" = 0 ]; then
   [ "$attack_interface" = "wlan1" ] && f_channel_list wlan1mon
   [ "$attack_interface" = "wlan0" ] && f_channel_list wlan0
-  [ "$EXIT_NOW" = 0 ] && f_channel
-  [ "$EXIT_NOW" = 0 ] && f_karmaornot
-  [ "$EXIT_NOW" = 0 ] && f_endclean
 fi
+[ "$EXIT_NOW" = 0 ] && f_channel
+[ "$EXIT_NOW" = 0 ] && f_karmaornot
+[ "$EXIT_NOW" = 0 ] && f_endclean
