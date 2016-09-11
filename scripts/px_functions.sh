@@ -313,6 +313,10 @@ f_validate_channel(){
     [ "$2" = "$i" ] && VALID=0
   done
   if [ "$VALID" = "0" ]; then
+    if [ "$1" = "wlan0" ]; then
+      #it is not possible to set the channel on the internal wifi so assume the channel list does not lie
+      return 0
+    fi
     ip link set $1 up > /dev/null 2>&1
     iw $1 set channel $2 > /dev/null 2>&1
     RETCODE=$?

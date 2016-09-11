@@ -4,17 +4,33 @@
 PS1=${PS1//@\\h/@evilap}
 clear
 
-#this block controls the features for px_interface_selector
-include_null=1
-include_extwifi=0
-include_monitor=0
-include_airbase=0
-include_cell=1
-include_usb=0 #the computer thinks we are sharing internet, not the other way
-#this interface selection is for the uplink, attack always uses external wifi
-default_interface=gsm_int
-message="be used for Internet uplink"
 . /opt/pwnix/pwnpad-scripts/px_functions.sh
+
+select_attack_interface(){
+  local include_wired=0
+  local include_airbase=0
+  local include_usb=0
+  local message="to be used as the Evil AP"
+  local default_interface="wlan1"
+  f_interface
+  attack_interface=${interface}
+  unset ${interface}
+  export attack_interface
+}
+
+select_uplink_interface(){
+  local include_null=1
+  local include_extwifi=0
+  local include_monitor=0
+  local include_airbase=0
+  local include_cell=1
+  local include_usb=0 #the computer thinks we are sharing internet, not the other way
+  local default_interface=gsm_int
+  local require_ip=1
+  local message="be used for Internet uplink"
+  f_interface
+  export interface
+}
 
 f_sanity_check(){
   EXIT_NOW=0
@@ -29,6 +45,12 @@ f_sanity_check(){
   if [ -n "$(pgrep dhcpd)" ]; then
     printf "dhcpd[$(pgrep dhcpd)] is already running.  Are you already running evilap?\n"
     EXIT_NOW=1
+  fi
+  if [ -n "$(pgrep -f /system/bin/hostapd)" ]; then
+    printf "hostapd[$(pgrep -f /system/bin/hostapd)] is already running, disabling wifi internal option\n"
+    return 2
+  else
+    return 0
   fi
 }
 
@@ -62,10 +84,6 @@ f_restore_ident(){
   hostname "$hostn"
 }
 
-f_banner(){
-  printf "\n[+] Welcome to EvilAP\n\n"
-}
-
 f_ssid(){
   clear
   printf "\n[+] Enter an SSID name\n"
@@ -89,6 +107,7 @@ f_channel(){
   read -p "Channel: " channel
 
   [ -z "$channel" ] && channel=1
+
   f_validate_channel wlan1mon $channel
   RETCODE=$?
   case $RETCODE in
@@ -147,7 +166,8 @@ f_logname(){
 f_evilap_type(){
   if [ -x /usr/sbin/hostapd-wpe ]; then
     evilap_type="hostapd"
-    evilap_interface="wlan1"
+    #this is set by select_attack_interface now
+    #evilap_interface="wlan1"
     evilap_eth="wlan1"
   else
     evilap_type="airbase-ng"
@@ -242,15 +262,25 @@ f_karmaornot(){
   fi
 }
 
+printf "\n[+] Welcome to EvilAP\n\n"
 f_sanity_check
-[ "$EXIT_NOW" = 0 ] && f_mon_enable
+SANITY_RETCODE="$?"
+[ "$EXIT_NOW" = 0 ] && f_evilap_type
+if [ "$EXIT_NOW" = 0 ] && [ "$SANITY_RETCODE" = "0" ] && [ "${evilap_type}" = "hostapd-wpe" ]; then
+  select_attack_interface
+else
+  attack_interface="wlan1"
+fi
+if [ "${attack_interface}" = "wlan1" ]; then
+  f_mon_enable
+fi
 if [ "$?" = "0" ]; then
-  [ "$EXIT_NOW" = 0 ] && f_banner
-  [ "$EXIT_NOW" = 0 ] && require_ip=1 f_interface
+  [ "$EXIT_NOW" = 0 ] && select_uplink_interface
   [ "$EXIT_NOW" = 0 ] && f_ssid
-  [ "$EXIT_NOW" = 0 ] && f_channel_list wlan1mon
+if [ "$EXIT_NOW" = 0 ]; then
+  [ "$attack_interface" = "wlan1" ] && f_channel_list wlan1mon
+  [ "$attack_interface" = "wlan0" ] && f_channel_list wlan0
   [ "$EXIT_NOW" = 0 ] && f_channel
-  [ "$EXIT_NOW" = 0 ] && f_evilap_type
   [ "$EXIT_NOW" = 0 ] && f_karmaornot
   [ "$EXIT_NOW" = 0 ] && f_endclean
 fi
