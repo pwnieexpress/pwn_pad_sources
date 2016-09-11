@@ -16,11 +16,6 @@ select_attack_interface(){
   attack_interface=${interface}
   unset ${interface}
   export attack_interface
-  if [ "$attack_interface" = "wlan1mon" ]; then
-    evilap_interface="wlan1"
-  else
-    evilap_interface="${attack_interface}"
-  fi
 }
 
 select_uplink_interface(){
@@ -113,7 +108,7 @@ f_channel(){
 
   [ -z "$channel" ] && channel=1
 
-  f_validate_channel wlan1mon $channel
+  f_validate_channel ${attack_interface%mon}mon $channel
   RETCODE=$?
   case $RETCODE in
     0) return 0 ;;
@@ -172,7 +167,7 @@ f_evilap_type(){
   if [ -x /usr/sbin/hostapd-wpe ]; then
     evilap_type="hostapd"
     #this is set by select_attack_interface now
-    #evilap_interface="wlan1"
+    evilap_interface="${attack_interface%mon}"
     evilap_eth="wlan1"
   else
     evilap_type="airbase-ng"
@@ -282,8 +277,8 @@ fi
 [ "$EXIT_NOW" = 0 ] && select_uplink_interface
 [ "$EXIT_NOW" = 0 ] && f_ssid
 if [ "$EXIT_NOW" = 0 ]; then
-  [ "$attack_interface" = "wlan1" ] && f_channel_list wlan1mon
-  [ "$attack_interface" = "wlan0" ] && f_channel_list wlan0
+  [ "${attack_interface%mon}" = "wlan1" ] && f_channel_list wlan1mon
+  [ "${attack_interface}" = "wlan0" ] && f_channel_list wlan0
 fi
 [ "$EXIT_NOW" = 0 ] && f_channel
 [ "$EXIT_NOW" = 0 ] && f_karmaornot
