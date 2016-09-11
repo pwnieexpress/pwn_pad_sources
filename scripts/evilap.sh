@@ -16,6 +16,11 @@ select_attack_interface(){
   attack_interface=${interface}
   unset ${interface}
   export attack_interface
+  if [ "$attack_interface" = "wlan1mon" ]; then
+    evilap_interface="wlan1"
+  else
+    evilap_interface="${attack_interface}"
+  fi
 }
 
 select_uplink_interface(){
