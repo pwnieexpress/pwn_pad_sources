@@ -266,7 +266,7 @@ printf "\n[+] Welcome to EvilAP\n\n"
 f_sanity_check
 SANITY_RETCODE="$?"
 [ "$EXIT_NOW" = 0 ] && f_evilap_type
-if [ "$EXIT_NOW" = 0 ] && [ "$SANITY_RETCODE" = "0" ] && [ "${evilap_type}" = "hostapd-wpe" ]; then
+if [ "$EXIT_NOW" = 0 ] && [ "$SANITY_RETCODE" = "0" ] && [ "${evilap_type}" = "hostapd" ]; then
   select_attack_interface
 else
   attack_interface="wlan1"
