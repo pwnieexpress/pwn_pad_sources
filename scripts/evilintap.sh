@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/system/bin/mksh
 # Desc: EvilAP script to forcefully connect wireless clients
 #set the prompt to the name of the script
 PS1=${PS1//@\\h/@evilap}
@@ -261,7 +261,7 @@ f_karmaornot(){
 }
 
 printf "\n[+] Welcome to EvilAP\n\n"
-f_sanity_check external
+f_sanity_check internal
 SANITY_RETCODE="$?"
 [ "$EXIT_NOW" = 0 ] && f_evilap_type
 if [ "$EXIT_NOW" = 0 ] && [ "$SANITY_RETCODE" = "0" ] && [ "${evilap_type}" = "hostapd" ]; then
