@@ -19,9 +19,9 @@ f_run(){
   f_banner
 
   #ettercap fails if the interface is down
-  ip link set ${evilap_eth} up
+  ip link set "${evilap_eth}" up
 
-  ettercap -i ${evilap_eth} -T -q -P dns_spoof
+  ettercap -i "${evilap_eth}" -T -q -P dns_spoof
 }
 
 if loud_one=1 f_validate_one at0; then
