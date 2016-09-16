@@ -18,7 +18,7 @@
 f_identify_device(){
 # Check device
   if command -v /system/bin/getprop > /dev/zero 2>&1; then
-    hardw=`/system/bin/getprop ro.hardware`
+    hardw=$(/system/bin/getprop ro.hardware)
     if [[ "$hardw" == "deb" || "$hardw" == "flo" ]]; then
       # Set interface for new Pwn Pad
       ifconfig rmnet_usb0 > /dev/zero 2>&1
@@ -83,7 +83,7 @@ f_interface(){
     *) interface=${default_interface} ;;
   esac
   if [ -n "$interface" ]; then
-    f_validate_choice $interface
+    f_validate_choice "$interface"
     RETVAL=$?
     if [ $RETVAL = 0 ]; then
       clear
@@ -103,7 +103,7 @@ f_interface(){
 
 f_validate_choice(){
   if [ "$bluetooth" = "1" ]; then
-    hciconfig $1 > /dev/zero 2>&1
+    hciconfig "$1" > /dev/zero 2>&1
     if [ $? = 0 ]; then
       return 0
     else
@@ -134,7 +134,7 @@ f_validate_choice(){
       fi
     fi
   fi
-  ip addr show dev $1 > /dev/zero 2>&1
+  ip addr show dev "$1" > /dev/zero 2>&1
   local valid=$?
   if [ "$require_ip" = "1" ] && [ "$valid" = 0 ];then
     local has_ip="$(ip addr show dev $1 | awk '/inet/ {print $2}')"
@@ -146,7 +146,7 @@ f_validate_choice(){
 }
 
 f_validate_one(){
-  if ! $(f_validate_choice $1); then
+  if ! $(f_validate_choice "$1"); then
     case $1 in
       wlan0) requirement="enable wireless in android" ;;
       wlan1) requirement="plug in a supported external wifi adapter" ;;
@@ -163,7 +163,7 @@ f_validate_one(){
 }
 
 f_colorize(){
-  f_validate_choice $1
+  f_validate_choice "$1"
   RETVAL=$?
   if [ $RETVAL = 0 ]; then
     #green text for valid
@@ -213,18 +213,18 @@ f_mon_enable(){
         printf "Failure.\n"
       fi
     fi
-    unset ${interface}
+    unset interface
     return 0
   elif loud_one=1 f_validate_one wlan1; then
     printf "Attempting to put wlan1 into monitor mode..."
     airmon-ng start wlan1 &> /dev/null
     if f_validate_one wlan1mon; then
       printf "Success, wlan1mon created.\n"
-      unset ${interface}
+      unset interface
       return 0
     else
       printf "Failed to create wlan1mon.\n"
-      unset ${interface}
+      unset interface
       return 1
     fi
   elif [ "$(/system/xbin/busybox awk -F: '{print $1}' /sys/class/net/wlan0/device/modalias 2>&1)" = "usb" ]; then
@@ -232,7 +232,7 @@ f_mon_enable(){
     f_mon_enable
   else
     printf "Unable to find a usable interface to put in monitor mode.\n"
-    unset ${interface}
+    unset interface
     return 1
   fi
 }
@@ -253,11 +253,11 @@ f_mon_disable(){
         printf "\n[+] Taking wlan1mon out of monitor mode..."
         #this is to work around the fact that airodump-ng assumes you are allowed to
         #have two interfaces and deb/flo does not support that
-        hardw=`/system/bin/getprop ro.hardware`
+        hardw=$(/system/bin/getprop ro.hardware)
         if [[ "$hardw" == "deb" || "$hardw" == "flo" ]]; then
           PHY=$(cat /sys/class/net/wlan1mon/phy80211/name)
           iw dev wlan1mon del &> /dev/null
-          f_validate_one wlan1 || iw phy $PHY interface add wlan1 type station &> /dev/null
+          f_validate_one wlan1 || iw phy "$PHY" interface add wlan1 type station &> /dev/null
         else
           airmon-ng stop wlan1mon &> /dev/null
         fi
@@ -289,8 +289,8 @@ f_mon_disable(){
 f_channel_list(){
   unset channel_list twofour_channels five_channels
   [ -z "$1" ] && return 1
-  if [ -f /sys/class/net/$1/phy80211/name ]; then
-    channel_list=$(iw phy $(cat /sys/class/net/$1/phy80211/name) info 2>&1 | grep -oP '\[\K[^\]]+')
+  if [ -r "/sys/class/net/$1/phy80211/name" ]; then
+    channel_list=$(iw phy $(cat "/sys/class/net/$1/phy80211/name") info 2>&1 | grep -oP '\[\K[^\]]+')
   else
     channel_list="1 2 3 4 5 6 7 8 9 10 11"
   fi
@@ -317,8 +317,8 @@ f_validate_channel(){
       #it is not possible to set the channel on the internal wifi so assume the channel list does not lie
       return 0
     fi
-    ip link set $1 up > /dev/null 2>&1
-    iw $1 set channel $2 > /dev/null 2>&1
+    ip link set "$1" up > /dev/null 2>&1
+    iw "$1" set channel "$2" > /dev/null 2>&1
     RETCODE=$?
     if [ "$RETCODE" = "0" ]; then
       return 0
