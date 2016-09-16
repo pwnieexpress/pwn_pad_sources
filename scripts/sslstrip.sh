@@ -7,7 +7,7 @@ clear
 #this block controls the features for px_interface_selector
 include_cell=1
 require_ip=1
-default_interface="at0"
+default_interface="wlan0"
 . /opt/pwnix/pwnpad-scripts/px_functions.sh
 
 # Cleanup function to ensure sslstrip stops and iptable rules stop
