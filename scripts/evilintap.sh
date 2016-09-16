@@ -160,19 +160,6 @@ f_logname(){
   printf "/opt/pwnix/captures/wireless/evilap-$(date +%s).log\n"
 }
 
-f_evilap_type(){
-  if [ -x /usr/sbin/hostapd-wpe ]; then
-    evilap_type="hostapd"
-    #this is set after attack_interface_selector based on user selection
-    #evilap_interface="${attack_interface%mon}"
-    #evilap_eth="${attack_interface%mon}"
-  else
-    evilap_type="airbase-ng"
-    evilap_interface="wlan1mon"
-    evilap_eth="at0"
-  fi
-}
-
 f_karmaornot(){
   clear
   printf "\n[?] Force clients to connect with their probe requests?\n\n"
@@ -260,7 +247,7 @@ f_karmaornot(){
   fi
 }
 
-printf "\n[+] Welcome to EvilAP\n\n"
+f_banner
 f_sanity_check internal
 SANITY_RETCODE="$?"
 [ "$EXIT_NOW" = 0 ] && f_evilap_type
