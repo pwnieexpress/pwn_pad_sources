@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/system/bin/mksh
 # Desc: EvilAP script to forcefully connect wireless clients
 #set the prompt to the name of the script
 PS1=${PS1//@\\h/@evilap}
@@ -6,32 +6,6 @@ clear
 
 . /opt/pwnix/pwnpad-scripts/px_functions.sh
 . /opt/pwnix/pwnpad-scripts/px_evilap_functions.sh
-
-select_attack_interface(){
-  local include_wired=0
-  local include_airbase=0
-  local include_usb=0
-  local message="to be used as the Evil AP"
-  local default_interface="wlan1"
-  f_interface
-  attack_interface=${interface}
-  unset ${interface}
-  export attack_interface
-}
-
-select_uplink_interface(){
-  local include_null=1
-  local include_extwifi=0
-  local include_monitor=0
-  local include_airbase=0
-  local include_cell=1
-  local include_usb=0 #the computer thinks we are sharing internet, not the other way
-  local default_interface=gsm_int
-  local require_ip=1
-  local message="be used for Internet uplink"
-  f_interface
-  export interface
-}
 
 
 f_endclean(){
@@ -248,7 +222,36 @@ f_karmaornot(){
 }
 
 f_banner
-f_sanity_check external || EXIT_NOW=1
+f_sanity_check
+SANITY_RETCODE=$?
+if [ "$SANITY_RETCODE" = "2" ]; then
+  #sanity check said internal is already in use as an AP
+  select_uplink_interface
+  /opt/pwnix/pwnpad-scripts/evilextap.sh
+  exit 0
+elif [ "$SANITY_RETCODE" = "1" ]; then
+  #Something else is running, we just exit
+  EXIT_NOW=1
+elif [ "$SANITY_RETCODE" = "0" ]; then
+  #sanity check didn't exclude anything, so let's figure out what we want to run
+  if [ "$SHELL" = "/tmp-mksh/tmp-mksh" ] && [ -x "/system/bin/hostapd" ]; then
+    #everything we need is available it seems, ask the uesr what they want
+    select_attack_interface
+    if [ "$attack_interface" = "wlan0" ]; then
+      include_intwifi=0 select_uplink_interface
+    elif [ "$attack_interface" = "wlan1" ] || [ "$attack_interface" = "wlan1mon" ]; then
+      select_uplink_interface
+    else
+      printf "Something went horribly wrong during attack interface selection\n."
+      EXIT_NOW=1
+    fi
+  else
+    #no support for interal evilap, just go external
+    select_uplink_interface
+    /opt/pwnix/pwnpad-scripts/evilextap.sh
+
+fi
+
 [ "$EXIT_NOW" = 0 ] && f_evilap_type
 if [ "$EXIT_NOW" = 0 ] && [ "$SANITY_RETCODE" = "0" ] && [ "${evilap_type}" = "hostapd" ]; then
   select_attack_interface

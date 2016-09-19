@@ -2,24 +2,21 @@
 
 f_sanity_check(){
   EXIT_NOW=0
-  if [ "${1}" = "external" ]; then
-    if [ -n "$(pgrep hostapd-wpe)" ]; then
-      printf "hostapd-wpe[$(pgrep hostapd-wpe)] is already running.  Are you already running evilap?\n"
-      EXIT_NOW=1
-    fi
-    if [ -n "$(pgrep airbase-ng)" ]; then
-      printf "airbase-ng[$(pgrep airbase-ng)] is already running.  Are you already running evilap?\n"
-      EXIT_NOW=1
-    fi
-    if [ -n "$(pgrep dhcpd)" ]; then
-      printf "dhcpd[$(pgrep dhcpd)] is already running.  Are you already running evilap?\n"
-      EXIT_NOW=1
-    fi
-  elif [ "${1}" = "internal" ]; then
-    if [ -n "$(pgrep -f /system/bin/hostapd)" ]; then
-      printf "hostapd[$(pgrep -f /system/bin/hostapd)] is already running, disabling wifi internal option\n"
-      return 2
-    fi
+  if [ -n "$(pgrep hostapd-wpe)" ]; then
+    printf "hostapd-wpe[$(pgrep hostapd-wpe)] is already running.  Are you already running evilap?\n"
+    EXIT_NOW=1
+  fi
+  if [ -n "$(pgrep airbase-ng)" ]; then
+    printf "airbase-ng[$(pgrep airbase-ng)] is already running.  Are you already running evilap?\n"
+    EXIT_NOW=1
+  fi
+  if [ -n "$(pgrep dhcpd)" ]; then
+    printf "dhcpd[$(pgrep dhcpd)] is already running.  Are you already running evilap?\n"
+    EXIT_NOW=1
+  fi
+  if [ -n "$(pgrep -f /system/bin/hostapd)" ]; then
+    printf "hostapd[$(pgrep -f /system/bin/hostapd)] is already running, disabling wifi internal option\n"
+    return 2
   fi
   if [ "$EXIT_NOW" = "1" ]; then
     return 1
@@ -43,4 +40,30 @@ f_evilap_type(){
 
 f_banner() {
   printf "\n[+] Welcome to EvilAP\n\n"
+}
+
+select_attack_interface(){
+  local include_wired=0
+  local include_airbase=0
+  local include_usb=0
+  local message="to be used as the Evil AP"
+  local default_interface="wlan1"
+  f_interface
+  attack_interface=${interface}
+  unset ${interface}
+  export attack_interface
+}
+
+select_uplink_interface(){
+  local include_null=1
+  local include_extwifi=0
+  local include_monitor=0
+  local include_airbase=0
+  local include_cell=1
+  local include_usb=0 #the computer thinks we are sharing internet, not the other way
+  local default_interface=gsm_int
+  local require_ip=1
+  local message="be used for Internet uplink"
+  f_interface
+  export interface
 }
