@@ -202,11 +202,31 @@ f_karmaornot(){
   #Bring up interface
   ifconfig "${evilap_eth}" up 192.168.7.1 netmask 255.255.255.0
 
-  #Start DHCP server on ${evilap_eth}
-  if [ -d /var/lib/dhcp ] && [ ! -f /var/lib/dhcp/dhcpd.leases ]; then
-    touch /var/lib/dhcp/dhcpd.leases
+  dnsmasq_conf=$(mktemp -t dnsmasq.conf-XXXX)
+  cat << EOF > "$dnsmasq_conf"
+interface=$evilap_eth
+domain-needed
+dhcp-range=192.168.7.2,192.168.7.254,255.255.255.0,1h
+dhcp-lease-max=252
+listen-address=192.168.7.1
+#this is the default location, but might need to know it
+dhcp-leasefile=/var/lib/misc/dnsmasq.leases
+dhcp-authoritative
+#user=root
+#address=/#/192.168.7.1
+server=8.8.8.8
+dhcp-option=option:router,192.168.7.1
+log-queries
+EOF
+
+  if [ ! -d /var/lib/misc ]; then
+    mkdir -p /var/lib/misc
   fi
-  dhcpd -cf /etc/dhcp/dhcpd.conf -pf /var/run/dhcpd.pid "${evilap_eth}"
+  if [ ! -f /var/lib/misc/dnsmasq.leases ]; then
+    touch /var/lib/misc/dnsmasq.leases
+  fi
+
+  dnsmasq -C "$dnsmasq_conf"
 
   if [ "${interface}" != "null" ]; then
     #IP forwarding and iptables routing using internet connection
