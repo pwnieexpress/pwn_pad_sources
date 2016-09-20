@@ -30,6 +30,10 @@ f_sanity_check(){
     printf "dhcpd[$(pgrep dhcpd)] is already running.  Are you already running evilap?\n"
     EXIT_NOW=1
   fi
+  if [ -n "$(pgrep dnsmasq)" ]; then
+    printf "dnsmasq[$(pgrep dnsmasq)] is already running. Are you already running evilap?\n"
+    EXIT_NOW=1
+  fi
 }
 
 f_endclean(){
@@ -40,10 +44,10 @@ f_endclean(){
 }
 
 f_clean_up(){
-  printf "[-] Killing any instances of evilap and dhcpd\n"
+  printf "[-] Killing any instances of evilap and dnsmasq\n"
   [ -n "${airbase_ng_pid}" ] && kill ${airbase_ng_pid} > /dev/null 2>&1
   [ -n "${hostapd_wpe_pid}" ] && kill ${hostapd_wpe_pid} > /dev/null 2>&1
-  [ -r "/var/run/dhcpd.pid" ] && kill $(cat /var/run/dhcpd.pid) > /dev/null 2>&1
+  [ -r "/var/run/dnsmasq.pid" ] && kill $(cat /var/run/dnsmasq.pid) > /dev/null 2>&1
   [ "${evilap_type}" = "airbase-ng" ] && f_mon_disable
   ${iptables_command1/A/D}
   #remember rule 2 is special, removes at start and re-adds at cleanup
