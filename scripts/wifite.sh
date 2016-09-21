@@ -14,7 +14,7 @@ if [ "$?" = "0" ]; then
   #wifite currently cannot put a device in monitor mode,
   #however, it seems to cleanly handle if a device is already
   #new airmon-ng won't make duplicate interfaces, so run it just to make sure we have a monitor
-  wifite
+  wifite --aircrack
   f_mon_disable
   if [ -d hs ]; then
     mv hs/* .
