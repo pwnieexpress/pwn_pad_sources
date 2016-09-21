@@ -36,7 +36,7 @@ f_verify_flashables(){
   VERIFY="$?"
   if [ "$VERIFY" = "1" ]; then
     printf "Checking files, please stand by...\n\n"
-    for i in "$(pwd)/nexus_2012" "$(pwd)/nexus_2013"  "$(pwd)/nexus_5" "$(pwd)/shield-tablet"; do
+    for i in "$(pwd)/nexus_2012" "$(pwd)/nexus_2013"  "$(pwd)/hammerhead" "$(pwd)/shield-tablet"; do
       pushd "$i" &> /dev/null
       sha512sum --status -c checksums.sha512
       if [ $? = 0 ]; then
