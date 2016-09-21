@@ -5,10 +5,54 @@
 # Author: t1mz0r tim@pwnieexpress.com
 # Author: Zero_Chaos zero@pwnieexpress.com
 # Company: Pwnie Express
+#
+# f_set_flashables contains all the things we are flashing
+# f_verify_flashables also contains paths to things we are flashing
+
+f_setflashables(){
+  k=0
+  while (( $k < $device_count ))
+  do
+    #this is where we set the file locations
+    case "${pwnie_product[$k]}" in
+      "Pwn Pad 2013") image_base[$k]="$(pwd)/nexus_2012" recovery[$k]="twrp-2.8.6.0-grouper.img" ;;
+      "Pwn Pad 2014") image_base[$k]="$(pwd)/nexus_2013" recovery[$k]="openrecovery-twrp-2.6.3.0-deb.img" ;;
+      "Pwn Phone 2014")
+        image_base[$k]="$(pwd)/hammerhead"
+        rom[$k]="aopp-0.1-20160817-EXPERIMENTAL-hammerhead.zip"
+        recovery[$k]="twrp-3.0.2-0-hammerhead.img"
+        bootloader[$k]="HHZ12h"
+        ;;
+      "Pwn Pad 3") image_base[$k]="$(pwd)/shield-tablet" recovery[$k]="twrp-2.8.6.0-shieldtablet.img" ;;
+      *) printf "Unknown flashables ${pwnie_product[$k]}\n"; exit 1 ;;
+    esac
+    (( k++ ))
+  done
+}
+
+f_verify_flashables(){
+  printf "Would you like to verify available images?\n\n"
+  f_one_or_two
+  VERIFY="$?"
+  if [ "$VERIFY" = "1" ]; then
+    printf "Checking files, please stand by...\n\n"
+    for i in "$(pwd)/nexus_2012" "$(pwd)/nexus_2013"  "$(pwd)/nexus_5" "$(pwd)/shield-tablet"; do
+      pushd "$i" &> /dev/null
+      sha512sum --status -c checksums.sha512
+      if [ $? = 0 ]; then
+        printf "Files in $i are good to go, ready to flash.\n"
+      else
+        printf "Files in $i are corrupt, unable to flash.\n"
+        f_pause "Press enter if you are *sure* you won't be needing the missing/corrupt files or ^C to quit and fix your files"
+      fi
+      popd &> /dev/null
+    done
+  fi
+}
 
 f_pause(){
   printf "$@"
-  read
+  read -r
 }
 
 check_dependencies() {
@@ -96,7 +140,7 @@ f_run(){
 
   # Get builder
   printf "[!] Enter your initials for the log and press [ENTER] to flash, CTRL+C to abort: "
-  read initials
+  read -r initials
 
   # Log serials
   f_logserial
@@ -109,7 +153,7 @@ f_unlock() {
   k=0
   while (( $k < $device_count ))
   do
-    fastboot oem unlock -s ${serial_array[$k]} &
+    fastboot oem unlock -s "${serial_array[$k]}" &
     WAITPIDS="$WAITPIDS "$!
     (( k++ ))
   done
@@ -297,27 +341,6 @@ f_setpwnieproduct(){
   done
 }
 
-f_setflashables(){
-  k=0
-  while (( $k < $device_count ))
-  do
-    #this is where we set the file locations
-    case "${pwnie_product[$k]}" in
-      "Pwn Pad 2013") image_base[$k]="$(pwd)/nexus_2012" recovery[$k]="twrp-2.8.6.0-grouper.img" ;;
-      "Pwn Pad 2014") image_base[$k]="$(pwd)/nexus_2013" recovery[$k]="openrecovery-twrp-2.6.3.0-deb.img" ;;
-      "Pwn Phone 2014")
-        image_base[$k]="$(pwd)/hammerhead"
-        rom[$k]="aopp-0.1-20160817-EXPERIMENTAL-hammerhead.zip"
-        recovery[$k]="twrp-3.0.2-0-hammerhead.img"
-        bootloader[$k]="HHZ12h"
-        ;;
-      "Pwn Pad 3") image_base[$k]="$(pwd)/shield-tablet" recovery[$k]="twrp-2.8.6.0-shieldtablet.img" ;;
-      *) printf "Unknown flashables ${pwnie_product[$k]}\n"; exit 1 ;;
-    esac
-    (( k++ ))
-  done
-}
-
 f_one_or_two(){
   printf "1.) Yes\n2.) No\n\n"
   printf "Choice [1-2]: "
@@ -328,26 +351,6 @@ f_one_or_two(){
       f_one_or_two
       ;;
   esac
-}
-
-f_verify_flashables(){
-  printf "Would you like to verify available images?\n\n"
-  f_one_or_two
-  VERIFY="$?"
-  if [ "$VERIFY" = "1" ]; then
-    printf "Checking files, please stand by...\n\n"
-    for i in "$(pwd)/nexus_2012" "$(pwd)/nexus_2013"  "$(pwd)/nexus_5" "$(pwd)/shield-tablet"; do
-      pushd "$i" &> /dev/null
-      sha512sum --status -c checksums.sha512
-      if [ $? = 0 ]; then
-        printf "Files in $i are good to go, ready to flash.\n"
-      else
-        printf "Files in $i are corrupt, unable to flash.\n"
-        f_pause "Press enter if you are *sure* you won't be needing the missing/corrupt files or ^C to quit and fix your files"
-      fi
-      popd &> /dev/null
-    done
-  fi
 }
 
 f_push(){
@@ -401,9 +404,11 @@ f_install() {
 
 }
 
+set -o nounset
 check_dependencies
 f_run
 f_unlock
+set -o errexit # unlock is allowed to fail
 f_handle_recovery
 #f_check_bootloader
 f_wipe
