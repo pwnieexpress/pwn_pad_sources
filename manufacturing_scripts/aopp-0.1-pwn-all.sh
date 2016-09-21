@@ -382,21 +382,30 @@ f_install() {
   k=0
   while (( $k < $device_count ))
   do
-    if [ "${pwnie_product[$k]}" != "Pwn Pad 3" ]; then
-      adb -s ${serial_array[$k]} shell twrp install "/sdcard/${rom[$k]}" &
-      WAITPIDS="$WAITPIDS "$!
-    fi
+    adb -s ${serial_array[$k]} shell twrp install "/sdcard/${rom[$k]}" &
+    WAITPIDS="$WAITPIDS "$!
     (( k++ ))
   done
   wait $WAITPIDS
   unset WAITPIDS
+
+  k=0
+  while (( $k < $device_count ))
+  do
+    adb -s ${serial_array[$k]} reboot &
+    WAITPIDS="$WAITPIDS "$!
+    (( k++ ))
+  done
+  wait $WAITPIDS
+  unset WAITPIDS
+
 }
 
 check_dependencies
 f_run
 f_unlock
 f_handle_recovery
-f_check_bootloader
+#f_check_bootloader
 f_wipe
 f_push
 f_install
