@@ -5,7 +5,7 @@ PS1=${PS1//@\\h/@airodump}
 clear
 
 . /opt/pwnix/pwnpad-scripts/px_functions.sh
-
+COMMAND_RUN=""
 f_run(){
 
   # Check for OUI
@@ -22,15 +22,19 @@ f_run(){
   STD_OPTS="-C0 --manufacturer"
   if [ $opt_log -eq 1 ]; then
     if [ $GPS_STATUS -eq 0 ]; then
-      airodump-ng $STD_OPTS --gpsd -w airodump wlan1mon
+      COMMAND_RUN="airodump-ng ${STD_OPTS} --gpsd -w /opt/pwnix/captures/wireless/airodump wlan1mon"
+      airodump-ng $STD_OPTS --gpsd -w /opt/pwnix/captures/wireless/airodump wlan1mon
     else
-      airodump-ng $STD_OPTS -w airodump wlan1mon
+      COMMAND_RUN="airodump-ng ${STD_OPTS} -w /opt/pwnix/captures/wireless/airodump wlan1mon"
+      airodump-ng $STD_OPTS -w /opt/pwnix/captures/wireless/airodump wlan1mon
     fi
 
   elif [ $opt_log -eq 2 ]; then
     if [ $GPS_STATUS -eq 0 ]; then
+      COMMAND_RUN="airodump-ng ${STD_OPTS} --gpsd wlan1mon"
       airodump-ng $STD_OPTS --gpsd wlan1mon
     else
+      COMMAND_RUN="airodump-ng ${STD_OPTS} wlan1mon"
       airodump-ng $STD_OPTS wlan1mon
     fi
   fi
@@ -98,7 +102,8 @@ f_gps_toggle(){
 }
 
 f_hangup(){
-  pkill airodump-ng
+  pkill $COMMAND_RUN
+  pkill -f '/bin/bash /opt/pwnix/pwnpad-scripts/airodump.sh'
 }
 
 f_cleanup(){
