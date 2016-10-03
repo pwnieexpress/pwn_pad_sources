@@ -6,7 +6,7 @@ clear
 
 #cleanup running processes
 f_hangup(){
-pkill -f 'bluelog -vtnc -i hci0'
+  pkill -f 'bluelog -vtnc -i hci0'
 }
 
 bluetooth=1
