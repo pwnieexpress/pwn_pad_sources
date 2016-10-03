@@ -7,6 +7,10 @@ clear
 
 . /opt/pwnix/pwnpad-scripts/px_functions.sh
 
+f_hangup(){
+  pkill -f 'ettercap -i wlan1 -T -q -P dns_spoof'
+}
+
 f_banner(){
   printf "\nEvilAP Ettercap-NG DNS Spoofing Tool\n\n"
   printf "[!] This only works when EvilAP is running!\n"
@@ -17,6 +21,10 @@ f_banner(){
 
 f_run(){
   f_banner
+  
+  trap f_hangup INT
+  trap f_hangup KILL
+  trap f_hangup SIGHUP
 
   #ettercap fails if the interface is down
   ip link set ${evilap_eth} up
