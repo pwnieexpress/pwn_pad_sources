@@ -11,7 +11,7 @@ f_intbh(){
    BH_PID=`pgrep -f /bin/blue_hydra`
    kill 2 ${BH_PID}
    printf "\nBlue_Hydra process killed...\n"
-   f_cleanup
+   f_endsummary
 }
 
 f_cleanup(){
