@@ -37,7 +37,7 @@ f_no(){
 }
 
 f_hangup(){
-  pkill -f 'tshark -i wlan0 -q -w -'
+  pkill -f 'tshark -i ${interface} -q -w -'
 }
 
 f_interface
