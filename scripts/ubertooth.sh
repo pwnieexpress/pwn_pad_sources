@@ -17,6 +17,10 @@ f_select(){
   printf "5) reset ubertooth\n\n"
   read -p "Choice: " selection
 
+  trap f_hangup INT
+  trap f_hangup KILL
+  trap f_hangup SIGHUP
+
   case $selection in
     1) if [ -x /usr/bin/ubertooth-rx ]; then
          ubertooth-rx
@@ -32,6 +36,10 @@ f_select(){
     5) ubertooth-util -r ;;
     *) f_select ;;
   esac
+}
+
+f_hangup(){
+  pkill ubertooth-*
 }
 
 f_run(){
