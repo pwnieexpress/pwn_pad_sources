@@ -16,6 +16,7 @@ f_intbh(){
 f_cleanup(){
   printf "\nStopping Services...\n"
   service bluetooth stop
+  service dbus stop
 }
 
 f_endsummary() {
