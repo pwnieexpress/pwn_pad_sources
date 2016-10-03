@@ -98,7 +98,7 @@ f_gps_toggle(){
 }
 
 f_hangup(){
-    pkill airodump-ng
+  pkill airodump-ng
 }
 
 f_cleanup(){
