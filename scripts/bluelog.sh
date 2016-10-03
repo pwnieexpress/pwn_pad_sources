@@ -4,6 +4,11 @@
 PS1=${PS1//@\\h/@bluelog}
 clear
 
+#cleanup running processes
+f_hangup(){
+pgrep -f 'bluelog -vtnc -i hci0' | xargs -I '%' kill 2 %
+}
+
 bluetooth=1
 . /opt/pwnix/pwnpad-scripts/px_functions.sh
 
@@ -14,6 +19,11 @@ cd /opt/pwnix/captures/bluetooth/
 
 clear
 printf "\n[-] Bluelog scan log saved to /opt/pwnix/captures/bluetooth/\n\n"
+
+#set traps to cleanup
+trap f_hangup SIGHUP
+trap f_hangup INT
+trap f_hangup KILL
 
 bluelog -vtnc -i hci0
 fi
