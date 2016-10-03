@@ -114,6 +114,10 @@ f_endmsg(){
   cd "${LOGDIR}" &> /dev/null
 }
 
+f_hangup(){
+pkill kismet
+}
+
 f_mon_enable
 if [ "$?" = "0" ]; then
   LOGDIR="/opt/pwnix/captures/wireless/"
@@ -127,6 +131,11 @@ if [ "$?" = "0" ]; then
   if [ "${EXIT_NOW}" = 0 ]; then
     f_uicheck
     f_gps_check
+
+    trap f_hangup INT
+    trap f_hangup KILL
+    trap f_hangup SIGHUP
+
     kismet
     f_cleanup
   fi
