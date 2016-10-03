@@ -8,8 +8,7 @@ bluetooth=1
 . /opt/pwnix/pwnpad-scripts/px_functions.sh
 
 f_intbh(){
-   BH_PID=`pgrep -f /bin/blue_hydra`
-   kill 2 ${BH_PID}
+   pkill -f '/bin/blue_hydra'
    printf "\nBlue_Hydra process killed...\n"
    f_endsummary
 }
