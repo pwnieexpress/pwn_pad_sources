@@ -98,8 +98,7 @@ f_gps_toggle(){
 }
 
 f_hangup(){
-  adpid=`pgrep airodump-ng|head -n 1`
-  kill 2 ${adpid}
+    pgrep -x airodump-ng | xargs -I '%' kill 2 %
 }
 
 f_cleanup(){
