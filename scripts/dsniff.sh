@@ -30,6 +30,11 @@ f_get_logchoice(){
 f_run(){
   #ettercap fails if the interface is down
   ip link set $interface up
+
+  trap f_hangup SIGHUP
+  trap f_hangup INT
+  trap f_hangup KILL
+
   # If user chose to log, log to folder
   # else just run cmd
   if [ $logchoice -eq 1 ]; then
@@ -38,6 +43,10 @@ f_run(){
   elif [ $logchoice -eq 2 ]; then
     ettercap -i $interface -T -q -u
   fi
+}
+
+f_hangup(){
+  pkill -f 'ettercap -i wlan0 -T -q -u'
 }
 
 f_interface
