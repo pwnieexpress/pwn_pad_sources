@@ -23,8 +23,6 @@ printf "\n[-] Bluelog scan log saved to /opt/pwnix/captures/bluetooth/\n\n"
 
 #set traps to cleanup
 trap f_hangup SIGHUP
-trap f_hangup INT
-trap f_hangup KILL
 
 bluelog -vtnc -i hci0
 fi
