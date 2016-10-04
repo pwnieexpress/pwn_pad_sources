@@ -103,7 +103,9 @@ f_gps_toggle(){
 
 f_hangup(){
   pkill $COMMAND_RUN
- # pkill -f '/bin/bash /opt/pwnix/pwnpad-scripts/airodump.sh'
+  if [ $GPS_STATUS -eq 0 ]; then
+    f_gps_toggle
+  fi
   exit 1
 }
 
