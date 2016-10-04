@@ -36,6 +36,7 @@ f_no(){
 
 f_hangup(){
   pkill -f 'tcpdump -s0 -vvv -e -i ${interface}'
+  exit 1
 }
 
 f_interface

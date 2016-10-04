@@ -38,6 +38,7 @@ f_no(){
 
 f_hangup(){
   pkill -f 'tshark -i ${interface} -q -w -'
+  exit 1
 }
 
 f_interface

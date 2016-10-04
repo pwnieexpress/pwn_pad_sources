@@ -47,6 +47,7 @@ f_run(){
 
 f_hangup(){
   pkill -f 'ettercap -i wlan0 -T -q -u'
+  exit 1
 }
 
 f_interface

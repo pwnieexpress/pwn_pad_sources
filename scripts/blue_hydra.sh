@@ -17,6 +17,7 @@ f_cleanup(){
   printf "\nStopping Services...\n"
   service bluetooth stop
   service dbus stop
+  exit 1
 }
 
 f_endsummary() {

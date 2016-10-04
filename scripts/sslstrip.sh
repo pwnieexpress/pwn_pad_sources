@@ -28,6 +28,7 @@ f_clean_up(){
   iptables -t nat -D PREROUTING -p udp --destination-port 53 -j REDIRECT --to-port 53
   printf "Shutdown complete\n\n"
   cd "${LOGDIR}" &> /dev/null
+  exit 1
 }
 
 # Setup iptables for sslstrip

@@ -85,7 +85,8 @@ f_run(){
 }
 
 f_hangup(){
-pkill ettercap
+  pkill ettercap
+  exit 1
 }
 
 f_banner
