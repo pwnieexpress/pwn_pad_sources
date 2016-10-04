@@ -28,9 +28,6 @@ f_gps_check(){
 f_cleanup(){
   f_mon_disable
 
-  if [ $GPS_STATUS -eq 0 ]; then
-    killall -9 gpsd
-  fi
   f_pulse_restore
   f_endmsg
 }

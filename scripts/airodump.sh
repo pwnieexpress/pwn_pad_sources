@@ -103,9 +103,6 @@ f_gps_toggle(){
 
 f_hangup(){
   pkill $COMMAND_RUN
-  if [ $GPS_STATUS -eq 0 ]; then
-    f_gps_toggle
-  fi
   exit 1
 }
 
