@@ -83,7 +83,8 @@ f_run(){
 }
 
 f_hangup(){
-  pkill ettercap
+  #pkill ettercap
+  pkill -f 'ettercap -i ${interface} -T ${ssl} -q ${log} -M arp:remote ${syntax}/${gw}/ ${syntax}/${target1}/'
   exit 1
 }
 
