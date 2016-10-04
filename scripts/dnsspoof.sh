@@ -23,8 +23,6 @@ f_banner(){
 f_run(){
   f_banner
   
-  trap f_hangup INT
-  trap f_hangup KILL
   trap f_hangup SIGHUP
 
   #ettercap fails if the interface is down
