@@ -115,7 +115,7 @@ f_endmsg(){
 }
 
 f_hangup(){
-pkill kismet
+  pkill -2 kismet_client
 }
 
 f_mon_enable
