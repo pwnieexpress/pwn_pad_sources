@@ -115,8 +115,9 @@ f_endmsg(){
 }
 
 f_hangup(){
-  pkill -2 kismet_client
-  pkill '/bin/bash /opt/pwnix/pwnpad-scripts/kismet.sh'
+  pkill -2 -f '/usr/bin/kismet_client'
+  pkill -2 -f '/usr/bin/kismet_server -t Kismet'
+  pkill -f '/bin/bash /opt/pwnix/pwnpad-scripts/kismet.sh'
 }
 
 f_mon_enable
