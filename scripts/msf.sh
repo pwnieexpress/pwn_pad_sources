@@ -10,8 +10,6 @@ f_hangup(){
   exit 1
 }
 
-trap f_hangup INT
-trap f_hangup KILL
 trap f_hangup SIGHUP
 
 msfconsole

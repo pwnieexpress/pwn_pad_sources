@@ -16,8 +16,6 @@ f_savecap(){
 
   read -p "Choice [1-2]: " saveyesno
 
-  trap f_hangup INT
-  trap f_hangup KILL
   trap f_hangup SIGHUP
 
   case $saveyesno in

@@ -58,8 +58,6 @@ f_run(){
   ip link set $interface up
   
   trap f_hangup SIGHUP
-  trap f_hangup INT
-  trap f_hangup KILL
 
    # Check for Kali1 version for target syntax change...
   dpkg --list ettercap-common | grep -q 1:0.8.2-2~kali1

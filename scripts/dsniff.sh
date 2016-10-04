@@ -32,8 +32,6 @@ f_run(){
   ip link set $interface up
 
   trap f_hangup SIGHUP
-  trap f_hangup INT
-  trap f_hangup KILL
 
   # If user chose to log, log to folder
   # else just run cmd
