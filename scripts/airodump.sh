@@ -103,7 +103,8 @@ f_gps_toggle(){
 
 f_hangup(){
   pkill $COMMAND_RUN
-  pkill -f '/bin/bash /opt/pwnix/pwnpad-scripts/airodump.sh'
+ # pkill -f '/bin/bash /opt/pwnix/pwnpad-scripts/airodump.sh'
+  exit 1
 }
 
 f_cleanup(){
