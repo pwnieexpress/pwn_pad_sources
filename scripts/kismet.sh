@@ -115,8 +115,8 @@ f_endmsg(){
 
 f_hangup(){
   f_pulse_restore
-  pkill -2 -f '/usr/bin/kismet_client'
-  pkill -2 -f '/usr/bin/kismet_server -t Kismet'
+  pkill -f '/usr/bin/kismet_client'
+  pkill -f '/usr/bin/kismet_server -t Kismet'
   exit 1
 }
 
