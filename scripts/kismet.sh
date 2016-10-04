@@ -115,6 +115,9 @@ f_endmsg(){
 }
 
 f_hangup(){
+  if [ $GPS_STATUS -eq 0 ]; then
+    killall -9 gpsd
+  fi
   f_pulse_restore
   pkill -2 -f '/usr/bin/kismet_client'
   pkill -2 -f '/usr/bin/kismet_server -t Kismet'
