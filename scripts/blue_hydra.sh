@@ -13,7 +13,7 @@ f_endsummary() {
   if [ "${save}" = "1" ]; then
     STOP_TIME=$(date +"%s")
     QUERY=$(cat <<EOF
-SELECT address, vendor, company, manufacturer, 
+SELECT address, name, vendor, company, manufacturer, 
        classic_mode AS classic, 
        le_mode AS le, le_address_type, 
        updated_at as last_seen,
