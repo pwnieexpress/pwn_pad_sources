@@ -37,14 +37,28 @@ f_savecap() {
   read -p "Choice: " saveyesno
 
   case $saveyesno in
-    1) save=1 ;;
-    2) save=0 ;;
+    1) save=1
+       save_flags=""
+       ;;
+    2) save=0
+       save_flags="--no-db"
+       ;;
     *) f_savecap ;;
   esac
 }
 
+f_pulse_or_no() {
+  f_pulse
+  if [ "$pulse" -eq 1 ]; then
+    pulse_flags="--pulse"
+  else
+    pulse_flags=""
+  fi
+}
+
 if loud_one=1 f_validate_one hci0; then
   f_savecap
+  f_pulse_or_no
   hciconfig hci0 up
   service dbus status || service dbus start
   service bluetooth status || service bluetooth start
@@ -54,6 +68,6 @@ if loud_one=1 f_validate_one hci0; then
   cd /opt/pwnix/blue_hydra/
   trap f_endsummary INT
   trap f_endsummary KILL
-  ./bin/blue_hydra
+  ./bin/blue_hydra "${save_flags}" "${pulse_flags}"
   f_endsummary
 fi
