@@ -188,11 +188,12 @@ f_isdefault(){
 
 ## Extra functions we can safely abstract
 f_pulse() {
+  clear
   if [ ! -f "/opt/pwnix/data/hermes/dispatch.pem" ]; then
     pulse="2"
     return
   fi
-  printf "Do you want to send data up to Pwn Pulse?"
+  printf "Do you want to send data up to Pwn Pulse ?\n\n"
   printf "1. Yes\n"
   printf "2. No\n\n"
   pulse=$(f_one_or_two)
