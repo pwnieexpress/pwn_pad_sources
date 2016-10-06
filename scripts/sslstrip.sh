@@ -28,7 +28,8 @@ f_clean_up(){
   iptables -t nat -D PREROUTING -p udp --destination-port 53 -j REDIRECT --to-port 53
   printf "Shutdown complete\n\n"
   cd "${LOGDIR}" &> /dev/null
-  exit 1
+  trap - TERM SIGHUP
+  exit 0
 }
 
 # Setup iptables for sslstrip
@@ -43,8 +44,7 @@ f_run(){
   sleep 2
 
   f_interface
-  trap f_clean_up INT
-  trap f_clean_up KILL
+  trap f_clean_up TERM
   trap f_clean_up SIGHUP
 
   f_ip_tables
