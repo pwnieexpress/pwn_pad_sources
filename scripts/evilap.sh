@@ -186,8 +186,8 @@ f_karmaornot(){
   printf "[+] Creating new logfile: $logname\n"
 
   trap f_endclean SIGHUP
-  trap f_endclean SIGINT
-  trap f_endclean SIGTERM
+  trap f_endclean INT
+  trap f_endclean TERM
   trap f_endclean EXIT
   
   #Start evilap
