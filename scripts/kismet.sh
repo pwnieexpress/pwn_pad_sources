@@ -117,7 +117,7 @@ f_hangup(){
   f_pulse_restore
   pkill -f '/usr/bin/kismet_client'
   pkill -f '/usr/bin/kismet_server -t Kismet'
-  trap - INT TERM SIGHUP
+  trap - TERM SIGHUP
   exit 0
 }
 
