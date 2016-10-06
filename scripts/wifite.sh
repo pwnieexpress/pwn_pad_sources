@@ -15,7 +15,9 @@ if [ "$?" = "0" ]; then
   #however, it seems to cleanly handle if a device is already
   #new airmon-ng won't make duplicate interfaces, so run it just to make sure we have a monitor
   wifite
+  trap '' INT
   f_mon_disable
+  trap - INT
   if [ -d hs ]; then
     mv hs/* .
     rm -r hs/
