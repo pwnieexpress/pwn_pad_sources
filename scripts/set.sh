@@ -6,7 +6,8 @@ clear
 
 f_hangup(){
   pkill setoolkit
-  exit 1
+  trap - SIGHUP
+  exit 0
 }
 
 cd /opt/pwnix/captures/
