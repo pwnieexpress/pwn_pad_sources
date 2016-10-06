@@ -127,7 +127,7 @@ f_preplaunch(){
   fi
   sleep 1
   macchanger -r "${evilap_interface}"
-  hn=$(macchanger --show "${evilap_interface}" | grep "Current" | awk '{print $3}' |awk -F":" '{print$1$2$3$4$5$6}')
+  hn=$(macchanger --show "${evilap_interface}" | /bin/grep "Current" | awk '{print $3}' |awk -F":" '{print$1$2$3$4$5$6}')
   hostname "$hn"
   printf "[+] New hostname set: $hn\n"
   ifconfig "${evilap_interface}"
