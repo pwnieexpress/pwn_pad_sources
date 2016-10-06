@@ -17,7 +17,7 @@ f_cleanup(){
   printf "\nStopping Services...\n"
   service bluetooth stop
   service dbus stop
-  exit 1
+  trap - TERM SIGHUP
 }
 
 f_endsummary() {
@@ -66,8 +66,7 @@ if loud_one=1 f_validate_one hci0; then
   START_TIME=$(date +"%s")
   FILENAME=/opt/pwnix/captures/bluetooth/blue_hydra_${START_TIME}.out
   cd /opt/pwnix/blue_hydra/
-  trap f_endsummary INT
-  trap f_endsummary KILL
+  trap f_endsummary TERM
   trap f_intbh SIGHUP
   ./bin/blue_hydra
   f_endsummary
