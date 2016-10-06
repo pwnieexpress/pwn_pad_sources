@@ -84,7 +84,8 @@ f_run(){
 
 f_hangup(){
   pkill -f 'ettercap -i ${interface} -T ${ssl} -q ${log} -M arp:remote ${syntax}/${gw}/ ${syntax}/${target1}/'
-  exit 1
+  trap - SIGHUP
+  exit 0
 }
 
 f_banner
