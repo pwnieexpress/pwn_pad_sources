@@ -33,7 +33,7 @@ f_cleanup(){
   fi
   f_pulse_restore
   f_endmsg
-  trap - INT
+  trap - INT TERM SIGHUP
 }
 
 f_pulse_suspend(){
