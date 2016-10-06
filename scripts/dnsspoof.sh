@@ -9,7 +9,8 @@ clear
 
 f_hangup(){
   pkill -f 'ettercap -i wlan1 -T -q -P dns_spoof'
-  exit 1
+  trap - SIGHUP
+  exit 0
 }
 
 f_banner(){
