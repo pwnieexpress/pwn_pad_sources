@@ -38,7 +38,8 @@ f_select(){
 
 f_hangup(){
   pkill ubertooth-*
-  exit 1
+  trap - SIGHUP
+  exit 0
 }
 
 f_run(){
