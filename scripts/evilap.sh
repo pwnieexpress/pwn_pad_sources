@@ -52,6 +52,7 @@ f_clean_up(){
   #[ -n "${ip_command1}" ] && ${ip_command1/add/del}
   [ -n "${ip_command2}" ] && ${ip_command2/add/del}
   [ -n "${ip_command3}" ] && ${ip_command3/add/del}
+  trap - INT TERM SIGHUP EXIT
 }
 
 f_restore_ident(){
