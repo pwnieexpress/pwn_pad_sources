@@ -134,7 +134,7 @@ f_preplaunch(){
 
   mkdir /dev/net/ &> /dev/null
   ln -s /dev/tun /dev/net/tun &> /dev/null
-  if iptables --table nat -L 2>&1 | grep -q MASQUERADE; then
+  if iptables --table nat -L 2>&1 | /bin/grep -q MASQUERADE; then
     printf "It looks like some kind of tethering is already enabled.\n"
     printf "Please disable tethering before attempting to run evilap.\n"
     f_endclean
@@ -197,7 +197,7 @@ f_karmaornot(){
   elif [ "${evilap_type}" = "hostapd" ]; then
     hostapd_conf=$(mktemp -t hostapd.conf-XXXX)
     printf "interface=wlan1\nssid=$ssid\nchannel=$channel\n" > "${hostapd_conf}"
-    hostapd-wpe $hostap_flags -dd "${hostapd_conf}" 2>&1 | grep --line-buffered --color=never \
+    hostapd-wpe $hostap_flags -dd "${hostapd_conf}" 2>&1 | /bin/grep --line-buffered --color=never \
       -E "(WPE|deauthenticat|authentication|association|dissassociation)" > "${logname}" &
     hostapd_wpe_pid="$(pgrep hostapd-wpe)"
   fi
@@ -226,8 +226,8 @@ f_karmaornot(){
       *) iptables_command1="iptables -t nat -A POSTROUTING -o ${interface} -j MASQUERADE" ;;
     esac
     #hack ip route table name, remove this when bootpwn is updated
-    if ! grep -q local_network /etc/iproute2/rt_tables; then
-      if ! grep -q 97 /etc/iproute2/rt_tables; then
+    if ! /bin/grep -q local_network /etc/iproute2/rt_tables; then
+      if ! /bin/grep -q 97 /etc/iproute2/rt_tables; then
         printf "97 local_network\n" >> /etc/iproute2/rt_tables
       fi
     fi
