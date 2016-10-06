@@ -15,11 +15,11 @@ f_clean_up(){
   printf "\n[!] Shutting down sslstrip...\n"
   if [ -n "${sslstrippid}" ]; then
     printf "killing sslstrip[${sslstrippid}]\n"
-    kill ${sslstrippid} > /dev/null 2>&1
+    kill ${sslstrippid} &> /dev/null
   fi
   if [ -n "${dns2proxypid}" ]; then
     printf "killing dns2proxy[${dns2proxypid}]\n"
-    kill ${dns2proxypid} > /dev/null 2>&1
+    kill -2 ${dns2proxypid} &> /dev/null
   fi
 
   printf "flushing iptables\n"
@@ -29,7 +29,6 @@ f_clean_up(){
   printf "Shutdown complete\n\n"
   cd "${LOGDIR}" &> /dev/null
   trap - TERM SIGHUP
-  exit 0
 }
 
 # Setup iptables for sslstrip
@@ -44,6 +43,7 @@ f_run(){
   sleep 2
 
   f_interface
+  trap f_clean_up INT
   trap f_clean_up TERM
   trap f_clean_up SIGHUP
 
@@ -63,6 +63,7 @@ f_run(){
     cd "${dns2proxy_path}"
     python "${dns2proxy_path}/dns2proxy.py" "${int_syntax}"${interface} > /dev/null 2>&1 &
     dns2proxypid=$!
+    disown
     printf "dns2proxy by LeonardoNVE is running...\n"
   else
     printf "dns2proxy is currently unavailable\n"
