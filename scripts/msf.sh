@@ -7,7 +7,8 @@ clear
 printf "\n[!] Starting Metasploit.. This is gonna take a sec..\n"
 f_hangup(){
   pkill -f /usr/bin/msfconsole
-  exit 1
+  trap - SIGHUP
+  exit 0
 }
 
 trap f_hangup SIGHUP
