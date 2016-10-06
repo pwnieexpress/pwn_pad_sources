@@ -117,7 +117,8 @@ f_hangup(){
   f_pulse_restore
   pkill -f '/usr/bin/kismet_client'
   pkill -f '/usr/bin/kismet_server -t Kismet'
-  exit 1
+  trap - INT TERM SIGHUP
+  exit 0
 }
 
 f_mon_enable
@@ -134,8 +135,7 @@ if [ "$?" = "0" ]; then
     f_uicheck
     f_gps_check
 
-    trap f_hangup INT
-    trap f_hangup KILL
+    trap f_hangup TERM
     trap f_hangup SIGHUP
 
     kismet
