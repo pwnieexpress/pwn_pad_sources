@@ -1,6 +1,6 @@
 #!/bin/bash
 # Script to turn SSHD on and off
-#set the prompt to the name of the script
+# Set the prompt to the name of the script
 PS1=${PS1//@\\h/@ssh_toggle}
 clear
 
@@ -62,7 +62,7 @@ f_stop_ssh(){
 printf "\n[-] This will enable/disable SSH server access on port 22\n\n"
 
 
-#check running processes to see if ssh is running
+# Check running processes to see if ssh is running
 service ssh status &> /dev/null
 SSH_STATUS=$?
 
