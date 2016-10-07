@@ -1,10 +1,10 @@
 #!/bin/bash
 # Ettercap ARP cache poison script
-#set the prompt to the name of the script
+# Set the prompt to the name of the script
 PS1=${PS1//@\\h/@ettercap}
 clear
 
-#this block controls the features for px_interface_selector
+# This block controls the features for px_interface_selector
 include_monitor=0
 include_airbase=0
 require_ip=1
@@ -54,7 +54,7 @@ f_run(){
   read -p "Enter target IP of gateway/router: " gw
   printf "\n"
 
-  #ettercap fails if the interface is down
+  # Ettercap fails if the interface is down
   ip link set $interface up
   
   trap f_hangup SIGHUP
