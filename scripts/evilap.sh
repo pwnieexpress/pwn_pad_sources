@@ -1,17 +1,17 @@
 #!/bin/bash
 # Desc: EvilAP script to forcefully connect wireless clients
-#set the prompt to the name of the script
+# Set the prompt to the name of the script
 PS1=${PS1//@\\h/@evilap}
 clear
 
-#this block controls the features for px_interface_selector
+# This block controls the features for px_interface_selector
 include_null=1
 include_extwifi=0
 include_monitor=0
 include_airbase=0
 include_cell=1
-include_usb=0 #the computer thinks we are sharing internet, not the other way
-#this interface selection is for the uplink, attack always uses external wifi
+include_usb=0 # The computer thinks we are sharing internet, not the other way
+# This interface selection is for the uplink, attack always uses external wifi
 default_interface=gsm_int
 message="be used for Internet uplink"
 . /opt/pwnix/pwnpad-scripts/px_functions.sh
@@ -46,9 +46,9 @@ f_clean_up(){
   [ -r "/var/run/dhcpd.pid" ] && kill $(cat /var/run/dhcpd.pid) > /dev/null 2>&1
   [ "${evilap_type}" = "airbase-ng" ] && f_mon_disable
   ${iptables_command1/A/D}
-  #remember rule 2 is special, removes at start and re-adds at cleanup
+  # Remember rule 2 is special: removes at start and re-adds at cleanup
   ${iptables_command2/D/A}
-  #somehow just downing the interface seems to remove this rule...
+  # Downing the interface seems to remove this rule...
   #[ -n "${ip_command1}" ] && ${ip_command1/add/del}
   [ -n "${ip_command2}" ] && ${ip_command2/add/del}
   [ -n "${ip_command3}" ] && ${ip_command3/add/del}
@@ -115,10 +115,10 @@ f_beacon_rate(){
 }
 
 f_preplaunch(){
-  #Change the hostname and mac address randomly
+  # Change the hostname and mac address randomly
   printf "\n[+] Rolling MAC address and hostname randomly\n\n"
 
-  #interface is already in monitor mode
+  # Interface is already in monitor mode
   ifconfig wlan1mon down
   if [ "${evilap_type}" = "hostapd" ]; then
     airmon-ng stop wlan1mon > /dev/null 2>&1
@@ -181,7 +181,7 @@ f_karmaornot(){
 
   f_preplaunch
 
-  #Log path and name
+  # Log path and name
   logname=$(f_logname)
   printf "[+] Creating new logfile: $logname\n"
 
@@ -190,7 +190,7 @@ f_karmaornot(){
   trap f_endclean TERM
   trap f_endclean EXIT
   
-  #Start evilap
+  # Start evilap
   if [ "${evilap_type}" = "airbase-ng" ]; then
     airbase-ng $airbase_flags -c $channel -e "$ssid" -v wlan1mon > "$logname" 2>&1 &
     airbase_ng_pid="$!"
@@ -204,17 +204,17 @@ f_karmaornot(){
   fi
   sleep 2
 
-  #Bring up interface
+  # Bring up interface
   ifconfig "${evilap_eth}" up 192.168.7.1 netmask 255.255.255.0
 
-  #Start DHCP server on ${evilap_eth}
+  # Start DHCP server on ${evilap_eth}
   if [ -d /var/lib/dhcp ] && [ ! -f /var/lib/dhcp/dhcpd.leases ]; then
     touch /var/lib/dhcp/dhcpd.leases
   fi
   dhcpd -cf /etc/dhcp/dhcpd.conf -pf /var/run/dhcpd.pid "${evilap_eth}"
 
   if [ "${interface}" != "null" ]; then
-    #IP forwarding and iptables routing using internet connection
+    # IP forwarding and iptables routing using internet connection
     printf 1 > /proc/sys/net/ipv4/ip_forward
     android_vers=$(/system/bin/getprop ro.build.version.release)
     case ${android_vers%%.*} in
@@ -226,7 +226,7 @@ f_karmaornot(){
 
       *) iptables_command1="iptables -t nat -A POSTROUTING -o ${interface} -j MASQUERADE" ;;
     esac
-    #hack ip route table name, remove this when bootpwn is updated
+    # IP route table name, remove this when bootpwn is updated
     if ! /bin/grep -q local_network /etc/iproute2/rt_tables; then
       if ! /bin/grep -q 97 /etc/iproute2/rt_tables; then
         printf "97 local_network\n" >> /etc/iproute2/rt_tables
