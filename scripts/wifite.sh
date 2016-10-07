@@ -1,6 +1,6 @@
 #!/bin/bash
 # Script to run Wifite
-#set the prompt to the name of the script
+# Set the prompt to the name of the script
 PS1=${PS1//@\\h/@wifite}
 clear
 
@@ -11,9 +11,9 @@ if [ "$?" = "0" ]; then
   cd /opt/pwnix/captures/wpa_handshakes/
 
   clear
-  #wifite currently cannot put a device in monitor mode,
-  #however, it seems to cleanly handle if a device is already
-  #new airmon-ng won't make duplicate interfaces, so run it just to make sure we have a monitor
+  # Wifite currently cannot put a device in monitor mode,
+  # however, it seems to cleanly handle if a device is already
+  # new airmon-ng won't make duplicate interfaces, so run it just to make sure we have a monitor.
   wifite
   trap '' INT
   f_mon_disable
