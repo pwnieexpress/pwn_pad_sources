@@ -1,6 +1,6 @@
 #!/bin/bash
-# Script to turn Pwnie UI off/on (ON by default)
-#set the prompt to the name of the script
+# Script to turn Pwnie UI off/on 
+# Set the prompt to the name of the script
 PS1=${PS1//@\\h/@pwnieuionoff}
 clear
 
