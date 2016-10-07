@@ -1,6 +1,6 @@
 #!/bin/bash
 # Bluetooth scanning / logging script using hcitool
-#set the prompt to the name of the script
+# Set the prompt to the name of the script
 PS1=${PS1//@\\h/@btscan}
 clear
 
