@@ -1,6 +1,6 @@
 #!/bin/bash
-#Script to run msfconsole with no flags
-#set the prompt to the name of the script
+# Script to run msfconsole with no flags
+# Set the prompt to the name of the script
 PS1=${PS1//@\\h/@msfconsole}
 clear
 
