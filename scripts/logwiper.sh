@@ -1,6 +1,6 @@
 #!/bin/bash
-# Description: Script to remove all logs and anything potentially legally binding
-#set the prompt to the name of the script
+# Description: Script to remove all logs
+# Set the prompt to the name of the script
 PS1=${PS1//@\\h/@logwiper}
 clear
 
