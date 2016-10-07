@@ -1,16 +1,16 @@
 #!/bin/bash
 # SSL strip script for sniffing on available interfaces
-#set the prompt to the name of the script
+# Set the prompt to the name of the script
 PS1=${PS1//@\\h/@sslstrip}
 clear
 
-#this block controls the features for px_interface_selector
+# This block controls the features for px_interface_selector
 include_cell=1
 require_ip=1
 default_interface="at0"
 . /opt/pwnix/pwnpad-scripts/px_functions.sh
 
-# Cleanup function to ensure sslstrip stops and iptable rules stop
+# Cleanup function to ensure sslstrip stops and iptable rules are cleaned up
 f_clean_up(){
   printf "\n[!] Shutting down sslstrip...\n"
   if [ -n "${sslstrippid}" ]; then
@@ -28,7 +28,7 @@ f_clean_up(){
   iptables -t nat -D PREROUTING -p udp --destination-port 53 -j REDIRECT --to-port 53
   printf "Shutdown complete\n\n"
   cd "${LOGDIR}" &> /dev/null
-  trap - TERM SIGHUP
+  trap - INT TERM SIGHUP
 }
 
 # Setup iptables for sslstrip
