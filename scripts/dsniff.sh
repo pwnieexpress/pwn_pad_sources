@@ -1,10 +1,10 @@
 #!/bin/bash
 # Cleartext password sniffing on all available interfaces
-#set the prompt to the name of the script
+# Set the prompt to the name of the script
 PS1=${PS1//@\\h/@dsniff}
 clear
 
-#this block controls the features for px_interface_selector
+# This controls the features for px_interface_selector
 include_all=1
 . /opt/pwnix/pwnpad-scripts/px_functions.sh
 
@@ -28,13 +28,11 @@ f_get_logchoice(){
 }
 
 f_run(){
-  #ettercap fails if the interface is down
+  # Ettercap fails if the interface is down
   ip link set $interface up
 
   trap f_hangup SIGHUP
 
-  # If user chose to log, log to folder
-  # else just run cmd
   if [ $logchoice -eq 1 ]; then
     filename=/opt/pwnix/captures/passwords/dsniff_$(date +%F-%H%M).log
     ettercap -i $interface -u -T -q | tee $filename
