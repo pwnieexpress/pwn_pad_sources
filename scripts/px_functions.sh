@@ -1,19 +1,19 @@
-#unified f_interface function abstract, plus some other misc functions
-# variables consumed:
- : ${include_null:=0}      # enable or disable null interface (default off)
- : ${include_wired:=1}     # enable or disable eth0  (default on)
- : ${include_intwifi:=1}   # enable or disable wlan0 (default on)
- : ${include_extwifi:=1}   # enable or disable wlan1 (default on)
- : ${include_monitor:=1}   # enable or disable wlan1mon (default on)
- : ${include_airbase:=1}   # enable or disable at0 (default on)
- : ${include_cell:=0}      # enable or disable $gsm_int (default OFF)
- : ${include_usb:=1}       # enable or disable rndis0 (default on)
- : ${include_all:=0}       # enable everything (default OFF)
- : ${require_ip:=0}        # require an ip for the interface to show as available (default OFF)
- : ${message:="sniff on"}  # message for header
- : ${loud_one:=0}          # include warning output of f_validate_one
- : ${bluetooth:=0}         # are we looking for a bluetooth interface or not? (default OFF)
-#  ${default_interface}    # contains default interface, if any
+# Unified f_interface function abstract, plus some other misc functions
+# Variables consumed:
+ : ${include_null:=0}      # Enable or disable null interface (default off)
+ : ${include_wired:=1}     # Enable or disable eth0  (default on)
+ : ${include_intwifi:=1}   # Enable or disable wlan0 (default on)
+ : ${include_extwifi:=1}   # Enable or disable wlan1 (default on)
+ : ${include_monitor:=1}   # Enable or disable wlan1mon (default on)
+ : ${include_airbase:=1}   # Enable or disable at0 (default on)
+ : ${include_cell:=0}      # Enable or disable $gsm_int (default OFF)
+ : ${include_usb:=1}       # Enable or disable rndis0 (default on)
+ : ${include_all:=0}       # Enable everything (default OFF)
+ : ${require_ip:=0}        # Require an ip for the interface to show as available (default OFF)
+ : ${message:="sniff on"}  # Message for header
+ : ${loud_one:=0}          # Include warning output of f_validate_one
+ : ${bluetooth:=0}         # Looking for a bluetooth interface or not? (default OFF)
+#  ${default_interface}    # Contains default interface, if any
 
 f_identify_device(){
 # Check device
@@ -37,7 +37,7 @@ f_identify_device(){
       fi
     fi
   else
-    #we don't have access to /system/bin/getprop, abort
+    # No access to /system/bin/getprop, abort
     gsm_int="(not present)"
   fi
   if [ "$default_interface" = "gsm_int" ] && [ -n "$gsm_int" ]; then
@@ -88,11 +88,11 @@ f_interface(){
     if [ $RETVAL = 0 ]; then
       clear
     elif [ $RETVAL = 1 ]; then
-      #invalid
+      # Invalid
       naughty="Interface \e[1;31m$interface\e[0m is an \e[1;31minvalid selection\e[0m.\n"
       f_interface
     elif [ $RETVAL = 2 ]; then
-      #disabled
+      # Disabled
       naughty="Interface \e[1;90m$interface\e[0m is \e[1;90madministratively disabled\e[0m.\n"
       f_interface
     fi
@@ -111,7 +111,7 @@ f_validate_choice(){
     fi
   fi
   if [ "$include_all" != "1" ]; then
-    #administratively disable interfaces
+    # Administratively disable interfaces
     if [ "$include_wired" != "1" ] && [ "$1" = "eth0" ]; then return 2; fi
     if [ "$include_intwifi" != "1" ] && [ "$1" = "wlan0" ]; then return 2; fi
     if [ "$include_extwifi" != "1" ] && [ "$1" = "wlan1" ]; then return 2; fi
@@ -120,11 +120,11 @@ f_validate_choice(){
     if [ "$include_cell" != "1" ] && [ "$1" = "$gsm_int" ]; then return 2; fi
     if [ "$include_usb" != "1" ] && [ "$1" = "rndis0" ]; then return 2; fi
   fi
-  #valid actually holds 0 for good and 1 for bad, I know, I know.
+  # Valid actually holds 0 for good and 1 for bad, I know, I know.
   if [ "$1" = "null" ] && [ "$include_null" = "1" ]; then
-    #pretend null validates all the time, there be dragons here
-    #currently this is only used in uplink choices when user may
-    #not need an uplink, just be careful that the script can handle it.
+    # Pretend null validates all the time
+    # Currently this is only used in uplink choices when user may
+    # not need an uplink, just be careful that the script can handle it.
     return 0
   fi
   if [ "$1" = "wlan0" ]; then
@@ -166,16 +166,16 @@ f_colorize(){
   f_validate_choice $1
   RETVAL=$?
   if [ $RETVAL = 0 ]; then
-    #green text for valid
+    # Green text for valid
     printf "\e[1;32m"
   elif [ $RETVAL = 1 ]; then
-    #red text for invalid
+    # Red text for invalid
     printf "\e[1;31m"
   elif [ $RETVAL = 2 ]; then
-    #dark grey for disabled
+    # Dark grey for disabled
     printf "\e[1;90m"
   else
-    #blue on unknown
+    # Blue on unknown
     printf "\e[1;34m"
   fi
 }
@@ -197,14 +197,14 @@ f_one_or_two(){
   esac
 }
 
-#safe to call with or without monitor interface, returns 1 on fail and 0 if wlan1mon is available
+# Safe to call with or without monitor interface, returns 1 on fail and 0 if wlan1mon is available
 f_mon_enable(){
   include_extwifi=1 include_monitor=1 require_ip=0
   if f_validate_one wlan1mon; then
     printf "Already have monitor mode interface wlan1mon available.\n"
     if f_validate_one wlan1; then
       printf "Attempting to remove unneeded wlan1 interface..."
-      #set to down first or deb and flo crash
+      # Set to down first or deb and flo crash
       ip link set wlan1 down
       iw dev wlan1 del &> /dev/null
       if [ $? = 0 ]; then
@@ -234,7 +234,7 @@ f_mon_enable(){
   fi
 }
 
-#safe to call with or without a monitor interface, returns 1 on failure and 0 when wlan1 is in station mode
+# Safe to call with or without a monitor interface, returns 1 on failure and 0 when wlan1 is in station mode
 f_mon_disable(){
   include_extwifi=1 include_monitor=1 require_ip=0
   if f_validate_one wlan1mon; then
@@ -248,8 +248,8 @@ f_mon_disable(){
         ;;
       2)
         printf "\n[+] Taking wlan1mon out of monitor mode..."
-        #this is to work around the fact that airodump-ng assumes you are allowed to
-        #have two interfaces and deb/flo does not support that
+        # This is to work around the fact that airodump-ng assumes you are allowed to
+        # have two interfaces and deb/flo does not support that.
         hardw=`/system/bin/getprop ro.hardware`
         if [[ "$hardw" == "deb" || "$hardw" == "flo" ]]; then
           PHY=$(cat /sys/class/net/wlan1mon/phy80211/name)
@@ -299,7 +299,7 @@ f_channel_list(){
 }
 
 f_validate_channel(){
-  #must call f_channel_list first
+  # Must call f_channel_list first
   # $1 is interface
   # $2 is channel
   [ -z "$channel_list" ] && return 1
