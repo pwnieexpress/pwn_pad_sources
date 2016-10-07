@@ -1,10 +1,10 @@
 #!/bin/bash
 # Bluetooth scanning / logging script using bluelog
-#set the prompt to the name of the script
+# Set the prompt to the name of the script
 PS1=${PS1//@\\h/@bluelog}
 clear
 
-#cleanup running processes
+# Cleanup 
 f_hangup(){
   pkill -f 'bluelog -vtnc -i hci0'
   trap - SIGHUP
@@ -22,7 +22,7 @@ cd /opt/pwnix/captures/bluetooth/
 clear
 printf "\n[-] Bluelog scan log saved to /opt/pwnix/captures/bluetooth/\n\n"
 
-#set traps to cleanup
+# Set traps to cleanup
 trap f_hangup SIGHUP
 
 bluelog -vtnc -i hci0
