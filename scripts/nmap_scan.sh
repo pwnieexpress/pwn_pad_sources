@@ -1,10 +1,10 @@
 #!/bin/bash
 # Script to scan current network
-#set the prompt to the name of the script
+# Set the prompt to the name of the script
 PS1=${PS1//@\\h/@nmap}
 clear
 
-#this block controls the features for px_interface_selector
+# This block controls the features for px_interface_selector
 include_monitor=0
 require_ip=1
 message="scan on"
