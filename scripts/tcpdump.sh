@@ -1,10 +1,10 @@
 #!/bin/bash
 # Tcpdump script for sniffing on available interfaces
-#set the prompt to the name of the script
+# Set the prompt to the name of the script
 PS1=${PS1//@\\h/@tcpdump}
 clear
 
-#this block controls the features for px_interface_selector
+# This controls the features for px_interface_selector
 include_cell=1
 . /opt/pwnix/pwnpad-scripts/px_functions.sh
 
