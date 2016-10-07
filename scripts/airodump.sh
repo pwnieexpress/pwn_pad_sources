@@ -1,6 +1,6 @@
 #!/bin/bash
 # Run airodump-ng with no flags
-#set the prompt to the name of the script
+# Set the prompt to the name of the script
 PS1=${PS1//@\\h/@airodump}
 clear
 
@@ -14,7 +14,7 @@ f_run(){
   f_log
   # Check for GPS
   f_gps
-  #we have a monitor interface now, so set traps to cleanup
+  # Set traps to cleanup
   trap f_cleanup TERM
   trap f_hangup SIGHUP
 
@@ -67,7 +67,6 @@ f_gps(){
 
   ps ax |grep gpsd |grep -v grep &> /dev/null
   GPSD_STATUS=$?
-
   if [ $GPSD_STATUS -eq 1 ]; then
     ps ax |grep bluenmea |grep -v grep &> /dev/null
     GPS_STATUS=$?
@@ -109,7 +108,6 @@ f_hangup(){
 f_cleanup(){
   trap '' INT
   f_mon_disable
-
   if [ $GPS_STATUS -eq 0 ]; then
     f_gps_toggle
   fi
