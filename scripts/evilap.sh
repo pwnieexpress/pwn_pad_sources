@@ -191,6 +191,7 @@ f_karmaornot(){
   trap f_endclean SIGINT SIGTERM EXIT
 
   #Start evilap
+  printf "[+] Starting evil ap type ${evilap_type}\n"
   if [ "${evilap_type}" = "airbase-ng" ]; then
     airbase-ng $airbase_flags -c $channel -e "$ssid" -v wlan1mon > "$logname" 2>&1 &
     airbase_ng_pid="$!"
@@ -230,6 +231,7 @@ EOF
     touch /var/lib/misc/dnsmasq.leases
   fi
 
+  printf "[+] Starting dnsmasq\n"
   dnsmasq -C "$dnsmasq_conf"
 
   if [ "${interface}" != "null" ]; then
@@ -259,11 +261,13 @@ EOF
     ${iptables_command2}
   fi
 
+  printf "[+] Following evilap log: ${logname}\n"
   if [ -n "${hostapd_wpe_pid}" ]; then
     tail -n +0 --pid=${hostapd_wpe_pid} -f "$logname"
   elif [ -n "${airbase_ng_pid}" ]; then
     tail -n +0 --pid=${airbase_ng_pid} -f "$logname"
   fi
+  printf "[-] Ended evilap\n"
 }
 
 f_sanity_check
