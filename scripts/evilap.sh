@@ -188,7 +188,7 @@ f_karmaornot(){
   logname=$(f_logname)
   printf "[+] Creating new logfile: $logname\n"
 
-  trap f_endclean SIGINT SIGTERM EXIT
+  trap f_endclean EXIT
 
   #Start evilap
   printf "[+] Starting evil ap type ${evilap_type}\n"
