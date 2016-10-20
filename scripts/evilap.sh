@@ -280,5 +280,4 @@ if [ "$?" = "0" ]; then
   [ "$EXIT_NOW" = 0 ] && f_channel
   [ "$EXIT_NOW" = 0 ] && f_evilap_type
   [ "$EXIT_NOW" = 0 ] && f_karmaornot
-  [ "$EXIT_NOW" = 0 ] && f_endclean
 fi
