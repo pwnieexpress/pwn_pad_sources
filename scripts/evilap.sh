@@ -173,11 +173,13 @@ f_karmaornot(){
       f_beacon_rate
       airbase_flags="-P -C $brate"
       hostap_flags="-s -k"
+      evil_cui_karma="-k"
       ;;
     2)
       printf "[+] Starting EvilAP without forced connection attack\n"
       airbase_flags=""
       hostap_flags=""
+      evil_cui_karma=""
       ;;
     *) f_karmaornot ;;
   esac
@@ -264,11 +266,7 @@ EOF
 
   if [ -n "${hostapd_wpe_pid}" ]; then
       # start the evil api UI
-      if [ "$karma" = 1 ]; then
-        /opt/pwnix/pwnpad-scripts/evil_ap_cui.rb -k -l "${logname}" -s "${ssid}" -c "${channel}"
-      elif [ "$karma" = 2 ]; then
-        /opt/pwnix/pwnpad-scripts/evil_ap_cui.rb -l "${logname}" -s "${ssid}" -c "${channel}"
-      fi
+      /opt/pwnix/pwnpad-scripts/evil_ap_cui.rb ${evil_cui_karma} -l "${logname}" -s "${ssid}" -c "${channel}"
   elif [ -n "${airbase_ng_pid}" ]; then
     tail -n +0 --pid=${airbase_ng_pid} -f "$logname"
   fi
