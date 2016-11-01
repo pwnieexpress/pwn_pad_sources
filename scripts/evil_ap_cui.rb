@@ -5,6 +5,7 @@ require 'logger'
 require 'pry'
 require 'optparse'
 require 'json'
+require 'louis'
 
 REQUIRED_ARGS = [:log]
 
@@ -198,10 +199,16 @@ module EvilAP
           source,records = @data_queue.pop
           records.each do |record|
             @data[record[:mac]] ||= {}
+
+            unless @data[record[:mac]][:vendor]
+              @data[record[:mac]][:vendor] = Louis.lookup(record[:mac])["short_vendor"]
+            end
+
             @data[record[:mac]][:status] ||= Time.now.to_i
 
             record.keys.each do |key|
               next if key == :source
+
               @data[record[:mac]][key] = record[key]
             end
           end
@@ -215,18 +222,22 @@ module EvilAP
                 end
               else
                 if @data[k][:probe] && @data[k][:status] != 'offline'
-                  json = JSON.generate({
+                  connection_info = {
                     connect_time: Time.at(v[:status]).to_s,
                     disconnect_time: Time.now.to_s,
                     mac: v[:mac],
+                    vendor: v[:vendor],
                     ip: v[:ip],
                     hostname: v[:hostname],
                     ssid: v[:probe],
                     packet_count: v[:pkts],
                     last_rssi: v[:rssi]
-                  })
+                  }
 
-                  File.open('connection.log','a') {|f| f.puts(json); f.close}
+                  json = JSON.generate(connection_info)
+
+
+                  File.open('/opt/pwnix/captures/wireless/evil-ap-connection.log','a') {|f| f.puts(json); f.close}
                 end
 
                 @data[k][:status] = 'offline'
@@ -248,6 +259,7 @@ module EvilAP
 
             header_map = {
               mac: 'Client MAC',
+              vendor: 'Vendor',
               ip: 'IP',
               hostname: 'Hostname',
               rssi: 'RSSI',
