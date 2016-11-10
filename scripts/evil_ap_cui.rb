@@ -353,5 +353,12 @@ trap('SIGINT') do
   exit!
 end
 
+trap('SIGHUP') do
+  @runner.stop
+  puts
+  puts "bye bye!!!!"
+  exit!
+end
+
 @runner = EvilAP::Runner.new(@options)
 @runner.run
