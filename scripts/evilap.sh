@@ -44,6 +44,8 @@ f_endclean(){
 }
 
 f_clean_up(){
+  printf "[-] Sending sigint to evil ap ui if still running...\n"
+  pkill -2 -f evil_ap_cui.rb || true
   printf "[-] Killing any instances of evilap and dnsmasq\n"
   [ -n "${airbase_ng_pid}" ] && kill ${airbase_ng_pid} > /dev/null 2>&1
   [ -n "${hostapd_wpe_pid}" ] && kill ${hostapd_wpe_pid} > /dev/null 2>&1

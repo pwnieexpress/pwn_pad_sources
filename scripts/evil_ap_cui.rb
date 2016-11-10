@@ -84,6 +84,10 @@ module EvilAP
       @leases_watcher_thread.kill
       @iwlist_watcher_thread.kill
       @hostapdwpe_watcher_thread.kill
+      @data_queue.push([:iw, []])
+      until @data_queue.empty?
+        sleep 0.1
+      end
       @cui_watcher_thread.kill
       @cui_render_thread.kill
       @data_queue = nil
@@ -236,7 +240,6 @@ module EvilAP
 
                   json = JSON.generate(connection_info)
 
-
                   File.open('/opt/pwnix/captures/wireless/evil-ap-connection.log','a') {|f| f.puts(json); f.close}
                 end
 
@@ -344,6 +347,13 @@ module EvilAP
 end
 
 trap('SIGINT') do
+  @runner.stop
+  puts
+  puts "bye bye!!!!"
+  exit!
+end
+
+trap('SIGHUP') do
   @runner.stop
   puts
   puts "bye bye!!!!"
