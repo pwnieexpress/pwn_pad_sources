@@ -39,7 +39,7 @@ f_sanity_check(){
 f_endclean(){
   printf "\n[-] Exiting...\n"
   f_restore_ident
-  f_clean_up
+  [ "$EXIT_NOW" = 0 ] && f_clean_up
   EXIT_NOW=1
 }
 
@@ -193,6 +193,8 @@ f_karmaornot(){
   printf "[+] Creating new logfile: $logname\n"
 
   trap f_endclean EXIT
+  trap f_endclean INT
+  trap f_endclean TERM
 
   #Start evilap
   if [ "${evilap_type}" = "airbase-ng" ]; then
