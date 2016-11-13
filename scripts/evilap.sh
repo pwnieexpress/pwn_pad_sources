@@ -37,10 +37,12 @@ f_sanity_check(){
 }
 
 f_endclean(){
-  printf "\n[-] Exiting...\n"
-  f_restore_ident
-  [ "$EXIT_NOW" = 0 ] && f_clean_up
-  EXIT_NOW=1
+  if [ "$EXIT_NOW" = 0 ]; then
+    printf "\n[-] Exiting...\n"
+    f_restore_ident
+    f_clean_up
+    EXIT_NOW=1
+  fi
 }
 
 f_clean_up(){
