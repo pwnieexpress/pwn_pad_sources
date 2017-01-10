@@ -64,7 +64,7 @@ if loud_one=1 f_validate_one hci0; then
   service bluetooth status || service bluetooth start
   clear
   START_TIME=$(date +"%s")
-  FILENAME=/opt/pwnix/captures/bluetooth/blue_hydra_${START_TIME}.out
+  FILENAME=/opt/pwnix/captures/bluetooth/blue_hydra_${START_TIME}.csv
   cd /opt/pwnix/blue_hydra/
   trap f_endsummary INT
   trap f_endsummary KILL
