@@ -132,7 +132,7 @@ f_preplaunch(){
   fi
   sleep 1
   macchanger -r "${evilap_interface}"
-  hn=$(macchanger --show "${evilap_interface}" | grep "Current" | awk '{print $3}' |awk -F":" '{print$1$2$3$4$5$6}')
+  hn=$(ifconfig "${evilap_interface}" | grep ether | awk -F' ' '{print $2}' | grep -iE '([0-9a-f]{2}:){5}[0-9a-f]{2}' | awk -F':' '{print$1$2$3$4$5$6}')
   hostname "$hn"
   printf "[+] New hostname set: $hn\n"
   ifconfig "${evilap_interface}"
