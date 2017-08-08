@@ -12,7 +12,10 @@ f_endsummary() {
   printf "\n[-] Blue_Hydra db file saved to /opt/pwnix/data/blue_hydra/blue_hydra.db\n\n"
   if [ "${save}" = "1" ]; then
     STOP_TIME=$(date +"%s")
-    QUERY=$(cat <<EOF
+    sqlite3 /opt/pwnix/data/blue_hydra/blue_hydra.db<<EOF
+.headers on
+.mode csv
+.output $FILENAME
 SELECT address, name, vendor, company, manufacturer, 
        classic_mode AS classic, 
        le_mode AS le, le_address_type, 
@@ -22,9 +25,6 @@ FROM blue_hydra_devices
 WHERE CAST(strftime('%s',updated_at) AS integer) 
 BETWEEN CAST($START_TIME AS integer) AND CAST($STOP_TIME AS integer);
 EOF
-)
-
-    echo $QUERY | sqlite3 -header -column /opt/pwnix/data/blue_hydra/blue_hydra.db > $FILENAME
     printf "\n[-] Blue_Hydra summary saved to $FILENAME\n\n"
   fi
   cd /opt/pwnix/captures/bluetooth
